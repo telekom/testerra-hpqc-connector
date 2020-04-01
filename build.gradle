@@ -24,10 +24,10 @@ publishing {
 
     repositories {
         maven {
-            url System.getProperty("deployUrl", "none")
+            url deployUrl
             credentials {
-                username System.getProperty("deployUsername", "none")
-                password System.getProperty("deployPassword", "none")
+                username deployUsername
+                password deployPassword
             }
         }
     }
