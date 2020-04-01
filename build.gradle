@@ -1,33 +1,54 @@
-group 'eu.tsystems.mms.tic.testerra'
-version '1-SNAPSHOT'
+ext {
+    doNotPublish = this.&dnp
+}
 
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
+def dnp(prj) {
+    prj.jar.enabled = true
+    prj.publish.enabled = false
+    prj.publishToMavenLocal.enabled = false
+}
 
-sourceCompatibility = 1.8
 
 allprojects {
+
+    group 'eu.tsystems.mms.tic.testerra'
+    version '1-SNAPSHOT'
+
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+
+    sourceCompatibility = 1.8
+
     dependencies {
         implementation "eu.tsystems.mms.tic.testerra:surefire-connector:1-SNAPSHOT"
         //implementation 'commons-codec:commons-codec:1.13'
     }
 
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
+    tasks.whenTaskAdded { task ->
+        if (task.name.startsWith("publish")) {
+            boolean e = task.project.publish.enabled
+            if (!e) {
+                println "Not running publish for: " + task.project.name
+                task.enabled = false
+            }
         }
     }
 
-    repositories {
-        maven {
-            url deployUrl
-            credentials {
-                username deployUsername
-                password deployPassword
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+
+        repositories {
+            maven {
+                url deployUrl
+                credentials {
+                    username deployUsername
+                    password deployPassword
+                }
             }
         }
     }
@@ -36,3 +57,5 @@ publishing {
 test {
     useTestNG()
 }
+
+doNotPublish(this)
