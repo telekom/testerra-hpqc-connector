@@ -1,0 +1,4 @@
+rootProject.name = 'testerra-hpqc-connector'
+include 'qc-restclient'
+include 'qc11-connector'
+

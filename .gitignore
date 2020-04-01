@@ -1,0 +1,8 @@
+testerra-report
+.gradle
+gradle
+*.iml
+.idea
+target
+out
+build

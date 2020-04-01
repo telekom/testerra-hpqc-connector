@@ -1,0 +1,38 @@
+group 'eu.tsystems.mms.tic.testerra'
+version '1-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+sourceCompatibility = 1.8
+
+allprojects {
+    dependencies {
+        implementation "eu.tsystems.mms.tic.testerra:surefire-connector:1-SNAPSHOT"
+        //implementation 'commons-codec:commons-codec:1.13'
+    }
+
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url System.getProperty("deployUrl", "none")
+            credentials {
+                username System.getProperty("deployUsername", "none")
+                password System.getProperty("deployPassword", "none")
+            }
+        }
+    }
+}
+
+test {
+    useTestNG()
+}
