@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="2.0">
+	<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		name="Entities">
+		<xs:annotation>
+			<xs:documentation>General entities collection in ALM.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Entity" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="TotalResults" type="xs:int" use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Entity" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+		<xs:annotation>
+			<xs:documentation>An entity in ALM</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Fields">
+					<xs:annotation>
+						<xs:documentation>
+							The collection of fields belong to this entity.
+						</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Field" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>
+										A single field.
+									</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Value" minOccurs="0" maxOccurs="unbounded">
+											<xs:annotation>
+												<xs:documentation>
+													The current value of the field in this
+													entity instance.
+													Multi-value fields contain multi-value
+													elements. Reference
+													fields contain the ReferenceValue
+													attribute.
+												</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute name="ReferenceValue" type="xs:string"
+															use="optional" />
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Name" type="xs:string" use="required">
+										<xs:annotation>
+											<xs:documentation>
+												The field name.
+											</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="Type" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						The entity type, for example, test, test-folder,
+						requirement, defect,
+						etc..
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Field" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+		<xs:annotation>
+			<xs:documentation>
+				An entity field.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="List-Id" type="xs:integer"
+					xmlns:xs="http://www.w3.org/2001/XMLSchema" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>
+							If Verify is true,indicating that the field
+							value must be an
+							element of a list, then List-Id is the ID of the
+							list.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="Label" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						The display label text. Do not use as field
+						identifier. Can be
+						localized.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="Name" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						The field name.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="PhysicalName" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						The field name in the DB.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Fields" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+		<xs:annotation>
+			<xs:documentation>
+				A collection of entity fields.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Field" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Lists" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+		<xs:annotation>
+			<xs:documentation>A collection of lists of strings to be used as
+				field values.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="List" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>
+							A list of strings to be used as field values.
+						</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Name" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>
+										The name of the list.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Id" type="xs:integer">
+								<xs:annotation>
+									<xs:documentation>
+										The record ID of the list in the Lists table.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Items">
+								<xs:annotation>
+									<xs:documentation>
+										A collection of values and folders.
+									</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element ref="Item" minOccurs="0" maxOccurs="unbounded" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Item" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+		<xs:annotation>
+			<xs:documentation>
+				Either an individual value for use in fields, or a
+				folder in a hierarchy
+				of lists.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Item" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="value" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						An individual value. If this item is a list
+						folder, the name of the
+						folder.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

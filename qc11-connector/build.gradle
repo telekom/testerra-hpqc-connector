@@ -1,0 +1,8 @@
+dependencies {
+//    compile project(':common-surefire-connector')
+    compile project(':qc-restclient')
+    testImplementation("eu.tsystems.mms.tic.testerra:driver-ui-desktop:1-SNAPSHOT")
+//    testCompile(driver_ui_desktop) {
+//        changing = true
+//    }
+}
