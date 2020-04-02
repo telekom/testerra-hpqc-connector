@@ -20,11 +20,6 @@ allprojects {
 
     sourceCompatibility = 1.8
 
-    dependencies {
-        implementation "eu.tsystems.mms.tic.testerra:surefire-connector:1-SNAPSHOT"
-        //implementation 'commons-codec:commons-codec:1.13'
-    }
-
     tasks.whenTaskAdded { task ->
         if (task.name.startsWith("publish")) {
             boolean e = task.project.publish.enabled
@@ -44,10 +39,10 @@ allprojects {
 
         repositories {
             maven {
-                url deployUrl
+                url System.getProperty("deployUrl", "none")
                 credentials {
-                    username deployUsername
-                    password deployPassword
+                    username System.getProperty("deployUsername", "none")
+                    password System.getProperty("deployPassword", "none")
                 }
             }
         }

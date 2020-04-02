@@ -1,3 +1,4 @@
 dependencies {
+    implementation "eu.tsystems.mms.tic.testerra:core:1-SNAPSHOT"
     implementation 'commons-codec:commons-codec:1.13'
 }
