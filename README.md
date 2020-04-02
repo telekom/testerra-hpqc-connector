@@ -4,7 +4,12 @@ Allows synchronizing of test results to Quality Center.
 
 ## Usage
 
-_tdb_
+Add to your `build.gradle`
+```groovy
+dependencies {
+    testImplementation 'eu.tsystems.mms.tic.testerra:qc11-connector:1-SNAPSHOT'
+}
+```
 
 ## Publishing
 
