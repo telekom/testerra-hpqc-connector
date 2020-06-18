@@ -21,6 +21,7 @@ package eu.tsystems.mms.tic.testframework.qcconnector.worker;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.execution.testng.worker.MethodWorker;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCPathUtil;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
 import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterSyncUtils;
@@ -36,7 +37,7 @@ import java.lang.reflect.Method;
 /**
  * Created by pele on 19.01.2017.
  */
-public class QualityCenterExecutionFilterWorker extends MethodWorker {
+public class QualityCenterExecutionFilterWorker extends MethodWorker implements Loggable {
 
     @Override
     public void run() {
@@ -67,13 +68,13 @@ public class QualityCenterExecutionFilterWorker extends MethodWorker {
 
             final String[] splittedProps = filterProperty.split(":");
             if (splittedProps.length < 3) {
-                LOGGER.warn("Execution filter has not the expected format: e.g. exclude:status:passed");
+                log().warn("Execution filter has not the expected format: e.g. exclude:status:passed");
                 return true;
             }
 
             String qcTestsetForTestNGResult = QCPathUtil.getQCTestsetForTestNGResult(testResult);
             if (StringUtils.isEmpty(qcTestsetForTestNGResult)) {
-                LOGGER.warn("Execution filter has not found a QC TestSet Path for the test "
+                log().warn("Execution filter has not found a QC TestSet Path for the test "
                         + testResult.getTestName());
                 return true;
             }
@@ -83,7 +84,7 @@ public class QualityCenterExecutionFilterWorker extends MethodWorker {
             TestSetTest testSetTest = QualityCenterSyncUtils.getTestSetTestForAnnotation(clazz, testMethod,
                     testMethod.getName(), testResult);
             if (testSetTest == null) {
-                LOGGER.error("No TestSetTest found in QC for QCTestSet annotation.");
+                log().error("No TestSetTest found in QC for QCTestSet annotation.");
                 return true;
             }
 
