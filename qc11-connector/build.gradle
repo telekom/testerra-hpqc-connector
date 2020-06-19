@@ -1,7 +1,7 @@
 dependencies {
     compile project(':qc-restclient')
-    implementation "eu.tsystems.mms.tic.testerra:surefire-connector:1-SNAPSHOT"
-    testImplementation("eu.tsystems.mms.tic.testerra:driver-ui-desktop:1-SNAPSHOT")
+    implementation "eu.tsystems.mms.tic.testerra:surefire-connector:1.0-RC-2"
+    testImplementation("eu.tsystems.mms.tic.testerra:driver-ui-desktop:1.0-RC-2")
 //    testCompile(driver_ui_desktop) {
 //        changing = true
 //    }

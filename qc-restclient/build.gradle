@@ -1,4 +1,4 @@
 dependencies {
-    implementation "eu.tsystems.mms.tic.testerra:core:1-SNAPSHOT"
+    implementation "eu.tsystems.mms.tic.testerra:core:1.0-RC-2"
     implementation 'commons-codec:commons-codec:1.13'
 }
