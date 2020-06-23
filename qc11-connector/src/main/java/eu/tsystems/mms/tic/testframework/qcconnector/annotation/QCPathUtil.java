@@ -129,7 +129,7 @@ public final class QCPathUtil {
             qcTestset = (QCTestset) annotation;
 
             testSetPath = qcTestset.value();
-            testSetPath = PropertyManager.parser.parseLine(testSetPath);
+            testSetPath = PropertyManager.getPropertiesParser().parseLine(testSetPath);
         }
 
         if (result == null) {
