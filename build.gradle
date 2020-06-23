@@ -1,6 +1,11 @@
-ext {
-    doNotPublish = this.&dnp
+plugins {
+    id "com.jfrog.bintray" version "1.8.5"
 }
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+group 'eu.tsystems.mms.tic.testerra'
 
 def dnp(prj) {
     prj.jar.enabled = true
@@ -8,32 +13,47 @@ def dnp(prj) {
     prj.publishToMavenLocal.enabled = false
 }
 
+project.ext {
+    testerraVersion = '1.+'
+    doNotPublish = this.&dnp
+}
 
-allprojects {
-
-    group 'eu.tsystems.mms.tic.testerra'
-    version '1-SNAPSHOT'
-
+subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
-    apply plugin: 'maven-publish'
+    apply plugin: 'maven-publish' // tasks publish and publishToMavenLocal
+    apply plugin: 'jacoco' // code-coverage
 
-    sourceCompatibility = 1.8
+    // important!
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
 
-    tasks.whenTaskAdded { task ->
-        if (task.name.startsWith("publish")) {
-            boolean e = task.project.publish.enabled
-            if (!e) {
-                println "Not running publish for: " + task.project.name
-                task.enabled = false
-            }
-        }
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    jacoco {
+        toolVersion = "0.8.5"
+    }
+
+    // custom tasks for creating source/javadoc jars
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    // add source jar tasks as artifacts
+    artifacts {
+        archives sourcesJar
     }
 
     publishing {
         publications {
             mavenJava(MavenPublication) {
                 from components.java
+                artifact sourcesJar
             }
         }
 
@@ -47,6 +67,17 @@ allprojects {
             }
         }
     }
+
+    tasks.whenTaskAdded { t ->
+        if (t.name.startsWith("publish")) {
+            boolean e = t.project.publish.enabled
+            if (!e) {
+                println "Not running publish for " + t.project.name
+                t.enabled = false
+            }
+        }
+    }
+
 }
 
 test {
@@ -54,3 +85,12 @@ test {
 }
 
 doNotPublish(this)
+
+task publishToBintray(type: GradleBuild) {
+    tasks = [
+            'qc11-connector:bintrayUpload',
+            'qc-restclient:bintrayUpload'
+    ]
+}
+
+

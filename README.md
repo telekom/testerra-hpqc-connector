@@ -11,19 +11,27 @@ dependencies {
 }
 ```
 
-## Publishing
+## Publication
 
-Create a `gradle.properties` file with the following content.
-```properties
-systemProp.deployUrl=https://example.com
-systemProp.deployUsername=user
-systemProp.deployPassword=password
-```
-and run
-```shell script
-gradle publish
+### ... to a Maven repo
+
+```sh
+gradle <module>:publishToMavenLocal
 ```
 or pass then properties via. CLI
-```shell script
-gradle publish -DdeployUrl=https://example.com -DdeployUsername=user -DdeployPassword=password
+```sh
+gradle <module>:publish -DdeployUrl=<repo-url> -DdeployUsername=<repo-user> -DdeployPassword=<repo-password>
 ```
+
+Set a custom version
+```shell script
+gradle <module>:publish -DmoduleVersion=<version>
+```
+
+### ... to Bintray
+
+Upload and publish this module to Bintray:
+
+````sh
+gradle bintrayUpload -DmoduleVersion=<version> -DBINTRAY_USER=<bintray-user> -DBINTRAY_API_KEY=<bintray-api-key>
+```` 
