@@ -322,7 +322,7 @@ public final class QualityCenterSyncUtils {
                     testname = String.format("%s [%s]", testname, instanceCount);
                 }
 
-                testname = PropertyManager.parser.parseLine(testname);
+                testname = PropertyManager.getPropertiesParser().parseLine(testname);
                 LOGGER.debug(String.format("Found QCTestname annotation with value %s for method %s", testname, methodName));
             }
         }
