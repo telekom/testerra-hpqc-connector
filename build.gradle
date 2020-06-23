@@ -24,19 +24,8 @@ subprojects {
     apply plugin: 'maven-publish' // tasks publish and publishToMavenLocal
     apply plugin: 'jacoco' // code-coverage
 
-    // important!
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-    }
-
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-
-    jacoco {
-        toolVersion = "0.8.5"
-    }
 
     // custom tasks for creating source/javadoc jars
     task sourcesJar(type: Jar, dependsOn: classes) {
