@@ -1,8 +1,9 @@
 dependencies {
     compile project(':qc-restclient')
-    implementation "eu.tsystems.mms.tic.testerra:surefire-connector:1-SNAPSHOT"
-    testImplementation("eu.tsystems.mms.tic.testerra:driver-ui-desktop:1-SNAPSHOT")
-//    testCompile(driver_ui_desktop) {
-//        changing = true
-//    }
+    implementation "eu.tsystems.mms.tic.testerra:surefire-connector:" + testerraVersion
+    testImplementation("eu.tsystems.mms.tic.testerra:driver-ui-desktop:" + testerraVersion)
 }
+
+apply from: rootProject.file('release-bintray.gradle')
+
+version moduleVersion
