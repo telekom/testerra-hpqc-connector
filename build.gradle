@@ -1,61 +1,41 @@
 plugins {
     id "com.jfrog.bintray" version "1.8.5"
 }
+
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-group 'eu.tsystems.mms.tic.testerra'
+
+apply from: rootProject.file('release-bintray.gradle')
+
+ext {
+    doNotPublish = this.&dnp
+
+    testerraVersion = '[1.0-RC,2.0)'
+    moduleVersion = '1-SNAPSHOT'
+    if (System.properties.containsKey('moduleVersion')) {
+        moduleVersion = System.getProperty('moduleVersion')
+    }
+}
 
 def dnp(prj) {
+    // Add `doNotPublish(this)` to module's build.gradle if no publishing is needed
     prj.jar.enabled = true
     prj.publish.enabled = false
     prj.publishToMavenLocal.enabled = false
+    println("Do not publish JAR from " + prj)
 }
 
-project.ext {
-    testerraVersion = '1.+'
-    doNotPublish = this.&dnp
+allprojects {
+    group 'eu.tsystems.mms.tic.testerra'
+    version moduleVersion
 }
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'maven-publish' // tasks publish and publishToMavenLocal
-    apply plugin: 'jacoco' // code-coverage
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-
-    // custom tasks for creating source/javadoc jars
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    // add source jar tasks as artifacts
-    artifacts {
-        archives sourcesJar
-    }
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-                artifact sourcesJar
-            }
-        }
-
-        repositories {
-            maven {
-                url System.getProperty("deployUrl", "none")
-                credentials {
-                    username System.getProperty("deployUsername", "none")
-                    password System.getProperty("deployPassword", "none")
-                }
-            }
-        }
-    }
 
     tasks.whenTaskAdded { t ->
         if (t.name.startsWith("publish")) {
@@ -67,13 +47,10 @@ subprojects {
         }
     }
 
+    test {
+        useTestNG()
+    }
 }
-
-test {
-    useTestNG()
-}
-
-doNotPublish(this)
 
 task publishToBintray(type: GradleBuild) {
     tasks = [
