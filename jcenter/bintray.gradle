@@ -38,31 +38,31 @@ subprojects {
         }
     }
 
-    bintray {
-        user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getProperty('BINTRAY_USER')
-        key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getProperty('BINTRAY_API_KEY')
-
-        configurations = ['archives']
-        publish = true //If version should be auto published after an upload
-//  dryRun = false //Whether to run this as dry-run, without deploying
-        pkg {
-            repo = bintrayRepo
-            name = bintrayName
-            desc = libraryDescription
-
-            websiteUrl = siteUrl
-            vcsUrl = gitUrl
-            issueTrackerUrl = issueUrl
-            licenses = allLicenses
-            labels = ['testerra', 'java', 'selenium', 'testng', 'test', 'testautomation', 'framework']
-            publicDownloadNumbers = true
-            version {
-                desc = libraryDescription
-            }
-        }
-    }
-
     bintrayUpload.dependsOn assemble
     bintrayUpload.dependsOn sourcesJar
+}
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getProperty('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getProperty('BINTRAY_API_KEY')
+
+    configurations = ['archives']
+    publish = true //If version should be auto published after an upload
+//  dryRun = false //Whether to run this as dry-run, without deploying
+    pkg {
+        repo = bintrayRepo
+        name = bintrayName
+        desc = libraryDescription
+
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        issueTrackerUrl = issueUrl
+        licenses = allLicenses
+        labels = ['testerra', 'java', 'selenium', 'testng', 'test', 'testautomation', 'framework']
+        publicDownloadNumbers = true
+        version {
+            desc = libraryDescription
+        }
+    }
 }
 
