@@ -3,4 +3,4 @@ dependencies {
     implementation 'commons-codec:commons-codec:1.13'
 }
 
-//apply from: rootProject.file('release-bintray.gradle')
+apply from: rootProject.file('release-bintray.gradle')
