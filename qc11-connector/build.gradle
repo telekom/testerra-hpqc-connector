@@ -4,4 +4,4 @@ dependencies {
     testImplementation("eu.tsystems.mms.tic.testerra:driver-ui-desktop:" + testerraVersion)
 }
 
-//apply from: rootProject.file('release-bintray.gradle')
+apply from: rootProject.file('release-bintray.gradle')
