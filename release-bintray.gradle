@@ -2,35 +2,30 @@
  * Bintray release configuration
  * */
 ext {
-  bintrayRepo = 'Testerra'
-  bintrayName = "eu.tsystems.mms.tic.testerra:${project.getName()}"
+    bintrayRepo = 'Testerra'
+    bintrayName = "eu.tsystems.mms.tic.testerra:${project.getName()}"
 
-  publishedGroupId = 'eu.tsystems.mms.tic.testerra'
-  libraryName = 'Testerra'
-  artifact = project.getName()
-  packagingType = 'jar'
+    publishedGroupId = 'eu.tsystems.mms.tic.testerra'
+    libraryName = 'Testerra'
+    artifact = project.getName()
+    packagingType = 'jar'
 
-  libraryDescription = "Testerra ${project.getName()} module"
+    libraryDescription = "Testerra ${project.getName()} module"
 
-  siteUrl = 'https://testerra.io'
-  gitUrl = 'https://github.com/telekom/testerra.git'
-  issueUrl = 'https://github.com/telekom/testerra/issues'
+    siteUrl = 'https://testerra.io'
+    gitUrl = 'https://github.com/telekom/testerra.git'
+    issueUrl = 'https://github.com/telekom/testerra/issues'
 
-  libraryVersion = project.getVersion()
+    libraryVersion = project.getVersion()
 
-  developerId = 'MMS'
-  developerName = 'Testerra Team T-Systems MMS'
-  developerEmail = 'dev@testerra.io'
+    developerId = 'MMS'
+    developerName = 'Testerra Team T-Systems MMS'
+    developerEmail = 'dev@testerra.io'
 
-  licenseName = 'The Apache Software License, Version 2.0'
-  licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-  allLicenses = ["Apache-2.0"]
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
 
-  // Default version
-  moduleVersion = '1-SNAPSHOT'
-  if (System.properties.containsKey('moduleVersion')) {
-    moduleVersion = System.getProperty('moduleVersion')
-  }
 }
 
 // Set up the Maven publication.
