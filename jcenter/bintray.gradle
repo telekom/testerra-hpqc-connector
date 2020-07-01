@@ -1,0 +1,68 @@
+apply plugin: 'com.jfrog.bintray'
+
+version = libraryVersion
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+    apply plugin: 'jacoco' // code-coverage
+
+    publishing {
+
+        task sourcesJar(type: Jar, dependsOn: classes) {
+            archiveClassifier.set('sources')
+            from sourceSets.main.allSource
+        }
+
+        artifacts {
+            archives sourcesJar
+        }
+
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact sourcesJar
+            }
+        }
+
+        repositories {
+            maven {
+                url System.getProperty("deployUrl", "none")
+                credentials {
+                    username System.getProperty("deployUsername", "none")
+                    password System.getProperty("deployPassword", "none")
+                }
+            }
+        }
+    }
+
+    bintrayUpload.dependsOn assemble
+    bintrayUpload.dependsOn sourcesJar
+}
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getProperty('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getProperty('BINTRAY_API_KEY')
+
+    configurations = ['archives']
+    publish = true //If version should be auto published after an upload
+//  dryRun = false //Whether to run this as dry-run, without deploying
+    pkg {
+        repo = bintrayRepo
+        name = bintrayName
+        desc = libraryDescription
+
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        issueTrackerUrl = issueUrl
+        licenses = allLicenses
+        labels = ['testerra', 'java', 'selenium', 'testng', 'test', 'testautomation', 'framework']
+        publicDownloadNumbers = true
+        version {
+            desc = libraryDescription
+        }
+    }
+}
+
