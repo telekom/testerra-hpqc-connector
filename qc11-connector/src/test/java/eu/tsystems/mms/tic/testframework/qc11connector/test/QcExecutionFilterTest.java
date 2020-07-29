@@ -14,10 +14,9 @@ import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestUnderTest;
 import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterSyncUtils;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
+import java.util.LinkedList;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.LinkedList;
 
 /**
  * Test exectuion filter property.
@@ -32,7 +31,7 @@ public class QcExecutionFilterTest extends AbstractQcTest {
     @Test
     public void testExecutionFilterSyncType3() {
 
-        System.setProperty(QCProperties.QCEXECUTIONFILTER, "exclude:status:failed");
+        System.setProperty(QCProperties.EXECUTION_FILTER, "exclude:status:failed");
         String testSetPath = QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME;
         LinkedList<Class<?>> classesContainingTestsUnderTest = new LinkedList<Class<?>>();
         classesContainingTestsUnderTest.add(CorrectClassAnnotationTest.class);
