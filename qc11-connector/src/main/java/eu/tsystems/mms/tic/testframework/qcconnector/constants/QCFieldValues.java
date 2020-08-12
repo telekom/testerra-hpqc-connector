@@ -5,15 +5,15 @@
  * Riesaer Str. 5, 01129 Dresden
  * All rights reserved.
  */
+
 package eu.tsystems.mms.tic.testframework.qcconnector.constants;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Holds values for QC entity fields, that are read when the entity is synchronized. Only applies to TestRun at the
@@ -83,8 +83,7 @@ public final class QCFieldValues {
         final Map<String, String> outMap = new HashMap<String, String>();
 
         PropertyManager.loadProperties("qcconnection.properties");
-        final String mappingsString = PropertyManager.getProperty(QCProperties.QCFIELDMAPPING,
-                PropertyManager.getProperty("field.mapping.testrun"));
+        final String mappingsString = PropertyManager.getProperty(QCProperties.QC_FIELD_MAPPING);
         if (mappingsString == null || mappingsString.isEmpty()) {
             return outMap;
         }
@@ -94,7 +93,7 @@ public final class QCFieldValues {
             if (labelName.length == 2) {
                 outMap.put(labelName[0].trim(), labelName[1].trim());
             } else {
-                LOGGER.warn("Wrong format in Property " + QCProperties.QCFIELDMAPPING + ": " + mapping);
+                LOGGER.warn("Wrong format in Property " + QCProperties.QC_FIELD_MAPPING + ": " + mapping);
             }
         }
         return outMap;
@@ -104,7 +103,6 @@ public final class QCFieldValues {
      * Gets the internal field name for the label based on the mapping in qcconnection.properties.
      *
      * @param label Label to get name from.
-     *
      * @return QC Name of the field according to mapping.
      */
     public static String getFieldNameForLabel(final String label) {

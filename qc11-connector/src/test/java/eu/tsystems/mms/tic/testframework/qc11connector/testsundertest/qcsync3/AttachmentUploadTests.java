@@ -12,14 +12,13 @@ import eu.tsystems.mms.tic.testframework.qc11connector.util.TestNgTestMethods;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
+import java.lang.reflect.Method;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
-
-import java.lang.reflect.Method;
 
 /**
  * Test used to verify their screenshots or screencasts are uploaded.
@@ -35,12 +34,8 @@ public class AttachmentUploadTests {
      */
     @BeforeMethod
     public void before(final Method method) {
-        System.clearProperty(QCProperties.QCUPLOADAUTOSCREENSHOT);
-        System.clearProperty(QCProperties.QCUPLOADAUTOSCREENHOTOLD);
-        System.clearProperty(QCProperties.QCUPLOADSCREENCAST);
-        System.clearProperty(QCProperties.QCUPLOADSCREENCASTPASSED);
-        System.clearProperty(QCProperties.QCUPLOADSCREENSHOTSPASSED);
-        System.clearProperty(QCProperties.QCUPLOADSCREENSHOTS);
+        System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_PASSED);
+        System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED);
         System.clearProperty(TesterraProperties.SCREENCASTER_ACTIVE);
         if (!method.getName().contains("Screenshot")) {
             final FirefoxProfile profile = new FirefoxProfile();
@@ -54,12 +49,8 @@ public class AttachmentUploadTests {
      */
     @AfterTest
     public void afterTest() {
-        System.clearProperty(QCProperties.QCUPLOADAUTOSCREENSHOT);
-        System.clearProperty(QCProperties.QCUPLOADAUTOSCREENHOTOLD);
-        System.clearProperty(QCProperties.QCUPLOADSCREENCAST);
-        System.clearProperty(QCProperties.QCUPLOADSCREENCASTPASSED);
-        System.clearProperty(QCProperties.QCUPLOADSCREENSHOTSPASSED);
-        System.clearProperty(QCProperties.QCUPLOADSCREENSHOTS);
+        System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_PASSED);
+        System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED);
     }
 
     /**
@@ -67,7 +58,7 @@ public class AttachmentUploadTests {
      */
     @org.testng.annotations.Test
     public void testScreenshotUploadAllPassed() {
-        System.setProperty(QCProperties.QCUPLOADSCREENSHOTSPASSED, "true");
+        System.setProperty(QCProperties.UPLOAD_SCREENSHOTS_PASSED, "true");
         final WebDriver driver = WebDriverManager.getWebDriver();
         UITestUtils.takeScreenshot(driver, false);
         UITestUtils.takeScreenshot(driver, false);
@@ -79,7 +70,7 @@ public class AttachmentUploadTests {
      */
     @org.testng.annotations.Test
     public void testScreenshotUploadAllFailed() {
-        System.setProperty(QCProperties.QCUPLOADSCREENSHOTS, "true");
+        System.setProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED, "true");
         final WebDriver driver = WebDriverManager.getWebDriver();
         UITestUtils.takeScreenshot(driver, false);
         Assert.fail();
@@ -100,7 +91,6 @@ public class AttachmentUploadTests {
      */
     @org.testng.annotations.Test
     public void testScreencastUploadFailed() {
-        System.setProperty(QCProperties.QCUPLOADAUTOSCREENSHOT, "false");
         TestNgTestMethods.failingWebDriverTest();
         Assert.fail();
     }
@@ -110,8 +100,6 @@ public class AttachmentUploadTests {
      */
     @org.testng.annotations.Test
     public void testScreenshotUploadFallback() {
-        System.setProperty(QCProperties.QCUPLOADAUTOSCREENSHOT, "false");
-        System.setProperty(QCProperties.QCUPLOADAUTOSCREENHOTOLD, "true");
         TestNgTestMethods.failingWebDriverTest();
     }
 
@@ -120,7 +108,6 @@ public class AttachmentUploadTests {
      */
     @org.testng.annotations.Test
     public void testAttachmentUploadNone() {
-        System.setProperty(QCProperties.QCUPLOADAUTOSCREENSHOT, "false");
         System.setProperty(QCProperties.QCUPLOADSCREENCAST, "false");
         TestNgTestMethods.failingWebDriverTest();
     }

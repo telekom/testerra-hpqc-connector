@@ -5,11 +5,13 @@
  * Riesaer Str. 5, 01129 Dresden
  * All rights reserved.
  */
+
 package eu.tsystems.mms.tic.testframework.qcconnector.provider;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.connectors.util.AbstractCommonProvider;
 import eu.tsystems.mms.tic.testframework.connectors.util.SyncType;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
 import org.apache.maven.surefire.providerapi.ProviderParameters;
 import org.slf4j.Logger;
@@ -32,7 +34,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author sepr, mibu, mrgi
  */
-public class QualityCenterSurefireProvider extends AbstractCommonProvider {
+public class QualityCenterSurefireProvider extends AbstractCommonProvider implements Loggable {
 
     /**
      * The logger.
@@ -64,12 +66,9 @@ public class QualityCenterSurefireProvider extends AbstractCommonProvider {
 
         PropertyManager.loadProperties(getPropertiesFile());
         syncType = SyncType.ANNOTATION;
-
-        packageName = PropertyManager.getProperty(QCProperties.TESTPACKAGE, PropertyManager.getProperty("package", "."));
-        syncToProvider = PropertyManager.getBooleanProperty(QCProperties.SYNCACTIVATED, PropertyManager.getBooleanProperty("syncToQC", false));
-
-        LOG.info("Using qc.connection.project: " + PropertyManager.getProperty(QCProperties.PROJECT, PropertyManager.getProperty("project")));
-        LOG.info("Using user name: " + PropertyManager.getProperty(QCProperties.USER, PropertyManager.getProperty("user")));
+        syncToProvider = PropertyManager.getBooleanProperty(QCProperties.SYNC_ACTIVE, false);
+        log().info("Using qc.connection.project: " + PropertyManager.getProperty(QCProperties.PROJECT, PropertyManager.getProperty("project")));
+        log().info("Using user name: " + PropertyManager.getProperty(QCProperties.USER, PropertyManager.getProperty("user")));
     }
 
     @Override

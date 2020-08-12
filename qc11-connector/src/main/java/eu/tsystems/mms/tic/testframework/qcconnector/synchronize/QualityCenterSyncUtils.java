@@ -5,6 +5,7 @@
  * Riesaer Str. 5, 01129 Dresden
  * All rights reserved.
  */
+
 package eu.tsystems.mms.tic.testframework.qcconnector.synchronize;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
@@ -26,12 +27,6 @@ import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSet;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestname;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.ITestResult;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,6 +39,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.ITestResult;
 
 /**
  * A helper class containing methods for Synchronizer.
@@ -99,9 +99,7 @@ public final class QualityCenterSyncUtils {
      * @param methodName Name of testMethod.
      * @param run        RunWrapper for TestRun.
      * @param result     result containing testParameters
-     *
      * @return Id of added run or 0 if it could not be added.
-     *
      * @throws TesterraQcResultSyncException sync error
      */
     public static int syncWithSyncType3(final Class<?> clazz, final Method method, final String methodName,
@@ -119,7 +117,6 @@ public final class QualityCenterSyncUtils {
      *
      * @param test The TestSetTest.
      * @param run  The TestRun.
-     *
      * @return Id of added run or 0 if it could not be added.
      */
     private static int addTestRunToTestSet(final TestSetTest test, final TestRun run) {
@@ -169,7 +166,6 @@ public final class QualityCenterSyncUtils {
      * @param methodName The name of the Testmethod.
      * @param run        The TestRun.
      * @param result     result containing testParameters
-     *
      * @return Id of added run or 0 if it could not be added.
      */
     private static int readAnnotationAndSync(final Class<?> clazz, final Method method, final String methodName,
@@ -196,7 +192,6 @@ public final class QualityCenterSyncUtils {
      * @param method     Test method
      * @param methodName Method name.
      * @param result     TestResult.
-     *
      * @return QC TestSetTest
      */
     public static TestSetTest getTestSetTestForAnnotation(final Class<?> clazz, final Method method,
@@ -221,7 +216,8 @@ public final class QualityCenterSyncUtils {
                     qcTestName = qcTestNameAnnotation;
                 }
 
-                LOGGER.info("Looking up TestSetTest " + testSetPath + " - " + qcTestName + "\nfor Test: " + result.getTestClass().getRealClass().getSimpleName() + "#" + result.getName());
+                LOGGER.info("Looking up TestSetTest " + testSetPath + " - " + qcTestName + "\nfor Test: " +
+                        result.getTestClass().getRealClass().getSimpleName() + "#" + result.getName());
                 TestSet testSet = QcRestClient.getTestSet(testSetName, testSetFolder);
                 if (testSet != null) {
                     if (!testSetCache.containsKey(testSet)) {
@@ -355,7 +351,6 @@ public final class QualityCenterSyncUtils {
      * Gets the script specified by the user field for the given test.
      *
      * @param test The test set test containing the script name.
-     *
      * @return The script name of the unit test method associated with the given test.
      */
     public static String getScriptname(final TestSetTest test) {
@@ -385,7 +380,8 @@ public final class QualityCenterSyncUtils {
         String path = null;
 
         if (testSetTest != null) {
-            path = testSetTest.getTestSet().getTestSetFolder().getPath() + "\\" + testSetTest.getTestSet().getName() + "\\" + testSetTest.getTest().getName();
+            path = testSetTest.getTestSet().getTestSetFolder().getPath() + "\\" + testSetTest.getTestSet().getName() + "\\" +
+                    testSetTest.getTest().getName();
         }
 
         TMInfoContainer.savePath(method.getDeclaringClass().getName(), method.getName(), path);
@@ -395,7 +391,6 @@ public final class QualityCenterSyncUtils {
      * Check TestSetTest against execution filter.
      *
      * @param testSetTest testSetTest to verify
-     *
      * @return true if test should be executed, false otherwise.
      */
     public static boolean matchesExecutionFilter(final TestSetTest testSetTest) {
@@ -406,11 +401,11 @@ public final class QualityCenterSyncUtils {
      * Check TestSetTest against execution filter.
      *
      * @param testSetTest testSetTest to verify
-     *
      * @return true if test should be executed, false otherwise.
      */
     private static boolean pMatchesExecutionFilter(final TestSetTest testSetTest) {
-        final String filterProperty = PropertyManager.getProperty(QCProperties.QCEXECUTIONFILTER, null);
+
+        final String filterProperty = PropertyManager.getProperty(QCProperties.EXECUTION_FILTER, null);
         if (StringUtils.isEmpty(filterProperty)) {
             return true;
         }
@@ -486,7 +481,6 @@ public final class QualityCenterSyncUtils {
      * gets test result
      *
      * @param result TestResult
-     *
      * @return List of screenshots and screencasts to upload.
      */
     public static List<File> getTestAttachments(ITestResult result) {
@@ -525,7 +519,6 @@ public final class QualityCenterSyncUtils {
 
     /**
      * @param result TestResult
-     *
      * @return List of screenshots and screencasts.
      */
     private static List<File> pGetTestAttachments(ITestResult result) {
@@ -576,27 +569,22 @@ public final class QualityCenterSyncUtils {
      * Check upload properties to get to know, if Screenshots should be uploaded.
      *
      * @param testPassed Is the test passed?
-     *
      * @return True if screenshot upload is desired.
      */
     private static QualityCenterSyncUtils.UploadType uploadScreenshotDesired(final boolean testPassed) {
 
-        if (PropertyManager.getBooleanProperty(QCProperties.QCUPLOADSCREENSHOTSOFF, false)) {
+        if (PropertyManager.getBooleanProperty(QCProperties.UPLOAD_SCREENSHOTS_OFF, false)) {
             return QualityCenterSyncUtils.UploadType.NONE;
         } else {
             if (testPassed) {
-                if (PropertyManager.getBooleanProperty(QCProperties.QCUPLOADSCREENSHOTSPASSED, false)) {
+                if (PropertyManager.getBooleanProperty(QCProperties.UPLOAD_SCREENSHOTS_PASSED, false)) {
                     return QualityCenterSyncUtils.UploadType.ALL;
                 } else {
                     return QualityCenterSyncUtils.UploadType.NONE;
                 }
             } else {
-                if (PropertyManager.getBooleanProperty(QCProperties.QCUPLOADSCREENSHOTS, false)) {
+                if (PropertyManager.getBooleanProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED, false)) {
                     return QualityCenterSyncUtils.UploadType.ALL;
-                } else if (PropertyManager.getBooleanProperty(QCProperties.QCUPLOADAUTOSCREENSHOT, false)) {
-                    return QualityCenterSyncUtils.UploadType.AUTOMATIC;
-                } else if (PropertyManager.getBooleanProperty(QCProperties.QCUPLOADAUTOSCREENHOTOLD, false)) {
-                    return QualityCenterSyncUtils.UploadType.AUTOMATIC;
                 } else {
                     return QualityCenterSyncUtils.UploadType.NONE;
                 }
@@ -605,16 +593,17 @@ public final class QualityCenterSyncUtils {
     }
 
     private static boolean uploadVideosDesired(final boolean testPassed) {
-        boolean videoSyncActive = PropertyManager.getBooleanProperty(QCProperties.QC_UPLOAD_VIDEOS, false);
+
+        boolean videoSyncActive = PropertyManager.getBooleanProperty(QCProperties.UPLOAD_VIDEOS, false);
         if (!videoSyncActive) {
             return false;
         }
 
-        if (testPassed && PropertyManager.getBooleanProperty(QCProperties.QC_UPLOAD_VIDEOS_SUCCESS, true)) {
+        if (testPassed && PropertyManager.getBooleanProperty(QCProperties.UPLOAD_VIDEOS_SUCCESS, true)) {
             return true;
         }
 
-        if (!testPassed && PropertyManager.getBooleanProperty(QCProperties.QC_UPLOAD_VIDEOS_FAILED, true)) {
+        if (!testPassed && PropertyManager.getBooleanProperty(QCProperties.UPLOAD_VIDEOS_FAILED, true)) {
             return true;
         }
 
@@ -638,7 +627,6 @@ public final class QualityCenterSyncUtils {
      * @param testInstanceName name of test to create run for
      * @param status           Status of test
      * @param attachments      List of possible attchments
-     *
      * @return true if run could be synced.
      */
     public static boolean syncTestRun(final String qcPath, final String testInstanceName, final String status,
@@ -653,7 +641,6 @@ public final class QualityCenterSyncUtils {
      * @param testInstanceName name of test to create run for
      * @param status           Status of test
      * @param attachments      List of possible attchments
-     *
      * @return true if run could be synced.
      */
     private static boolean pSyncTestRun(final String qcPath, final String testInstanceName, final String status, List<File> attachments) {
@@ -687,7 +674,6 @@ public final class QualityCenterSyncUtils {
      * @param testInstanceName name of test to create run for
      * @param status           Status of test
      * @param attachments      List of possible attchments
-     *
      * @return A TestRun instance.
      */
     private static TestRun createTestRun(final String testInstanceName, final String status, List<File> attachments) {
@@ -732,6 +718,9 @@ public final class QualityCenterSyncUtils {
         /**
          * Different types
          */
-        NONE, ALL, AUTOMATIC;
+        NONE,
+        ALL,
+        @Deprecated
+        AUTOMATIC;
     }
 }

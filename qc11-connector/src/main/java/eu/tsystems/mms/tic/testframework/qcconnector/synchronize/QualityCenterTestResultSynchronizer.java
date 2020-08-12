@@ -18,17 +18,16 @@ import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.Attachment;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.ITestResult;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.ITestResult;
 
 /**
  * A helper class for Quality Center. Automatically handles the test run result synchronization by listening to the
@@ -71,7 +70,7 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
         try {
 
             PropertyManager.loadProperties("qcconnection.properties");
-            isSyncActive = PropertyManager.getBooleanProperty(QCProperties.SYNCACTIVATED, true);
+            isSyncActive = PropertyManager.getBooleanProperty(QCProperties.SYNC_ACTIVE, true);
 
             if (!isSyncActive) {
                 LOGGER.info("QC Synchronization turned off.");
