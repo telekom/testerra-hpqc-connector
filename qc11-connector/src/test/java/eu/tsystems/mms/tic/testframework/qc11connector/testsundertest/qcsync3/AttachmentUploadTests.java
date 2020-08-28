@@ -108,7 +108,7 @@ public class AttachmentUploadTests {
      */
     @org.testng.annotations.Test
     public void testAttachmentUploadNone() {
-        System.setProperty(QCProperties.QCUPLOADSCREENCAST, "false");
+        System.setProperty(QCProperties.UPLOAD_VIDEOS, "false");
         TestNgTestMethods.failingWebDriverTest();
     }
 }
