@@ -28,12 +28,11 @@ import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
 import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterSyncUtils;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
+import java.lang.reflect.Method;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.IInvokedMethod;
 import org.testng.ITestResult;
 import org.testng.SkipException;
-
-import java.lang.reflect.Method;
 
 /**
  * Created by pele on 19.01.2017.
@@ -61,7 +60,7 @@ public class QualityCenterExecutionFilterWorker implements Loggable, MethodEndEv
      */
     private boolean checkExecutionFilter(ITestResult testResult, IInvokedMethod method) {
 
-        final String filterProperty = PropertyManager.getProperty(QCProperties.QCEXECUTIONFILTER, null);
+        final String filterProperty = PropertyManager.getProperty(QCProperties.EXECUTION_FILTER, null);
         if (StringUtils.isEmpty(filterProperty)) {
             return true;
         }
