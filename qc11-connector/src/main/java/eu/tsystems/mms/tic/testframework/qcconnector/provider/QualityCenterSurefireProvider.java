@@ -65,7 +65,7 @@ public class QualityCenterSurefireProvider extends AbstractCommonProvider {
         PropertyManager.loadProperties(getPropertiesFile());
         syncType = SyncType.ANNOTATION;
 
-        packageName = PropertyManager.getProperty(QCProperties.TESTPACKAGE, PropertyManager.getProperty("package", "."));
+        //packageName = PropertyManager.getProperty(QCProperties.TESTPACKAGE, PropertyManager.getProperty("package", "."));
         syncToProvider = PropertyManager.getBooleanProperty(QCProperties.SYNCACTIVATED, PropertyManager.getBooleanProperty("syncToQC", false));
 
         LOG.info("Using qc.connection.project: " + PropertyManager.getProperty(QCProperties.PROJECT, PropertyManager.getProperty("project")));
