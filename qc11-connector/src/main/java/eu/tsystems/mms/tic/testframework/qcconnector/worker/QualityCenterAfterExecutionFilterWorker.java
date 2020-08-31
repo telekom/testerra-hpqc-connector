@@ -19,26 +19,29 @@
  */
 package eu.tsystems.mms.tic.testframework.qcconnector.worker;
 
+import com.google.common.eventbus.Subscribe;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.events.MethodEndEvent;
 import eu.tsystems.mms.tic.testframework.execution.testng.worker.MethodWorker;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
 
 /**
  * Created by pele on 19.01.2017.
  */
-public class QualityCenterAfterExecutionFilterWorker extends MethodWorker {
+public class QualityCenterAfterExecutionFilterWorker implements MethodEndEvent.Listener {
 
     @Override
-    public void run() {
+    @Subscribe
+    public void onMethodEnd(MethodEndEvent event) {
 
-        if (isTest()) {
-            final Throwable throwable = testResult.getThrowable();
-            if (isSkipped()
+        if (event.getTestMethod().isTest()) {
+            final Throwable throwable = event.getTestResult().getThrowable();
+            if (event.isSkipped()
                     && throwable != null
                     && throwable.getMessage() != null
                     && throwable.getMessage().contains(ErrorMessages.skippedByQcExecutionFilter())) {
                 String filter = PropertyManager.getProperty("qc.test.execution.filter", "");
-                methodContext.addPriorityMessage("Test didn't run. It has been filtered by your qc execution filter settings."
+                event.getMethodContext().addPriorityMessage("Test didn't run. It has been filtered by your qc execution filter settings."
                         + filter);
             }
         }

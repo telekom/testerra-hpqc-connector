@@ -19,8 +19,9 @@
  */
 package eu.tsystems.mms.tic.testframework.qcconnector.worker;
 
+import com.google.common.eventbus.Subscribe;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.execution.testng.worker.MethodWorker;
+import eu.tsystems.mms.tic.testframework.events.MethodEndEvent;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCPathUtil;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
@@ -37,13 +38,14 @@ import java.lang.reflect.Method;
 /**
  * Created by pele on 19.01.2017.
  */
-public class QualityCenterExecutionFilterWorker extends MethodWorker implements Loggable {
+public class QualityCenterExecutionFilterWorker implements Loggable, MethodEndEvent.Listener {
 
     @Override
-    public void run() {
+    @Subscribe
+    public void onMethodEnd(MethodEndEvent event) {
 
-        if (isTest()) {
-            if (!this.checkExecutionFilter(this.testResult, this.invokedMethod)) {
+        if (event.getTestMethod().isTest()) {
+            if (!this.checkExecutionFilter(event.getTestResult(), event.getInvokedMethod())) {
                 throw new SkipException(ErrorMessages.skippedByQcExecutionFilter());
             }
         }
