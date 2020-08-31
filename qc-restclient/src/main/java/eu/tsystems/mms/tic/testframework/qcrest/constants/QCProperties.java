@@ -24,6 +24,7 @@
  * Riesaer Str. 5, 01129 Dresden
  * All rights reserved.
  */
+
 package eu.tsystems.mms.tic.testframework.qcrest.constants;
 
 /**
@@ -34,9 +35,10 @@ package eu.tsystems.mms.tic.testframework.qcrest.constants;
 public final class QCProperties {
 
     /**
-     * Property to set url of the qc webservice
+     * Enable Synchronization
      */
-    public static final String WEBSERVICEURL = "qc.webserviceURL";
+    public static final String SYNC_ACTIVE = "qc.sync.active";
+
 
     /**
      * Property to set qc server to synchronize
@@ -64,92 +66,49 @@ public final class QCProperties {
     public static final String PASSWORD = "qc.connection.password";
 
     /**
+     * Property to set used qc server version.
+     */
+    public static final String VERSION = "qc.version";
+
+    /**
      * Mapping of field labels and internal names in qcconnection.properties
      */
-    public static final String QCFIELDMAPPING = "qc.field.mapping.testrun";
+    public static final String QC_FIELD_MAPPING = "qc.field.mapping.testrun";
 
-    /**
-     * Property to set the file which contains QC TestSets to run. File should be in resources.
-     */
-    public static final String TESTSETSTORUNFILE = "qc.testSetsToRunFile";
-
-    /**
-     * Property Key to set the sync type of the qcconnector.
-     */
-    public static final String SYNCTYPE = "qc.syncType";
-
-    /**
-     * Property Key for package where qcconnector looks for tests.
-     */
-    public static final String TESTPACKAGE = "qc.test.package";
-
-    /**
-     * Property Key for timeout of webservice requests
-     */
-    public static final String WEBSERVICETIMEOUT = "qc.webservice.timeout";
-
-    /**
-     * Property Key for timeout of webservice requests
-     */
-    public static final String SYNCACTIVATED = "qc.syncActive";
-
-    /**
-     * Property for ta_scriptname field, when qc.syncType=2
-     */
-    public static final String SCRIPTNAMEFIELD = "qc.scriptnameField";
-
-    // TODO überarbeiten:
     /**
      * QC upload screenshots global off.
      */
-    public static final String QCUPLOADSCREENSHOTSOFF = "qc.upload.screenshots.off";
+    public static final String UPLOAD_SCREENSHOTS_OFF = "qc.upload.screenshots.off";
+
     /**
-     * Deprecated property indicating upload of automatic screenshots
+     * Upload all screenshots on test failure
      */
-    public static final String QCUPLOADAUTOSCREENHOTOLD = "uploadAutomaticScreenshot";
+    public static final String UPLOAD_SCREENSHOTS_FAILED = "qc.test.failed.upload.screenshots";
+
     /**
-     * Property indicating to upload automatic screenshots to qc on failed tests
+     * Upload all screenshots on test success
      */
-    public static final String QCUPLOADAUTOSCREENSHOT = "qc.test.failed.upload.automatic.screenshot";
-    /**
-     * Property indicating to upload all screenshots to qc on failed tests
-     */
-    public static final String QCUPLOADSCREENSHOTS = "qc.test.failed.upload.screenshots";
-    // TODO überarbeiten:
-    /**
-     * Property indicating to upload screencast to qc
-     */
-    public static final String QCUPLOADSCREENCAST = "qc.test.failed.upload.screencast";
-    /**
-     * Property indicating to upload automatic screenshots to qc on passed Tests
-     */
-    public static final String QCUPLOADSCREENSHOTSPASSED = "qc.test.passed.upload.screenshots";
-    /**
-     * Property indicating to upload all screenshots to qc on passed Tests
-     */
-    public static final String QCUPLOADSCREENCASTPASSED = "qc.test.passed.upload.screencast";
+    public static final String UPLOAD_SCREENSHOTS_PASSED = "qc.test.passed.upload.screenshots";
 
     /**
      * Property indicating to upload screencast video to qc
      */
-    public static final String QC_UPLOAD_VIDEOS = "qc.upload.videos";
+    public static final String UPLOAD_VIDEOS = "qc.upload.videos";
+
     /**
      * Property indicating to upload screencast video to qc on failed Tests
      */
-    public static final String QC_UPLOAD_VIDEOS_FAILED = "qc.test.failed.upload.videos";
+    public static final String UPLOAD_VIDEOS_FAILED = "qc.test.failed.upload.videos";
+
     /**
      * Property indicating to upload screencast video to qc on passed Tests
      */
-    public static final String QC_UPLOAD_VIDEOS_SUCCESS = "qc.test.passed.upload.videos";
+    public static final String UPLOAD_VIDEOS_SUCCESS = "qc.test.passed.upload.videos";
 
     /**
      * Property to filter tests exectued by QCSurefireProvider
      */
-    public static final String QCEXECUTIONFILTER = "qc.test.execution.filter";
-    /**
-     * Property to set used qc server version.
-     */
-    public static final String VERSION = "qc.version";
+    public static final String EXECUTION_FILTER = "qc.test.execution.filter";
 
     /**
      * Hide constructor
