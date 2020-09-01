@@ -22,7 +22,6 @@ package eu.tsystems.mms.tic.testframework.qcconnector.worker;
 import com.google.common.eventbus.Subscribe;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.events.MethodEndEvent;
-import eu.tsystems.mms.tic.testframework.execution.testng.worker.MethodWorker;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
 
 /**
