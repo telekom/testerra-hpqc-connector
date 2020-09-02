@@ -21,7 +21,7 @@ package eu.tsystems.mms.tic.testframework.qcconnector.worker;
 
 import com.google.common.eventbus.Subscribe;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.events.MethodEndEvent;
+import eu.tsystems.mms.tic.testframework.events.MethodStartEvent;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCPathUtil;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
@@ -37,11 +37,11 @@ import org.testng.SkipException;
 /**
  * Created by pele on 19.01.2017.
  */
-public class QualityCenterExecutionFilterWorker implements Loggable, MethodEndEvent.Listener {
+public class QualityCenterExecutionFilterWorker implements Loggable, MethodStartEvent.Listener {
 
     @Override
     @Subscribe
-    public void onMethodEnd(MethodEndEvent event) {
+    public void onMethodStart(MethodStartEvent event) {
 
         if (event.getTestMethod().isTest()) {
             if (!this.checkExecutionFilter(event.getTestResult(), event.getInvokedMethod())) {
