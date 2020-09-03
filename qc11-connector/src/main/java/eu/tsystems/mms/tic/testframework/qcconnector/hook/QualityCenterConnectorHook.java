@@ -3,8 +3,8 @@
  */
 package eu.tsystems.mms.tic.testframework.qcconnector.hook;
 
+import com.google.common.eventbus.EventBus;
 import eu.tsystems.mms.tic.testframework.common.TesterraCommons;
-import eu.tsystems.mms.tic.testframework.events.TesterraEventService;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
 import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterTestResultSynchronizer;
 import eu.tsystems.mms.tic.testframework.qcconnector.worker.QualityCenterAfterExecutionFilterWorker;
@@ -22,27 +22,19 @@ import eu.tsystems.mms.tic.testframework.report.TesterraListener;
  */
 public class QualityCenterConnectorHook implements ModuleHook {
 
-    private QualityCenterTestResultSynchronizer synchronizer;
-
     @Override
     public void init() {
 
         TesterraCommons.init();
-
-        // Register QC Filter
-        TesterraListener.registerBeforeMethodWorker(QualityCenterExecutionFilterWorker.class);
-        TesterraListener.registerAfterMethodWorker(QualityCenterAfterExecutionFilterWorker.class);
-
-        // Register TesterraListener Impl. (SYNC EVENT)
-        this.synchronizer = new QualityCenterTestResultSynchronizer();
-        TesterraEventService.addListener(this.synchronizer);
+        EventBus eventBus = TesterraListener.getEventBus();
+        eventBus.register(new QualityCenterExecutionFilterWorker());
+        eventBus.register(new QualityCenterAfterExecutionFilterWorker());
+        eventBus.register(new QualityCenterTestResultSynchronizer());
     }
 
     @Override
     public void terminate() {
-
         // Logout.
         RestConnector.getInstance().logout();
-        TesterraEventService.removeListener(this.synchronizer);
     }
 }

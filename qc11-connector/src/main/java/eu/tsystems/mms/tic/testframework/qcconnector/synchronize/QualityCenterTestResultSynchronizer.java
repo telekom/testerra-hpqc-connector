@@ -7,9 +7,11 @@
  */
 package eu.tsystems.mms.tic.testframework.qcconnector.synchronize;
 
+import com.google.common.eventbus.Subscribe;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.connectors.util.AbstractCommonSynchronizer;
 import eu.tsystems.mms.tic.testframework.connectors.util.SyncType;
+import eu.tsystems.mms.tic.testframework.events.MethodEndEvent;
 import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCFieldValues;
 import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.TesterraMissingQcTestSetAnnotationException;
@@ -46,6 +48,12 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
         LOGGER.info("Initializing " + QualityCenterTestResultSynchronizer.class.getSimpleName()
                 + " over QCRestService");
         init();
+    }
+
+    @Subscribe
+    @Override
+    public void onMethodEnd(MethodEndEvent event) {
+        super.onMethodEnd(event);
     }
 
     /**
