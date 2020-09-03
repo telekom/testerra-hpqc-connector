@@ -4,43 +4,12 @@ version = libraryVersion
 
 subprojects {
 
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'maven-publish'
-    apply plugin: 'jacoco' // code-coverage
 
-    publishing {
 
-        task sourcesJar(type: Jar, dependsOn: classes) {
-            archiveClassifier.set('sources')
-            from sourceSets.main.allSource
-        }
-
-        artifacts {
-            archives sourcesJar
-        }
-
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-                artifact sourcesJar
-            }
-        }
-
-        repositories {
-            maven {
-                url System.getProperty("deployUrl", "none")
-                credentials {
-                    username System.getProperty("deployUsername", "none")
-                    password System.getProperty("deployPassword", "none")
-                }
-            }
-        }
-    }
-
-    bintrayUpload.dependsOn assemble
-    bintrayUpload.dependsOn sourcesJar
 }
+
+bintrayUpload.dependsOn assemble
+bintrayUpload.dependsOn sourcesJar
 
 bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getProperty('BINTRAY_USER')
