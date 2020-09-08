@@ -10,7 +10,6 @@ package eu.tsystems.mms.tic.testframework.qcconnector.synchronize;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.connectors.util.SyncUtils;
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCPathUtil;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.TMInfoContainer;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
@@ -135,7 +134,7 @@ public final class QualityCenterSyncUtils {
                             + " could not be added by RestClient (2 attempts).");
                 }
             }
-        } catch (final IOException io) {
+        } catch (final Exception io) {
             LOGGER.error("Error adding TestRun through webservice. Trying second time.", io);
             try {
                 runId = QcRestClient.addTestRun(test, run);
@@ -145,7 +144,7 @@ public final class QualityCenterSyncUtils {
                     LOGGER.error("TestRun for TestSetTest " + test
                             + " could not be added two times by RestClient.");
                 }
-            } catch (final IOException io2) {
+            } catch (final Exception io2) {
                 final StringBuilder error = new StringBuilder();
                 error.append("An error occurred while saving the test results for test ");
                 error.append(test.getTest().getName());
@@ -275,9 +274,9 @@ public final class QualityCenterSyncUtils {
                     LOGGER.error(msg + "No error message. See stacktrace for information", e);
                 } else if (e.getMessage().contains("The TestSet \"" + testSetName + "\" was not found.")) {
                     String errorMsg = ErrorMessages.wrongQCTestSetAnnotation(testSetPath, clazz.getName());
-                    LOGGER.error(errorMsg, e);
+                    LOGGER.error(errorMsg);
                 } else {
-                    LOGGER.error(msg + e.getMessage(), e);
+                    LOGGER.error(msg + e.getMessage());
                 }
             }
         } else {
@@ -435,7 +434,7 @@ public final class QualityCenterSyncUtils {
                 LOGGER.info("Last run status was: " + testRun.getStatus() + ". Expected: " + argument);
                 LOGGER.info("Test will  be " + ((expected == include) ? "included." : "excluded."));
                 return expected == include;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 LOGGER.error("Error getting last run for testSet. Test will " +
                         (include ? "not" : "") + " be executed.");
                 return !include;
@@ -659,7 +658,7 @@ public final class QualityCenterSyncUtils {
             int id = QcRestClient.addTestRun(testSetTest, testRun);
             LOGGER.info("Synced testRun with id: " + id);
             return id > 0;
-        } catch (IOException | TesterraRuntimeException | NullPointerException e) {
+        } catch (Exception e) {
             LOGGER.error("Error creating TestRun.", e);
             LOGGER.error("run for " + testInstanceName + " not synced");
         } finally {

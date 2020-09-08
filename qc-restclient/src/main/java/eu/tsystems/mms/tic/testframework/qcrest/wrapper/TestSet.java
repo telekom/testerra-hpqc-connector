@@ -1,38 +1,30 @@
-/* 
+/*
  * Created on 21.02.2013
- * 
+ *
  * Copyright(c) 2011 - 2012 T-Systems Multimedia Solutions GmbH
  * Riesaer Str. 5, 01129 Dresden
  * All rights reserved.
  */
 package eu.tsystems.mms.tic.testframework.qcrest.wrapper;
 
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.FolderFinder;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Java class for TestSetWr complex type.
- * 
+ *
  * @author sepr
  */
 public class TestSet extends AbstractEntity {
-    /** Logger instance */
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestSet.class);
-
     /** TestSetFolder containing this testSet. */
     private TestSetFolder testSetFolder;
 
     /**
      * Constructor.
-     * 
+     *
      * @param entity Entity representing the TestSet.
      */
     public TestSet(final Entity entity) {
@@ -48,20 +40,16 @@ public class TestSet extends AbstractEntity {
 
     /**
      * Gets the attachments of this entity.
-     * 
+     *
      * @return Array of attachments.
      */
-    public Attachment[] getAttachments() {
+    public Attachment[] getAttachments() throws Exception {
         final List<Attachment> attachments = new ArrayList<Attachment>();
 
         final RestConnector connector = RestConnector.getInstance();
         final String restUrl = connector.buildEntityCollectionUrl("test-set") + "/" + getId() + "/attachments";
         List<Entity> entities;
-        try {
-            entities = connector.getEntities(restUrl, null);
-        } catch (IOException e) {
-            throw new TesterraRuntimeException("Error getting attachments.", e);
-        }
+        entities = connector.getEntities(restUrl, null);
         for (Entity entityAtt : entities) {
             attachments.add(new Attachment(entityAtt));
         }
@@ -70,7 +58,7 @@ public class TestSet extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getCloseDate() {
@@ -79,7 +67,7 @@ public class TestSet extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getModifiedDate() {
@@ -88,7 +76,7 @@ public class TestSet extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getName() {
@@ -97,7 +85,7 @@ public class TestSet extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getOpenDate() {
@@ -106,7 +94,7 @@ public class TestSet extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public int getParentId() {
@@ -120,7 +108,7 @@ public class TestSet extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getStatus() {
@@ -129,14 +117,14 @@ public class TestSet extends AbstractEntity {
 
     /**
      * Get the TestSetFolder that contains the TestSet through the value of the parent-id field.
-     * 
+     *
      * @return TestSetFolder or null (if not found).
      */
     public TestSetFolder getTestSetFolder() {
         if (testSetFolder == null) {
             final String field = getFieldValueByName("parent-id");
             if (field == null) {
-                LOGGER.error("Could not get TestSetFolder for TestSet " + getName() + " cause parent-id is not set.");
+                log().error("Could not get TestSetFolder for TestSet " + getName() + " cause parent-id is not set.");
             } else {
                 testSetFolder = FolderFinder.getTestSetFolderById(Integer.valueOf(field));
             }
@@ -146,7 +134,7 @@ public class TestSet extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getType() {
@@ -155,7 +143,7 @@ public class TestSet extends AbstractEntity {
 
     /**
      * Gets the value of the attachment field.
-     * 
+     *
      * @return true if TestSet has Attachments.
      */
     public boolean isHasAttachment() {
@@ -166,9 +154,9 @@ public class TestSet extends AbstractEntity {
     /**
      * Sets the value of the closeDate property. Setting a value won't have any affect as long as you don't post this
      * object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setCloseDate(final String value) {
         setFieldValue("close-date", value);
@@ -177,7 +165,7 @@ public class TestSet extends AbstractEntity {
     /**
      * Sets the value of the hasAttachment property. Setting a value won't have any affect as long as you don't post
      * this object to the REST Service.
-     * 
+     *
      * @param value New value to set.
      */
     public void setHasAttachment(final boolean value) {
@@ -187,9 +175,9 @@ public class TestSet extends AbstractEntity {
     /**
      * Sets the value of the modifiedDate property. Setting a value won't have any affect as long as you don't post this
      * object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setModifiedDate(final String value) {
         setFieldValue("last-modified", value);
@@ -198,9 +186,9 @@ public class TestSet extends AbstractEntity {
     /**
      * Sets the value of the name property. Setting a value won't have any affect as long as you don't post this object
      * to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setName(final String value) {
         setFieldValue("name", value);
@@ -209,9 +197,9 @@ public class TestSet extends AbstractEntity {
     /**
      * Sets the value of the openDate property. Setting a value won't have any affect as long as you don't post this
      * object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setOpenDate(final String value) {
         setFieldValue("open-date", value);
@@ -220,9 +208,9 @@ public class TestSet extends AbstractEntity {
     /**
      * Sets the value of the status property. Setting a value won't have any affect as long as you don't post this
      * object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setStatus(final String value) {
         setFieldValue("status", value);
@@ -231,9 +219,9 @@ public class TestSet extends AbstractEntity {
     /**
      * Sets the value of the testSetFolder property. Setting a value won't have any affect as long as you don't post
      * this object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setTestSetFolder(final TestSetFolder value) {
         testSetFolder = value;
@@ -243,9 +231,9 @@ public class TestSet extends AbstractEntity {
     /**
      * Sets the value of the subtype-id property. Setting a value won't have any affect as long as you don't post this
      * object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setType(final String value) {
         setFieldValue("subtype-id", value);

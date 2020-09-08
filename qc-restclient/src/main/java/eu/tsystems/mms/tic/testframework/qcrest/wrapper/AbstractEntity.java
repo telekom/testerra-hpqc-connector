@@ -1,32 +1,27 @@
-/* 
+/*
  * Created on 04.03.2013
- * 
+ *
  * Copyright(c) 2011 - 2012 T-Systems Multimedia Solutions GmbH
  * Riesaer Str. 5, 01129 Dresden
  * All rights reserved.
  */
 package eu.tsystems.mms.tic.testframework.qcrest.wrapper;
 
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity.Fields;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity.Fields.Field;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity.Fields.Field.Value;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.ObjectFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Abstract parent class for all Entities used by a client.
- * 
+ *
  * @author sepr
  */
-public abstract class AbstractEntity {
-
-    /** Logger instance. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEntity.class);
+public abstract class AbstractEntity implements Loggable {
 
     /** Underlying xml-based entity. */
     private final Entity entity;
@@ -36,7 +31,7 @@ public abstract class AbstractEntity {
 
     /**
      * Creates a new AbstractEntity from its XML representation and sets its id.
-     * 
+     *
      * @param entity Entity parsed from Rest Response.
      */
     protected AbstractEntity(final Entity entity) {
@@ -50,7 +45,7 @@ public abstract class AbstractEntity {
 
     /**
      * Creates a new entity of the given type.
-     * 
+     *
      * @param entityType Type of entity (e.g. test-instance, run, ...)
      */
     protected AbstractEntity(final String entityType) {
@@ -73,7 +68,7 @@ public abstract class AbstractEntity {
 
     /**
      * Get the value String of the field with the given name of this entity. Use only for fields with a single value!
-     * 
+     *
      * @param name Name of the field to get the value from.
      * @return Value as string or null if field or value does not exist.
      */
@@ -90,7 +85,7 @@ public abstract class AbstractEntity {
                 }
             }
         }
-        LOGGER.debug("No field with name " + name + " found for entity.");
+        log().debug("No field with name " + name + " found for entity.");
         return null;
     }
 
@@ -106,7 +101,7 @@ public abstract class AbstractEntity {
     /**
      * Sets the value of a field for this entity. Not existing fields will be created. Use only for fields with a single
      * value!
-     * 
+     *
      * @param fieldName Name of field.
      * @param fieldValue Value of field.
      */
@@ -120,7 +115,7 @@ public abstract class AbstractEntity {
             }
         }
         if (fieldToSet == null) {
-            LOGGER.trace("Field with name " + fieldName + " created.");
+            log().trace("Field with name " + fieldName + " created.");
             final ObjectFactory oFactory = new ObjectFactory();
             fieldToSet = oFactory.createEntityFieldsField();
             fieldToSet.setName(fieldName);
@@ -139,6 +134,6 @@ public abstract class AbstractEntity {
             valueToSet = fieldValues.get(0);
         }
         valueToSet.setValue(fieldValue);
-        LOGGER.trace("Value of field " + fieldName + "set.");
+        log().trace("Value of field " + fieldName + "set.");
     }
 }

@@ -193,18 +193,26 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
             }
 
             if (runId > 0) {
-                // Save the runId as a result Attribute.
-                ExecutionContextController.getCurrentTestResult().setAttribute("RunId", runId);
+                ITestResult currentTestResult = ExecutionContextController.getCurrentTestResult();
+                if (currentTestResult != null) {
+                    // Save the runId as a result Attribute.
+                    currentTestResult.setAttribute("RunId", runId);
+                }
             } else {
                 throw new TesterraQcResultSyncException("Error during sync occured. See previous logs.");
             }
 
-            ExecutionContextController.getCurrentMethodContext().infos.add("Synchronization to QualityCenter / ALM successful.");
+            ExecutionContextController.getCurrentMethodContext().ifPresent(methodContext -> {
+                methodContext.infos.add("Synchronization to QualityCenter / ALM successful.");
+            });
+
         } catch (TesterraMissingQcTestSetAnnotationException xmqe) {
             LOGGER.warn("Found missing QCTestSet annotation when QCSync is active.");
         } catch (TesterraQcResultSyncException xse) {
-            LOGGER.error("Sync failed.", xse);
-            ExecutionContextController.getCurrentMethodContext().addPriorityMessage("Synchronization to QualityCenter / ALM failed.");
+            LOGGER.error(xse.getMessage());
+            ExecutionContextController.getCurrentMethodContext().ifPresent(methodContext -> {
+                methodContext.addPriorityMessage("Synchronization to QualityCenter / ALM failed.");
+            });
         }
         QCFieldValues.resetThreadLocalFields();
     }

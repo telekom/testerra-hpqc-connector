@@ -1,28 +1,22 @@
-/* 
+/*
  * Created on 20.02.2013
- * 
+ *
  * Copyright(c) 2011 - 2012 T-Systems Multimedia Solutions GmbH
  * Riesaer Str. 5, 01129 Dresden
  * All rights reserved.
  */
 package eu.tsystems.mms.tic.testframework.qcrest.wrapper;
 
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * Java class for TestSetTestWr complex type.
- * 
+ *
  * @author sepr
  */
-public class TestSetTest extends AbstractEntity {
-    /** Logger instance */
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestSetTest.class);
-
+public class TestSetTest extends AbstractEntity implements Loggable {
     /** TestSet this test-instance belongs to. */
     private TestSet testSet;
 
@@ -38,7 +32,7 @@ public class TestSetTest extends AbstractEntity {
 
     /**
      * Default constructor.
-     * 
+     *
      * @param entity Entity representing the object.
      */
     public TestSetTest(final Entity entity) {
@@ -68,7 +62,7 @@ public class TestSetTest extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getExecutionDate() {
@@ -77,7 +71,7 @@ public class TestSetTest extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getExecutionTime() {
@@ -86,7 +80,7 @@ public class TestSetTest extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getHostName() {
@@ -95,7 +89,7 @@ public class TestSetTest extends AbstractEntity {
 
     /**
      * Gets the value of the order field.
-     * 
+     *
      * @return value as int or 0 if not existing.
      * @deprecated can not be used with qc 12
      */
@@ -110,7 +104,7 @@ public class TestSetTest extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getStatus() {
@@ -119,7 +113,7 @@ public class TestSetTest extends AbstractEntity {
 
     /**
      * Gets the Test that is referenced through the test-id field.
-     * 
+     *
      * @return QcTest object or null (if test-id not set or IOException while getting).
      */
     public QcTest getTest() {
@@ -128,12 +122,12 @@ public class TestSetTest extends AbstractEntity {
             if (idField != null) {
                 try {
                     test = QcRestClient.getTestById(Integer.parseInt(idField));
-                } catch (IOException e) {
-                    LOGGER.error("Rest-error while getting test from test-instance.", e);
+                } catch (Exception e) {
+                    log().error("Rest-error while getting test from test-instance.", e);
                     return test;
                 }
             } else {
-                LOGGER.error("Could not get Test from Test-Instance cause test-id is not set.");
+                log().error("Could not get Test from Test-Instance cause test-id is not set.");
             }
         }
         return test;
@@ -141,7 +135,7 @@ public class TestSetTest extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getTesterName() {
@@ -150,7 +144,7 @@ public class TestSetTest extends AbstractEntity {
 
     /**
      * Get the id of test in test plan.
-     * 
+     *
      * @return value of test-id field.
      */
     public int getTestId() {
@@ -163,9 +157,9 @@ public class TestSetTest extends AbstractEntity {
 
     /**
      * Gets the TestSet that is referenced through the field cycle-id.
-     * 
+     *
      * @return Found TestSet or null (if cycle-id not set or IOException);
-     * 
+     *
      */
     public TestSet getTestSet() {
         if (testSet == null) {
@@ -173,11 +167,11 @@ public class TestSetTest extends AbstractEntity {
             if (field != null) {
                 try {
                     testSet = QcRestClient.getTestSetById(Integer.parseInt(field));
-                } catch (IOException e) {
-                    LOGGER.error("Rest error while getting testSet from test-instance.", e);
+                } catch (Exception e) {
+                    log().error("Rest error while getting testSet from test-instance.", e);
                 }
             } else {
-                LOGGER.error("Could not get TestSet of test-instance, cause cycle-id is not set.");
+                log().error("Could not get TestSet of test-instance, cause cycle-id is not set.");
             }
         }
         return testSet;
@@ -194,10 +188,10 @@ public class TestSetTest extends AbstractEntity {
 
     /**
      * Gets the value of a user defined field.
-     * 
+     *
      * @param index of userfield (01-24).
      * @return Value as String object.
-     * 
+     *
      */
     public String getUserField(final String index) {
         return getFieldValueByName("user-" + index);
@@ -205,7 +199,7 @@ public class TestSetTest extends AbstractEntity {
 
     /**
      * Gets the value of the attachement field.
-     * 
+     *
      * @return true if TestSetTest has attachments.
      */
     public boolean isHasAttachement() {
@@ -225,9 +219,9 @@ public class TestSetTest extends AbstractEntity {
     /**
      * Sets the value of the executionDate property. Setting a value won't have any affect as long as you don't post
      * this object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setExecutionDate(final String value) {
         setFieldValue("exec-date", value);
@@ -236,9 +230,9 @@ public class TestSetTest extends AbstractEntity {
     /**
      * Sets the value of the executionTime property. Setting a value won't have any affect as long as you don't post
      * this object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setExecutionTime(final String value) {
         setFieldValue("exec-time", value);
@@ -247,7 +241,7 @@ public class TestSetTest extends AbstractEntity {
     /**
      * Sets the value of the hasAttachement property. Setting a value won't have any affect as long as you don't post
      * this object to the REST Service.
-     * 
+     *
      * @param value New value to set.
      */
     public void setHasAttachement(final boolean value) {
@@ -257,9 +251,9 @@ public class TestSetTest extends AbstractEntity {
     /**
      * Sets the value of the hostName property. Setting a value won't have any affect as long as you don't post this
      * object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setHostName(final String value) {
         setFieldValue("host-name", value);
@@ -268,7 +262,7 @@ public class TestSetTest extends AbstractEntity {
     /**
      * Sets the value of the order property. Setting a value won't have any affect as long as you don't post this object
      * to the REST Service.
-     * 
+     *
      * @param value New value to set.
      * @deprecated can not be used with qc 12
      */
@@ -280,9 +274,9 @@ public class TestSetTest extends AbstractEntity {
     /**
      * Sets the value of the status property. Setting a value won't have any affect as long as you don't post this
      * object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setStatus(final String value) {
         setFieldValue("status", value);
@@ -291,9 +285,9 @@ public class TestSetTest extends AbstractEntity {
     /**
      * Sets the value of the testerName property. Setting a value won't have any affect as long as you don't post this
      * object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setTesterName(final String value) {
         setFieldValue("actual-tester", value);
@@ -319,10 +313,10 @@ public class TestSetTest extends AbstractEntity {
 
     /**
      * Sets the value of the user defined field.
-     * 
+     *
      * @param index Index of userfield (01-24).
      * @param value allowed object is {@link String }
-     * 
+     *
      */
     public void setUserField(final String index, final String value) {
         setFieldValue("user-" + index, value);
