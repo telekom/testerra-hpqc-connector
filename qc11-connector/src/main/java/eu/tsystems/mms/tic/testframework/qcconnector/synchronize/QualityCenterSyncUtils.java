@@ -105,7 +105,7 @@ public final class QualityCenterSyncUtils {
                                         final TestRun run, final ITestResult result) throws TesterraQcResultSyncException {
         int id = readAnnotationAndSync(clazz, method, methodName, run, result);
         if (id == 0) {
-            throw new TesterraQcResultSyncException("No id returned. See logs before for info.");
+            throw new TesterraQcResultSyncException("No id returned. See previous logs.");
         } else {
             return id;
         }
