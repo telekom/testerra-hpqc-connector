@@ -1,34 +1,31 @@
-/* 
+/*
  * Created on 20.02.2013
- * 
+ *
  * Copyright(c) 2011 - 2012 T-Systems Multimedia Solutions GmbH
  * Riesaer Str. 5, 01129 Dresden
  * All rights reserved.
  */
 package eu.tsystems.mms.tic.testframework.qcrest.wrapper;
 
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.FolderFinder;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * @author sepr
- * 
+ *
  */
-public class TestSetFolder extends AbstractEntity {
+public class TestSetFolder extends AbstractEntity implements Loggable {
 
     /** Parent of the TestSetFolder. */
     private TestSetFolder parent;
 
     /**
      * Default constructor.
-     * 
+     *
      * @param entity Entity representing the object.
      */
     public TestSetFolder(final Entity entity) {
@@ -44,10 +41,10 @@ public class TestSetFolder extends AbstractEntity {
 
     /**
      * Gets a list of TestSetFolders that are the children of this folder.
-     * 
+     *
      * @return List of children.
      */
-    public List<TestSetFolder> getChildren() {
+    public List<TestSetFolder> getChildren() throws Exception {
         final List<TestSetFolder> children = new LinkedList<TestSetFolder>();
         // DO NOT CHECK the number of sons, it doesnt work!
         // final int noOfChildren = Integer.parseInt(getFieldValueByName("no-of-sons"));
@@ -57,11 +54,7 @@ public class TestSetFolder extends AbstractEntity {
         final String queryUrl = "query={parent-id[=" + getId() + "]}";
         final RestConnector connector = RestConnector.getInstance();
         List<Entity> entities;
-        try {
-            entities = connector.getEntities(connector.buildEntityCollectionUrl("test-set-folder"), queryUrl);
-        } catch (IOException e) {
-            throw new TesterraRuntimeException("Error getting children for testsetfolder.", e);
-        }
+        entities = connector.getEntities(connector.buildEntityCollectionUrl("test-set-folder"), queryUrl);
         if (entities != null) {
             for (Entity oneEntity : entities) {
                 children.add(new TestSetFolder(oneEntity));
@@ -72,7 +65,7 @@ public class TestSetFolder extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getName() {
@@ -81,7 +74,7 @@ public class TestSetFolder extends AbstractEntity {
 
     /**
      * Get the TestSetFolder that contains this TestSetFolder.
-     * 
+     *
      * @return Parent TestSetFolder or null (if parent is Root).
      */
     public TestSetFolder getParent() {
@@ -93,17 +86,15 @@ public class TestSetFolder extends AbstractEntity {
                     oneEntity = RestConnector.getInstance().getEntity(
                             RestConnector.getInstance().buildEntityCollectionUrl("test-set-folder") + "/" + parentId,
                             null);
-                } catch (IOException e) {
-                    LoggerFactory.getLogger(this.getClass()).error("Error getting parent of testsetfolder.", e);
-                    throw new TesterraRuntimeException("Error getting Entity with id " + parentId, e);
+                } catch (Exception e) {
+                    log().error(e.getMessage());
+                    return null;
                 }
-                if (oneEntity == null) {
-                    throw new TesterraRuntimeException("Error getting Entity with id " + parentId);
-                } else {
+                if (oneEntity != null) {
                     parent = new TestSetFolder(oneEntity);
                 }
             } else {
-                LoggerFactory.getLogger(TestSetFolder.class).trace("Can't get instance of Root folder");
+                log().trace("Can't get instance of Root folder");
                 return null;
             }
         }
@@ -112,9 +103,9 @@ public class TestSetFolder extends AbstractEntity {
 
     /**
      * Gets the value of the name property.
-     * 
+     *
      * @return possible object is {@link String }
-     * 
+     *
      */
     public int getParentId() {
         final String field = getFieldValueByName("parent-id");
@@ -127,7 +118,7 @@ public class TestSetFolder extends AbstractEntity {
     /**
      * Gets the TestSetFolders path by recursive call of getName on parents. RuntimeException could occur if there is an
      * IOException while getting a parent folder.
-     * 
+     *
      * @return The TestSetFolders path.
      */
     public String getPath() {
@@ -151,7 +142,7 @@ public class TestSetFolder extends AbstractEntity {
     /**
      * Sets the value of the name property. Setting a value won't have any affect as long as you don't post this object
      * to the REST Service.
-     * 
+     *
      * @param value New value to set.
      */
     public void setName(final String value) {
@@ -161,7 +152,7 @@ public class TestSetFolder extends AbstractEntity {
     /**
      * Sets the value of the name property. Setting a value won't have any affect as long as you don't post this object
      * to the REST Service.
-     * 
+     *
      * @param value New value to set.
      */
     public void setParentId(final int value) {

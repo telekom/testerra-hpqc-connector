@@ -11,10 +11,9 @@ import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
-import org.testng.annotations.AfterSuite;
-
 import java.io.IOException;
 import java.util.List;
+import org.testng.annotations.AfterSuite;
 
 /**
  * abstract class for all tests
@@ -33,21 +32,21 @@ public abstract class AbstractTest {
 
     /**
      * logout from rest service
-     * 
+     *
      * @throws IOException Error executing Rest request.
      */
     @AfterSuite
-    public void cleanUp() throws IOException {
+    public void cleanUp() throws Exception {
         cleanUpRuns();
         RestConnector.getInstance().logout();
     }
 
     /**
      * Recreate TestUnderTest in TestSet to cleanup runs.
-     * 
+     *
      * @throws IOException Error executing Rest request.
      */
-    private void cleanUpRuns() throws IOException {
+    private void cleanUpRuns() throws Exception {
         final TestSetTest tsTest = QcRestClient.getTestSetTest(TEST, TESTSET, TESTSET_PATH);
 
         final List<TestRun> lTestRuns = QcRestClient.getTestRuns(tsTest);

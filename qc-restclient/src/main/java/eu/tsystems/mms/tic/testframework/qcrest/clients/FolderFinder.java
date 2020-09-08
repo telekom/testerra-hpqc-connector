@@ -1,6 +1,6 @@
-/* 
+/*
  * Created on 15.07.2013
- * 
+ *
  * Copyright(c) 2011 - 2012 T-Systems Multimedia Solutions GmbH
  * Riesaer Str. 5, 01129 Dresden
  * All rights reserved.
@@ -13,13 +13,12 @@ import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.AbstractEntity;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestPlanFolder;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetFolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created with IntelliJ IDEA. User: pele Date: 09.07.13 Time: 11:29 To change this template use File | Settings | File
@@ -53,7 +52,7 @@ public class FolderFinder {
 
     /**
      * Constructor. If the path has a trailing backslash, it is cut off.
-     * 
+     *
      * @param path Path of folder to find.
      */
     public FolderFinder(String path) {
@@ -81,7 +80,7 @@ public class FolderFinder {
 
     /**
      * Gets a folder by its id.
-     * 
+     *
      * @param id Id of TestSetFolder
      * @return Testsetfolder object.
      */
@@ -97,7 +96,7 @@ public class FolderFinder {
                     LAB_FOLDER_CACHE.put(id, testSetFolderById); // store to cache
                 }
                 return testSetFolderById;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new TesterraSystemException("Error getting testsetfolder", e);
             }
         }
@@ -105,7 +104,7 @@ public class FolderFinder {
 
     /**
      * Gets a folder by its id.
-     * 
+     *
      * @param id Id of TestSetFolder
      * @return Testsetfolder object.
      */
@@ -121,7 +120,7 @@ public class FolderFinder {
                     PLAN_FOLDER_CACHE.put(id, testPlanFolderById); // store to cache
                 }
                 return testPlanFolderById;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new TesterraSystemException("Error getting testplanfolder", e);
             }
         }
@@ -129,14 +128,14 @@ public class FolderFinder {
 
     /**
      * Find TestSetFolder by path field.
-     * 
+     *
      * @param folderType TestSetFolder or TestPlanFolder
      * @param <T> generic return type (TestSetFolder or TestPlanFolder).
      * @return TestSetFolder or TestPlanFolder object
      * @throws IOException Folder could not be found.
      */
     @SuppressWarnings("unchecked")
-    public <T extends AbstractEntity> T find(final Class<T> folderType) throws IOException {
+    public <T extends AbstractEntity> T find(final Class<T> folderType) throws Exception {
         if (folders.length == 0) {
             return null;
         }
@@ -258,7 +257,7 @@ public class FolderFinder {
 
     /**
      * Look for an id for the given path in the cache
-     * 
+     *
      * @param thePath Path to look up id for.
      * @return id matching path or null.
      */
@@ -272,7 +271,7 @@ public class FolderFinder {
 
     /**
      * Gets path for the given position in the path array
-     * 
+     *
      * @param position .
      * @return .
      */
@@ -287,7 +286,7 @@ public class FolderFinder {
 
     /**
      * Stores path with given id
-     * 
+     *
      * @param pathPosition Position in path
      * @param id Id of entity
      */
@@ -298,7 +297,7 @@ public class FolderFinder {
 
     /**
      * Array: 0: parent-id 1: id
-     * 
+     *
      * @param entity .
      * @return .
      */
@@ -342,7 +341,7 @@ public class FolderFinder {
 
     /**
      * Get path to folder for given id.
-     * 
+     *
      * @param id Id to look up.
      * @return folder path or null if id is not in FOLDER_TO_ID_STORAGE
      */
@@ -362,7 +361,7 @@ public class FolderFinder {
 
     /**
      * Check if the given Entity is the one to be looked up.
-     * 
+     *
      * @param entityValues Values to identify entity
      * @return True if this is the folder to be found.
      */
@@ -376,7 +375,7 @@ public class FolderFinder {
 
     /**
      * Get children for a folder with the given id.
-     * 
+     *
      * @param id Id of folder to get children from.
      * @param targetType Folder type (lab/plan)
      * @return List of childrens folder.
@@ -390,7 +389,7 @@ public class FolderFinder {
             } else {
                 entities = CONNECTOR.getEntities(getRestUrlPlan(), query);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new TesterraSystemException("Error getting children", e);
         }
         return entities;
@@ -398,7 +397,7 @@ public class FolderFinder {
 
     /**
      * Recursive method to find Testfolders.
-     * 
+     *
      * @param entity Entity to check for matching the expected folder.
      * @param pathPosition Position in path array
      * @param folderType return type
@@ -473,7 +472,7 @@ public class FolderFinder {
 
     /**
      * Internal class holding only important entity properties.
-     * 
+     *
      * @author pele
      */
     class EntityValues {
@@ -510,7 +509,7 @@ public class FolderFinder {
 
         /**
          * Default constructor
-         * 
+         *
          * @param name folderName
          * @param parentId parent ID
          * @param id ID
