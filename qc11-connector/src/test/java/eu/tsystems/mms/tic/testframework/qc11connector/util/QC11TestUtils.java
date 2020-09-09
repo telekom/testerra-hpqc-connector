@@ -7,14 +7,12 @@ import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestUnderTest;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.QcTest;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
-import org.testng.Assert;
-
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import org.testng.Assert;
 
 /**
  * This class contains some utilty methods for QC 11 Tests.
@@ -102,7 +100,7 @@ public class QC11TestUtils extends CommonQCTestUtils {
         List<TestSetTest> tests = null;
         try {
             tests = QcRestClient.getTestSetTests(testSetName, testSetFolder);
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             Assert.fail(AssertionMessages.couldNotFindTestSet(testSetName, testSetFolder));
         }
         if (tests.size() == 0) {
@@ -122,7 +120,7 @@ public class QC11TestUtils extends CommonQCTestUtils {
             String[] splittedPath = splitFullTestSetPath(path);
             List<TestSetTest> testSetTests = QcRestClient.getTestSetTests(splittedPath[0], splittedPath[1]);
             return testSetTests;
-        } catch (IOException e) {
+        } catch (Exception e) {
             Assert.fail(AssertionMessages.testSetNotExisting(path));
         }
         return null;

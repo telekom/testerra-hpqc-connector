@@ -11,20 +11,19 @@ import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestPlanFolder;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestPlanTest;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Tests for QC Test Plan.
- * 
+ *
  * @author sepr
- * 
+ *
  */
 public class PlanTest extends AbstractTest {
 
@@ -39,11 +38,11 @@ public class PlanTest extends AbstractTest {
 
     /**
      * Test method: change the properties of an existing Test in QC TestPlan.
-     * 
+     *
      * @throws IOException .
      */
     @Test
-    public void testEditTest() throws IOException {
+    public void testEditTest() throws Exception {
 
         LOG.info("Test editTest");
         final TestPlanTest test = QcRestClient.getTestPlanTest(TEST, TEST_PATH);
@@ -65,11 +64,11 @@ public class PlanTest extends AbstractTest {
 
     /**
      * Test method: gets a test under a specified path.
-     * 
+     *
      * @throws IOException RestException
      */
     @Test(enabled = true)
-    public void testGetTest() throws IOException {
+    public void testGetTest() throws Exception {
         LOG.info("Get test from Plan");
         final TestPlanTest test = QcRestClient.getTestPlanTest(TEST, TEST_PATH);
         LOG.debug("Test name       : " + test.getName());
@@ -83,11 +82,11 @@ public class PlanTest extends AbstractTest {
 
     /**
      * Test method: change the properties of an existing Test in QC TestPlan.
-     * 
+     *
      * @throws IOException .
      */
     @Test
-    public void testAddTest() throws IOException {
+    public void testAddTest() throws Exception {
         TestPlanFolder parent = null;
         int idReturned = 0;
         try {
@@ -130,10 +129,10 @@ public class PlanTest extends AbstractTest {
 
     /**
      * Create Trash Folder for addTest Tests.
-     * 
+     *
      * @throws IOException .
      */
-    private void testCreateTestPlanFolder() throws IOException {
+    private void testCreateTestPlanFolder() throws Exception {
         LOG.info("Test createTestPlanFolder");
         final TestPlanFolder parent = QcRestClient.getTestPlanFolder(TEST_PATH);
         final TestPlanFolder toCreate = new TestPlanFolder();

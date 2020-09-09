@@ -14,15 +14,13 @@ import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterTe
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.QcTest;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
+import java.lang.reflect.Method;
+import java.util.LinkedList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.ITestResult;
-
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * User: rnhb Date: 18.12.13
@@ -69,7 +67,7 @@ public class QC11SynchronizerTest extends AbstractCommonSynchronizerTest {
         try {
             boolean exists = QcRestClient.isExistingTestSet(splittedPath[0], splittedPath[1]);
             Assert.assertTrue(exists, AssertionMessages.testSetNotExisting(testSetPath));
-        } catch (IOException e) {
+        } catch (Exception e) {
             Assert.fail(AssertionMessages.errorConnectingToQC());
         }
     }
