@@ -19,6 +19,7 @@ import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.TesterraQcResult
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.Attachment;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
+import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import java.io.File;
 import java.io.IOException;
@@ -193,18 +194,28 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
             }
 
             if (runId > 0) {
-                // Save the runId as a result Attribute.
-                ExecutionContextController.getCurrentTestResult().setAttribute("RunId", runId);
+                ITestResult currentTestResult = ExecutionContextController.getCurrentTestResult();
+                if (currentTestResult != null) {
+                    // Save the runId as a result Attribute.
+                    currentTestResult.setAttribute("RunId", runId);
+                }
             } else {
                 throw new TesterraQcResultSyncException("Error during sync occured. See previous logs.");
             }
 
-            ExecutionContextController.getCurrentMethodContext().infos.add("Synchronization to QualityCenter / ALM successful.");
+            MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
+            if (currentMethodContext!=null) {
+                currentMethodContext.infos.add("Synchronization to QualityCenter / ALM successful.");
+            }
+
         } catch (TesterraMissingQcTestSetAnnotationException xmqe) {
             LOGGER.warn("Found missing QCTestSet annotation when QCSync is active.");
         } catch (TesterraQcResultSyncException xse) {
-            LOGGER.error("Sync failed.", xse);
-            ExecutionContextController.getCurrentMethodContext().addPriorityMessage("Synchronization to QualityCenter / ALM failed.");
+            LOGGER.error(xse.getMessage());
+            MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
+            if (currentMethodContext!=null) {
+                currentMethodContext.addPriorityMessage("Synchronization to QualityCenter / ALM failed.");
+            };
         }
         QCFieldValues.resetThreadLocalFields();
     }

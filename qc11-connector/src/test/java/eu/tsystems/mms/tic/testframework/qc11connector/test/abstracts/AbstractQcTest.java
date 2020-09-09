@@ -13,10 +13,9 @@ import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSet;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
-import org.testng.annotations.AfterSuite;
-
 import java.io.IOException;
 import java.util.List;
+import org.testng.annotations.AfterSuite;
 
 /**
  * Common super class for tests with after suite method.
@@ -35,7 +34,7 @@ public abstract class AbstractQcTest {
      * @throws IOException Exception during rest call.
      */
     @AfterSuite
-    public void cleanUp() throws IOException {
+    public void cleanUp() throws Exception {
         String[] testsets = new String[]{QCConstants.QCSYNC3_TESTSET_NAME};
         for (String testSet : testsets) {
             TestSet ts = QcRestClient.getTestSet(testSet, QCConstants.QC_TESTSUNDERTEST_FOLDER);

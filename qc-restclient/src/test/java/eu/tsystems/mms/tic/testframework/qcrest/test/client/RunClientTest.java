@@ -20,12 +20,6 @@ import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSet;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetFolder;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,6 +32,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * Test class for testing QC Test lab methods.
@@ -86,7 +85,7 @@ public class RunClientTest extends AbstractTest {
      * @param pDeep   An integer indicating hierarchical deepness of pFolder.
      */
     private void printFolder(final StringBuilder pStr,
-                             final TestSetFolder pFolder, final int pDeep) {
+                             final TestSetFolder pFolder, final int pDeep) throws Exception {
         // max 3 folders
         if (pDeep > 3) {
             return;
@@ -111,7 +110,7 @@ public class RunClientTest extends AbstractTest {
      * @throws IOException Error loading or saving attachments to/from disk.
      */
     @Test
-    public void testGetTestSetAttachments() throws IOException {
+    public void testGetTestSetAttachments() throws Exception {
         LOG.info("Test add attachments to Testset");
 
         final TestSetFolder tsf = QcRestClient.getTestSetFolder(TESTSET_PATH);
@@ -136,7 +135,7 @@ public class RunClientTest extends AbstractTest {
      * @throws IOException Error loading or saving attachments to/from disk.
      */
     @Test
-    public void testAddTestRun() throws IOException {
+    public void testAddTestRun() throws Exception {
         LOG.info("Test addTestRun");
 
         final TestSetTest tsTest = QcRestClient.getTestSetTest(TEST, TESTSET, TESTSET_PATH);
@@ -171,7 +170,7 @@ public class RunClientTest extends AbstractTest {
      * @throws IOException An I/O error occurred.
      */
     @Test(dependsOnMethods = "testAddTestRun")
-    public void testGetTestRuns() throws IOException {
+    public void testGetTestRuns() throws Exception {
         LOG.info("Get testruns with attachments");
 
         final TestSetTest tsTest = QcRestClient.getTestSetTest(TEST, TESTSET, TESTSET_PATH);
@@ -216,7 +215,7 @@ public class RunClientTest extends AbstractTest {
      * @throws IOException A remote error occurred.
      */
     @Test
-    public void testGetTestRunStatuses() throws IOException {
+    public void testGetTestRunStatuses() {
         LOG.info("Test getTestRunStatuses");
 
         final List<String> statuses = UtilClient.getUserFieldValues("Status", "test-instance");
@@ -232,7 +231,7 @@ public class RunClientTest extends AbstractTest {
      * @throws IOException Exception during communication.
      */
     @Test
-    public void testGetTestSet() throws IOException {
+    public void testGetTestSet() throws Exception {
         LOG.info("Test getTestSet");
         final TestSetFolder lFolder = QcRestClient.getTestSetFolder(TESTSET_PATH);
         Assert.assertNotNull(lFolder);
@@ -249,7 +248,7 @@ public class RunClientTest extends AbstractTest {
      * @throws IOException Exception during communication.
      */
     @Test
-    public void testGetTestSetTest() throws IOException {
+    public void testGetTestSetTest() throws Exception {
         LOG.info("Test getTestSetTest");
         final TestSetTest testSetTestWr = QcRestClient.getTestSetTest(TEST, TESTSET, TESTSET_PATH);
         Assert.assertNotNull(testSetTestWr);
@@ -265,7 +264,7 @@ public class RunClientTest extends AbstractTest {
      * @throws IOException Exception during communication.
      */
     @Test
-    public void testGetTestSetFolder() throws IOException {
+    public void testGetTestSetFolder() throws Exception {
         LOG.info("Test getTestSetFolder");
 
         final TestSetFolder lFolder = QcRestClient.getTestSetFolder(TESTSET_PATH);
@@ -283,7 +282,7 @@ public class RunClientTest extends AbstractTest {
      * @throws IOException Exception during communication.
      */
     @Test
-    public void testGetTestSetFolderComplex() throws IOException {
+    public void testGetTestSetFolderComplex() throws Exception {
         LOG.info("Test getTestSetFolder");
 
         String folderPath = "Root\\Xeta\\QC WebServiceClient\\ComplexFolder1\\"
@@ -313,7 +312,7 @@ public class RunClientTest extends AbstractTest {
      * @throws IOException Exception during communication.
      */
     @Test
-    public void testGetTestSets() throws IOException {
+    public void testGetTestSets() throws Exception {
         LOG.info("Test getTestSets");
 
         final TestSetFolder lFolder = QcRestClient.getTestSetFolder(TESTSET_PATH);
@@ -335,7 +334,7 @@ public class RunClientTest extends AbstractTest {
      * @throws IOException Exception during communication.
      */
     @Test
-    public void testGetTestSetTests() throws IOException {
+    public void testGetTestSetTests() throws Exception {
         LOG.info("Test getTSTests");
 
         final List<TestSetTest> lTSTests = QcRestClient.getTestSetTests(TESTSET, TESTSET_PATH);
@@ -363,7 +362,7 @@ public class RunClientTest extends AbstractTest {
      * @throws IOException Exception during communication.
      */
     @Test
-    public void testIsExistingTestSet() throws IOException {
+    public void testIsExistingTestSet() throws Exception {
         LOG.info("Test isExistingTestSet");
         boolean exists = QcRestClient.isExistingTestSet(TESTSET, TESTSET_PATH);
         LOG.debug("The testset " + TESTSET + " in folder "
@@ -394,7 +393,7 @@ public class RunClientTest extends AbstractTest {
      * @throws IOException Exception during communication.
      */
     @Test
-    public void testIsExistingTestSetTest() throws IOException {
+    public void testIsExistingTestSetTest() throws Exception {
         LOG.info("Test isExistingTSTest");
 
         final TestSetFolder lFolder = QcRestClient.getTestSetFolder(TESTSET_PATH);
@@ -438,7 +437,7 @@ public class RunClientTest extends AbstractTest {
      *
      * @throws IOException REST communication error.
      */
-    private void createTestSetFolder() throws IOException {
+    private void createTestSetFolder() throws Exception {
         if (QcRestClient.getTestSetFolder(TESTSET_PATH + "\\" + TRASH) == null) {
             final TestSetFolder creater = new TestSetFolder();
             final TestSetFolder parent = QcRestClient.getTestSetFolder(TESTSET_PATH);
@@ -454,7 +453,7 @@ public class RunClientTest extends AbstractTest {
      *
      * @throws IOException Rest connection error.
      */
-    private void createTestSet() throws IOException {
+    private void createTestSet() throws Exception {
         createTestSetFolder();
         final TestSet toCreate = new TestSet();
         final TestSetFolder parent = QcRestClient.getTestSetFolder(TESTSET_PATH + "\\" + TRASH);
@@ -470,7 +469,7 @@ public class RunClientTest extends AbstractTest {
      * @throws IOException Rest connection error.
      */
     @Test
-    public void testAddTestToTestSet() throws IOException {
+    public void testAddTestToTestSet() throws Exception {
         TestSet parent = null;
         try {
             if (!QcRestClient.isExistingTestSet(TRASH, TESTSET_PATH + "\\" + TRASH)) {
