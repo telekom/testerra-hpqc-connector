@@ -9,8 +9,8 @@ apply plugin: 'maven-publish'
 ext {
     doNotPublish = this.&dnp
 
-    testerraVersion = '[1.0-RC,2.0)'
-    moduleVersion = '1-SNAPSHOT'
+    testerraVersion = '[2-SNAPSHOT,3.0-SNAPSHOT)'
+    moduleVersion = '2-SNAPSHOT'
     if (System.properties.containsKey('moduleVersion')) {
         moduleVersion = System.getProperty('moduleVersion')
     }

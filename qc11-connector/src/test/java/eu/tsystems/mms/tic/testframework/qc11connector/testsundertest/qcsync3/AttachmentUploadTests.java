@@ -7,9 +7,9 @@
  */
 package eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.qcsync3;
 
-import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
 import eu.tsystems.mms.tic.testframework.qc11connector.util.TestNgTestMethods;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
+import eu.tsystems.mms.tic.testframework.report.Report;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import java.lang.reflect.Method;
@@ -36,7 +36,7 @@ public class AttachmentUploadTests {
     public void before(final Method method) {
         System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_PASSED);
         System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED);
-        System.clearProperty(TesterraProperties.SCREENCASTER_ACTIVE);
+        System.clearProperty(Report.Properties.SCREENCASTER_ACTIVE.toString());
         if (!method.getName().contains("Screenshot")) {
             final FirefoxProfile profile = new FirefoxProfile();
             WebDriverManager.setGlobalExtraCapability(FirefoxDriver.PROFILE, profile);
