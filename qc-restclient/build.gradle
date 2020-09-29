@@ -1,6 +1,8 @@
 dependencies {
-    implementation "eu.tsystems.mms.tic.testerra:core:" + testerraVersion
+    compileOnly "eu.tsystems.mms.tic.testerra:core:" + testerraCompileVersion
     implementation 'commons-codec:commons-codec:1.13'
+
+    testImplementation 'eu.tsystems.mms.tic.testerra:core:' + testerraTestVersion
 }
 
 apply from: rootProject.file('release-bintray.gradle')
