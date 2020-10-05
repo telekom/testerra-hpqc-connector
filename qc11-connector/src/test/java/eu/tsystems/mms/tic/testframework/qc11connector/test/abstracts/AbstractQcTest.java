@@ -7,7 +7,6 @@
  */
 package eu.tsystems.mms.tic.testframework.qc11connector.test.abstracts;
 
-import eu.tsystems.mms.tic.testframework.common.TesterraCommons;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
@@ -23,10 +22,6 @@ import org.testng.annotations.AfterSuite;
  * @author sepr
  */
 public abstract class AbstractQcTest {
-
-    static {
-        TesterraCommons.init();
-    }
 
     /**
      * Remove ever growing stack of test runs in testsetundertest.
