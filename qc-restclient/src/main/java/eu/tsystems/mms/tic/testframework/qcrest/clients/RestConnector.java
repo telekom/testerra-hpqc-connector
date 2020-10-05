@@ -8,7 +8,6 @@
 package eu.tsystems.mms.tic.testframework.qcrest.clients;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.common.TesterraCommons;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entities;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity;
@@ -46,7 +45,6 @@ import org.slf4j.LoggerFactory;
 public final class RestConnector {
 
     static {
-        TesterraCommons.init();
         CertUtils.trustAllCerts();
     }
 
