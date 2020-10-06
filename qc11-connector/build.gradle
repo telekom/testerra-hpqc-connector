@@ -1,6 +1,5 @@
 dependencies {
     implementation project(':qc-restclient')
-    compileOnly "eu.tsystems.mms.tic.testerra:core:" + testerraCompileVersion
     implementation "eu.tsystems.mms.tic.testerra:surefire-connector:" + testerraTestVersion
 
     testImplementation "eu.tsystems.mms.tic.testerra:driver-ui-desktop:" + testerraTestVersion
