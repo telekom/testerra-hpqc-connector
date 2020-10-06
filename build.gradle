@@ -30,6 +30,10 @@ def dnp(prj) {
 allprojects {
     group 'eu.tsystems.mms.tic.testerra'
     version moduleVersion
+
+    dependencies {
+        compileOnly "eu.tsystems.mms.tic.testerra:core:" + testerraCompileVersion
+    }
 }
 
 subprojects {
