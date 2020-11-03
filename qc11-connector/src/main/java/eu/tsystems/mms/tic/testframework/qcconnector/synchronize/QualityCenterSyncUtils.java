@@ -14,7 +14,7 @@ import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCPathUtil;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.TMInfoContainer;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCFieldValues;
-import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.TesterraMissingQcTestSetAnnotationException;
+import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.MissingQcTestSetAnnotationException;
 import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.TesterraQcResultSyncException;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
@@ -286,7 +286,7 @@ public final class QualityCenterSyncUtils {
             warning.append(". Could not synchronize with QC! ");
             LOGGER.warn(warning.toString());
             // return -1; // No SyncError in this case
-            throw new TesterraMissingQcTestSetAnnotationException(warning.toString());
+            throw new MissingQcTestSetAnnotationException(warning.toString());
         }
         return matchingTest;
     }

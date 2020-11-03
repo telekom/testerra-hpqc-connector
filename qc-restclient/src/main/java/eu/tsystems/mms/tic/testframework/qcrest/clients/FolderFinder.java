@@ -7,8 +7,7 @@
  */
 package eu.tsystems.mms.tic.testframework.qcrest.clients;
 
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
+import eu.tsystems.mms.tic.testframework.exceptions.SystemException;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.AbstractEntity;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestPlanFolder;
@@ -97,7 +96,7 @@ public class FolderFinder {
                 }
                 return testSetFolderById;
             } catch (Exception e) {
-                throw new TesterraSystemException("Error getting testsetfolder", e);
+                throw new SystemException("Error getting testsetfolder", e);
             }
         }
     }
@@ -121,7 +120,7 @@ public class FolderFinder {
                 }
                 return testPlanFolderById;
             } catch (Exception e) {
-                throw new TesterraSystemException("Error getting testplanfolder", e);
+                throw new SystemException("Error getting testplanfolder", e);
             }
         }
     }
@@ -141,7 +140,7 @@ public class FolderFinder {
         }
         if (folders.length == 1) {
             if ("Root".equals(folders[0]) || "Subject".equals(folders[0])) {
-                throw new TesterraRuntimeException(folders[0] + " can not be returned by REST Service.");
+                throw new RuntimeException(folders[0] + " can not be returned by REST Service.");
             } else {
                 LOGGER.error("TestFolder " + path
                         + " not found. Must begin with Root\\... (TestSet) or Subject\\... (TestPlan).");
@@ -197,7 +196,7 @@ public class FolderFinder {
 
             // Exception
             if (id == null) {
-                throw new TesterraSystemException("Could not find Folder " + path);
+                throw new SystemException("Could not find Folder " + path);
             }
 
             // store to cache
@@ -390,7 +389,7 @@ public class FolderFinder {
                 entities = CONNECTOR.getEntities(getRestUrlPlan(), query);
             }
         } catch (Exception e) {
-            throw new TesterraSystemException("Error getting children", e);
+            throw new SystemException("Error getting children", e);
         }
         return entities;
     }
