@@ -7,7 +7,7 @@
  */
 package eu.tsystems.mms.tic.testframework.qcrest.wrapper;
 
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
+import eu.tsystems.mms.tic.testframework.exceptions.SystemException;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
@@ -234,7 +234,7 @@ public class TestRun extends AbstractEntity implements Loggable {
         }
 
         if (testInstance == null) {
-            throw new TesterraSystemException("Error getting TestInstance, see ERROR above");
+            throw new SystemException("Error getting TestInstance, see ERROR above");
         }
 
         return testInstance;

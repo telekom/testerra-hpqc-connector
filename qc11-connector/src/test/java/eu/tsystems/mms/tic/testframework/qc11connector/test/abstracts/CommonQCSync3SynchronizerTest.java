@@ -1,7 +1,7 @@
 package eu.tsystems.mms.tic.testframework.qc11connector.test.abstracts;
 
 import eu.tsystems.mms.tic.testframework.connectors.util.TestFileUtils;
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
+import eu.tsystems.mms.tic.testframework.exceptions.SystemException;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.Testframework;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
@@ -62,7 +62,7 @@ public abstract class CommonQCSync3SynchronizerTest {
      * Check behaviour of a Test with a not existing TestSet specified by its Class-Annotation.
      */
     @Test
-    public void testT08_wrongClassAnnotationTestNG() throws TesterraSystemException {
+    public void testT08_wrongClassAnnotationTestNG() throws SystemException {
         synchronizeTestRun(QCTestUnderTest.QCSYNC3_WRONGCLASS, Testframework.TESTNG);
         TestFileUtils.assertEntryInLogFile(ErrorMessages.wrongQCTestSetAnnotation(QCConstants.NOT_EXISTING_PATH,
                 wrongClassAnnotation.getName()));
