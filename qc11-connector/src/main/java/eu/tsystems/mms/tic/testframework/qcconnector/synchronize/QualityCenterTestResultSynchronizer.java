@@ -79,7 +79,7 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
         try {
 
             PropertyManager.loadProperties("qcconnection.properties");
-            isSyncActive = PropertyManager.getBooleanProperty(QCProperties.SYNC_ACTIVE, true);
+            isSyncActive = PropertyManager.getBooleanProperty(QCProperties.SYNC_ACTIVE, false);
 
             if (!isSyncActive) {
                 LOGGER.info("QC Synchronization turned off.");
