@@ -102,6 +102,10 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
         }
     }
 
+    public static boolean isActive() {
+        return isSyncActive;
+    }
+
     /**
      * Interface for test methods.
      *
