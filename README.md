@@ -7,6 +7,11 @@ QualityCenter. The module will register automatically by using `ModuleHook`.
 
 ## Usage
 
+### Dependencies
+
+* Latest version: `1-SNAPSHOT`
+* Required Testerra version: `1-0-RC-15`
+
 Include the following dependency in your project.
 
 Gradle:
