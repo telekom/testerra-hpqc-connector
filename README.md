@@ -117,28 +117,44 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 
 ## Publication
 
-### ... to a Maven repo
+#### ... to a Maven repo
 
-```sh
-gradle <module>:publishToMavenLocal
+_Preparation_
+
+* All publish settings are located in ``publish.gradle``.
+* All modules will be published.
+* To prevent publishing, add the following line to the ``build.gradle`` of the module:
+  ```groovy
+  doNotPublish(this)
+  ```
+
+_Publishing to local repo_
+
+```shell
+gradle publishToMavenLocal
 ```
 
-or pass then properties via. CLI
+_Publishing to remote repo_
 
-```sh
-gradle <module>:publish -DdeployUrl=<repo-url> -DdeployUsername=<repo-user> -DdeployPassword=<repo-password>
+```shell
+gradle publish -DdeployUrl=<repo-url> -DdeployUsername=<repo-user> -DdeployPassword=<repo-password>
 ```
 
-Set a custom version
-
-```shell script
-gradle <module>:publish -DmoduleVersion=<version>
+_Set a custom version_
+```shell
+gradle publish -DttVersion=<version>
 ```
 
-### ... to Bintray
+#### ... to GitHub
 
-Upload and publish this module to Bintray:
+Some hints for using GitHub Packages as Maven repository
 
-````sh
-gradle bintrayUpload -DmoduleVersion=<version> -DBINTRAY_USER=<bintray-user> -DBINTRAY_API_KEY=<bintray-api-key>
-```` 
+* Deploy URL is https://maven.pkg.github.com/OWNER/REPOSITRY
+* As password generate an access token and grant permissions to ``write:packages`` (Settings -> Developer settings -> Personal access token)
+
+## Contributing
+Thank you for considering contributing to the Testerra framework! The contribution guide can be found here: [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+The Testerra framework is open-sourced software licensed under the [Apache License Version 2.0](LICENSE).
+
