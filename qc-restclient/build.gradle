@@ -3,5 +3,3 @@ dependencies {
 
     testImplementation 'eu.tsystems.mms.tic.testerra:core:' + testerraTestVersion
 }
-
-apply from: rootProject.file('release-bintray.gradle')

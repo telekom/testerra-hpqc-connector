@@ -1,7 +1,3 @@
-plugins {
-    id "com.jfrog.bintray" version "1.8.5"
-}
-
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
@@ -19,29 +15,14 @@ ext {
     }
 }
 
-def dnp(prj) {
-    // Add `doNotPublish(this)` to module's build.gradle if no publishing is needed
-    prj.jar.enabled = true
-    prj.publish.enabled = false
-    prj.publishToMavenLocal.enabled = false
-    println("Do not publish JAR from " + prj)
-}
+subprojects {
 
-allprojects {
     group 'eu.tsystems.mms.tic.testerra'
     version moduleVersion
-
-    dependencies {
-        compileOnly "eu.tsystems.mms.tic.testerra:core:" + testerraCompileVersion
-    }
-}
-
-subprojects {
 
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
-    apply plugin: 'jacoco' // code-coverage
 
     // important!
     repositories {
@@ -53,36 +34,10 @@ subprojects {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 
-    publishing {
-
-        task sourcesJar(type: Jar, dependsOn: classes) {
-            archiveClassifier.set('sources')
-            from sourceSets.main.allSource
-        }
-
-        artifacts {
-            archives sourcesJar
-        }
-
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-                artifact sourcesJar
-            }
-        }
-
-        repositories {
-            maven {
-                url System.getProperty("deployUrl", "none")
-                credentials {
-                    username System.getProperty("deployUsername", "none")
-                    password System.getProperty("deployPassword", "none")
-                }
-            }
-        }
+    dependencies {
+        compileOnly "eu.tsystems.mms.tic.testerra:core:" + testerraCompileVersion
     }
-
-
+    
     tasks.whenTaskAdded { t ->
         if (t.name.startsWith("publish")) {
             boolean e = t.project.publish.enabled
@@ -98,11 +53,14 @@ subprojects {
     }
 }
 
-task publishToBintray(type: GradleBuild) {
-    tasks = [
-            'qc11-connector:bintrayUpload',
-            'qc-restclient:bintrayUpload'
-    ]
+def dnp(prj) {
+    // Add `doNotPublish(this)` to module's build.gradle if no publishing is needed
+    prj.jar.enabled = true
+    prj.publish.enabled = false
+    prj.publishToMavenLocal.enabled = false
+    println("Do not publish JAR from " + prj)
 }
 
+// Do not move this integration because `group` and `version` is needed for publishing
+apply from: rootProject.file('publish.gradle')
 
