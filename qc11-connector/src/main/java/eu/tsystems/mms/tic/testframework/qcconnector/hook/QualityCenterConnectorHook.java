@@ -4,6 +4,7 @@
 package eu.tsystems.mms.tic.testframework.qcconnector.hook;
 
 import com.google.common.eventbus.EventBus;
+import com.google.inject.AbstractModule;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
 import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterTestResultSynchronizer;
 import eu.tsystems.mms.tic.testframework.qcconnector.worker.QualityCenterAfterExecutionFilterWorker;
@@ -19,7 +20,7 @@ import eu.tsystems.mms.tic.testframework.report.TesterraListener;
  *
  * @author erku
  */
-public class QualityCenterConnectorHook implements ModuleHook {
+public class QualityCenterConnectorHook extends AbstractModule implements ModuleHook {
 
     @Override
     public void init() {
