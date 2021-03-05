@@ -1,20 +1,17 @@
-/* 
+/*
  * Created on 20.02.2013
- * 
+ *
  * Copyright(c) 2011 - 2012 T-Systems Multimedia Solutions GmbH
  * Riesaer Str. 5, 01129 Dresden
  * All rights reserved.
  */
 package eu.tsystems.mms.tic.testframework.qcrest.wrapper;
 
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.Response;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * Java class for AttachmentWr complex type.
@@ -23,7 +20,7 @@ public class Attachment extends AbstractEntity {
 
     /**
      * The type of the attachment.
-     * 
+     *
      * @author sepr
      */
     public enum Type {
@@ -36,7 +33,7 @@ public class Attachment extends AbstractEntity {
 
         /**
          * Private constructor
-         * 
+         *
          * @param pType The attachment type.
          */
         private Type(final String pType) {
@@ -45,7 +42,7 @@ public class Attachment extends AbstractEntity {
 
         /**
          * Returns the value.
-         * 
+         *
          * @return The value.
          */
         public String getValue() {
@@ -65,7 +62,7 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Build an attachment from an existing Entity object.
-     * 
+     *
      * @param entity Underlying xml representation.
      */
     public Attachment(final Entity entity) {
@@ -74,10 +71,10 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Gets the value of the content property.
-     * 
+     *
      * @return possible object is byte[]
      */
-    public byte[] getContent() {
+    public byte[] getContent() throws Exception {
         if (content == null) {
             final Logger logger = LoggerFactory.getLogger(Attachment.class);
             if (!getRefType().equalsIgnoreCase(Attachment.Type.FILE.getValue())) {
@@ -89,11 +86,7 @@ public class Attachment extends AbstractEntity {
                     + "/attachments/"
                     + getName();
             final Response response;
-            try {
-                response = connector.httpGet(restUrl, null);
-            } catch (IOException e) {
-                throw new TesterraRuntimeException("Error getting Attachment Content while sending REST request.", e);
-            }
+            response = connector.httpGet(restUrl, null);
             content = response.getResponseData();
         }
         return content.clone();
@@ -101,7 +94,7 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getDescription() {
@@ -110,7 +103,7 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getParentType() {
@@ -119,7 +112,7 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getLastModified() {
@@ -128,7 +121,7 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getName() {
@@ -137,7 +130,7 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as int or 0.
      */
     public int getParentId() {
@@ -147,7 +140,7 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getRefType() {
@@ -156,7 +149,7 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as long or 0.
      */
     public long getSize() {
@@ -169,7 +162,7 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Sets the value of the content property.
-     * 
+     *
      * @param value allowed object is byte[]
      */
     public void setContent(final byte[] value) {
@@ -179,9 +172,9 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Sets the value of the description property.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setDescription(final String value) {
         setFieldValue("description", value);
@@ -189,7 +182,7 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Set the type of the entity this attachment belongs to.
-     * 
+     *
      * @param value New value to set.
      */
     public void setEntityName(final String value) {
@@ -198,9 +191,9 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Sets the value of the lastModified property.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setLastModified(final String value) {
         setFieldValue("last-modified", value);
@@ -208,9 +201,9 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Sets the value of the name property. If the Attachment is of type Url this field should contain the weblink.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setName(final String value) {
         setFieldValue("name", value);
@@ -218,9 +211,9 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Sets the value of the refId property.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setParentId(final int value) {
         setFieldValue("parent-id", Integer.toString(value));
@@ -228,9 +221,9 @@ public class Attachment extends AbstractEntity {
 
     /**
      * Sets the value of the refType property.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setRefType(final String value) {
         setFieldValue("ref-type", value);

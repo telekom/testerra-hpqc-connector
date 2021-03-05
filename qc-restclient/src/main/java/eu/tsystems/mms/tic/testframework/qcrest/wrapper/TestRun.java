@@ -1,21 +1,17 @@
-/* 
+/*
  * Created on 20.02.2013
- * 
+ *
  * Copyright(c) 2011 - 2012 T-Systems Multimedia Solutions GmbH
  * Riesaer Str. 5, 01129 Dresden
  * All rights reserved.
  */
 package eu.tsystems.mms.tic.testframework.qcrest.wrapper;
 
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
+import eu.tsystems.mms.tic.testframework.exceptions.SystemException;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,9 +19,8 @@ import java.util.List;
  * Java class for TestRunWr complex type.
  */
 
-public class TestRun extends AbstractEntity {
+public class TestRun extends AbstractEntity implements Loggable {
     /** Logger instance */
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestRun.class);
     /** List of attachments. */
     private final List<Attachment> attachments;
     /** Test instance the run belongs to */
@@ -43,7 +38,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Create TestRun based on a xml entity.
-     * 
+     *
      * @param entity xml response from rest service.
      */
     public TestRun(final Entity entity) {
@@ -54,7 +49,7 @@ public class TestRun extends AbstractEntity {
     /**
      * Add an Attachment to the test run. Attachments will only be uploaded if this TestRun is posted through
      * QcRestClient.
-     * 
+     *
      * @param attachment Attachment to add.
      */
     public void addAttachments(final Attachment attachment) {
@@ -67,7 +62,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Add list of Attachments to the TestRun.
-     * 
+     *
      * @param list Attachments to add.
      */
     public void addAttachments(final List<Attachment> list) {
@@ -77,19 +72,15 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets all Attachments of this TestRun.
-     * 
+     *
      * @return List of Attachments.
      */
-    public List<Attachment> getAttachments() {
+    public List<Attachment> getAttachments() throws Exception {
         if (attachments.isEmpty()) {
             final RestConnector connector = RestConnector.getInstance();
             final String restUrl = connector.buildEntityCollectionUrl("run") + "/" + getId() + "/attachments";
             List<Entity> entities;
-            try {
-                entities = connector.getEntities(restUrl, null);
-            } catch (IOException e) {
-                throw new TesterraRuntimeException("Error getting Attachments.", e);
-            }
+            entities = connector.getEntities(restUrl, null);
             for (Entity entityAtt : entities) {
                 attachments.add(new Attachment(entityAtt));
             }
@@ -99,7 +90,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Get cycle-id of testrun (id of TestSet containing the TestRun).
-     * 
+     *
      * @return id of testset the run belongs to.
      */
     public int getCycleId() {
@@ -113,9 +104,9 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of the duration field.
-     * 
+     *
      * @return duration as int or 0 if field not set.
-     * 
+     *
      */
     public int getDuration() {
         final String field = getFieldValueByName("duration");
@@ -128,7 +119,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getExecutionDate() {
@@ -137,7 +128,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getExecutionTime() {
@@ -146,7 +137,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getHost() {
@@ -155,7 +146,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getName() {
@@ -164,7 +155,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getOsBuild() {
@@ -173,7 +164,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getOsName() {
@@ -182,7 +173,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getOsSP() {
@@ -191,7 +182,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getOwner() {
@@ -200,9 +191,9 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of the testcycl-id field (id of TestSetTest this TestRun belongs to).
-     * 
+     *
      * @return possible object is {@link int }
-     * 
+     *
      */
     public int getParentId() {
         final String field = getFieldValueByName("testcycl-id");
@@ -216,7 +207,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getStatus() {
@@ -232,18 +223,18 @@ public class TestRun extends AbstractEntity {
         if (testInstance == null) {
             final int field = getParentId();
             if (field == 0) {
-                LOGGER.error("Could not get Test for Run " + getName() + ", because test-id is not set.");
+                log().error("Could not get Test for Run " + getName() + ", because test-id is not set.");
             } else {
                 try {
                     testInstance = QcRestClient.getTestSetTestById(field);
-                } catch (IOException e) {
-                    LOGGER.error("Rest error while getting the test for testRun " + getName(), e);
+                } catch (Exception e) {
+                    log().error("Rest error while getting the test for testRun " + getName(), e);
                 }
             }
         }
 
         if (testInstance == null) {
-            throw new TesterraSystemException("Error getting TestInstance, see ERROR above");
+            throw new SystemException("Error getting TestInstance, see ERROR above");
         }
 
         return testInstance;
@@ -258,12 +249,12 @@ public class TestRun extends AbstractEntity {
         if (test == null) {
             final int field = getTestId();
             if (field == 0) {
-                LOGGER.error("Could not get Test for Run " + getName() + " cause test-id is not set.");
+                log().error("Could not get Test for Run " + getName() + " cause test-id is not set.");
             } else {
                 try {
                     test = QcRestClient.getTestById(field);
-                } catch (IOException e) {
-                    LOGGER.error("Rest-error while getting the test for testRun " + getName(), e);
+                } catch (Exception e) {
+                    log().error("Rest-error while getting the test for testRun " + getName(), e);
                 }
             }
         }
@@ -272,7 +263,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Get test-id of testrun
-     * 
+     *
      * @return id of test (from test plan) the run belongs to (or 0 if not set).
      */
     public int getTestId() {
@@ -286,7 +277,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of the testVersion property.
-     * 
+     *
      * @return Version number of test.
      * @deprecated can not be used with qc 12
      */
@@ -301,7 +292,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of a user defined field of the entity.
-     * 
+     *
      * @param index Number of UserField to get (01-24).
      * @return possible object is {@link String }
      */
@@ -311,7 +302,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Gets the value of the attachment field.
-     * 
+     *
      * @return true, if test run has attachments.
      */
     public boolean isHasAttachmentWr() {
@@ -321,7 +312,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the cycle-id field, that represents the test set the testrun is in.
-     * 
+     *
      * @param value New value to set.
      */
     public void setCycleId(final int value) {
@@ -330,7 +321,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the duration property.
-     * 
+     *
      * @param value New value to set.
      */
     public void setDuration(final int value) {
@@ -339,7 +330,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the executionDate property.
-     * 
+     *
      * @param value New value to set.
      */
     public void setExecutionDate(final String value) {
@@ -348,7 +339,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the executionTime property.
-     * 
+     *
      * @param value New value to set.
      */
     public void setExecutionTime(final String value) {
@@ -357,7 +348,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the hasAttachmentWr property.
-     * 
+     *
      * @param value Value to set.
      */
     public void setHasAttachment(final boolean value) {
@@ -366,7 +357,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the host property.
-     * 
+     *
      * @param value New value to set.
      */
     public void setHost(final String value) {
@@ -375,7 +366,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the name property.
-     * 
+     *
      * @param value New value to set.
      */
     public void setName(final String value) {
@@ -384,9 +375,9 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the osBuild property.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setOsBuild(final String value) {
         setFieldValue("os-build", value);
@@ -394,9 +385,9 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the osName property.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setOsName(final String value) {
         setFieldValue("os-name", value);
@@ -404,9 +395,9 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the osSP property.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setOsSP(final String value) {
         setFieldValue("os-sp", value);
@@ -423,9 +414,9 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the testcycl-id field representing the testinstance this test belongs to.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setParentId(final int value) {
         setFieldValue("testcycl-id", Integer.toString(value));
@@ -433,9 +424,9 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the status property.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setStatus(final String value) {
         setFieldValue("status", value);
@@ -443,9 +434,9 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the test-id field, that represents the test (from test plan) the testrun belongs to.
-     * 
+     *
      * @param value id of referenced test.
-     * 
+     *
      */
     public void setTestId(final int value) {
         setFieldValue("test-id", Integer.toString(value));
@@ -453,7 +444,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the testVersion property.
-     * 
+     *
      * @param value Value to set.
      * @deprecated can not be used with qc 12
      */
@@ -464,7 +455,7 @@ public class TestRun extends AbstractEntity {
 
     /**
      * Sets the value of the user field.
-     * 
+     *
      * @param value allowed object is {@link String }
      * @param index Number of user field to set (01 - 24).
      */

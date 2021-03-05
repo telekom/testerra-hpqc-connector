@@ -8,8 +8,6 @@
 package eu.tsystems.mms.tic.testframework.qcrest.clients;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.common.TesterraCommons;
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entities;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity;
@@ -17,11 +15,6 @@ import eu.tsystems.mms.tic.testframework.qcrest.generated.QCRestException;
 import eu.tsystems.mms.tic.testframework.qcrest.utils.LoginData;
 import eu.tsystems.mms.tic.testframework.qcrest.utils.MarshallingUtils;
 import eu.tsystems.mms.tic.testframework.utils.CertUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.net.ssl.SSLException;
-import javax.xml.bind.JAXBException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import javax.net.ssl.SSLException;
+import javax.xml.bind.JAXBException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The RestConnector can be used to build Requests for the QC REST API and send them via http. Any project and user
@@ -48,7 +45,6 @@ import java.util.Set;
 public final class RestConnector {
 
     static {
-        TesterraCommons.init();
         CertUtils.trustAllCerts();
     }
 
@@ -221,7 +217,7 @@ public final class RestConnector {
      */
     private Response doHttp(final String type, String url, String queryString, final byte[] data,
                             Map<String, String> headers)
-            throws IOException {
+            throws Exception {
         synchronized (instanceLock) {
             url = url.replaceAll(" ", "%20");
             URI escapedUri = null;
@@ -299,7 +295,7 @@ public final class RestConnector {
                     conRetry.connect();
                     ret = retrieveHtmlResponse(conRetry);
                 } else {
-                    throw new TesterraRuntimeException("QC Login not working. Tried 5 times in a row.");
+                    throw new Exception("QC Login not working. Tried 5 times in a row.");
                 }
             }
             LOGGER.trace("Got Response: " + ret.toString());
@@ -343,7 +339,7 @@ public final class RestConnector {
      *
      * @throws IOException Exception during communication with rest service.
      */
-    public List<Entity> getEntities(final String restUrl, String queryUrl) throws IOException {
+    public List<Entity> getEntities(final String restUrl, String queryUrl) throws Exception {
         // Set page size to maximum
         if (queryUrl == null || queryUrl.isEmpty()) {
             queryUrl = "page-size=" + PAGE_SIZE;
@@ -353,12 +349,7 @@ public final class RestConnector {
 
         final Response response = httpGet(restUrl, queryUrl);
         final Entities entities;
-        try {
-            entities = MarshallingUtils.marshal(Entities.class, response.toString());
-        } catch (JAXBException e) {
-            LOGGER.warn("Could not transform response into Entities.", e);
-            throw new IOException(e);
-        }
+        entities = MarshallingUtils.marshal(Entities.class, response.toString());
         return entities.getEntity();
     }
 
@@ -372,7 +363,7 @@ public final class RestConnector {
      *
      * @throws IOException Exception during communication with rest service.
      */
-    public Entity getEntity(final String restUrl, final String queryUrl) throws IOException {
+    public Entity getEntity(final String restUrl, final String queryUrl) throws Exception {
         final Entity entity;
         final Response response = httpGet(restUrl, queryUrl);
         try {
@@ -402,7 +393,7 @@ public final class RestConnector {
      *
      * @throws IOException Exception during Request.
      */
-    public Response httpDelete(final String url) throws IOException {
+    public Response httpDelete(final String url) throws Exception {
         LOGGER.trace("Do DELETE on REST Service");
         return doHttp("DELETE", url, null, null, null);
     }
@@ -418,7 +409,7 @@ public final class RestConnector {
      * @throws IOException Exception during Request.
      */
     public Response httpGet(final String url, final String queryString)
-            throws IOException {
+            throws Exception {
         LOGGER.trace("Do GET on REST Service:\n" +
                 "url: " + url + "\n" +
                 "query: " + queryString);
@@ -437,7 +428,7 @@ public final class RestConnector {
      * @throws IOException Exception during Request.
      */
     public Response httpPost(final String url, final byte[] data, final Map<String, String> headers)
-            throws IOException {
+            throws Exception {
         String hString = "";
         if (headers != null) {
             for (String key : headers.keySet()) {
@@ -464,7 +455,7 @@ public final class RestConnector {
      * @throws IOException Exception during Request.
      */
     public Response httpPut(final String url, final byte[] data, final Map<String, String> headers)
-            throws IOException {
+            throws Exception {
         String hString = "";
         if (headers != null) {
             for (String key : headers.keySet()) {
@@ -490,7 +481,7 @@ public final class RestConnector {
      *
      * @throws IOException http exception.
      */
-    private boolean login(final String loginUrl, final String username, final String password) throws IOException {
+    private boolean login(final String loginUrl, final String username, final String password) throws Exception {
         // Create a string that looks like "Basic ((username:password)<as bytes>)<64encoded>"
         final byte[] credBytes = (username + ":" + password).getBytes();
         final String credEncodedString = "Basic " + Base64.getEncoder().encodeToString(credBytes);
@@ -521,7 +512,7 @@ public final class RestConnector {
                     instance = null;
                 }
                 return loggedOut;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 LOGGER.debug("Logout failed", e);
             }
         }

@@ -4,7 +4,6 @@
 package eu.tsystems.mms.tic.testframework.qcconnector.hook;
 
 import com.google.common.eventbus.EventBus;
-import eu.tsystems.mms.tic.testframework.common.TesterraCommons;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
 import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterTestResultSynchronizer;
 import eu.tsystems.mms.tic.testframework.qcconnector.worker.QualityCenterAfterExecutionFilterWorker;
@@ -25,16 +24,19 @@ public class QualityCenterConnectorHook implements ModuleHook {
     @Override
     public void init() {
 
-        TesterraCommons.init();
         EventBus eventBus = TesterraListener.getEventBus();
         eventBus.register(new QualityCenterExecutionFilterWorker());
         eventBus.register(new QualityCenterAfterExecutionFilterWorker());
-        eventBus.register(new QualityCenterTestResultSynchronizer());
+        if (QualityCenterTestResultSynchronizer.isActive()) {
+            eventBus.register(new QualityCenterTestResultSynchronizer());
+        }
     }
 
     @Override
     public void terminate() {
-        // Logout.
-        RestConnector.getInstance().logout();
+        if (QualityCenterTestResultSynchronizer.isActive()) {
+            // Logout.
+            RestConnector.getInstance().logout();
+        }
     }
 }

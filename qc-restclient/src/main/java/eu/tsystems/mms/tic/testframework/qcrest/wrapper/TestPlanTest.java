@@ -1,35 +1,28 @@
-/* 
+/*
  * Created on 20.02.2013
- * 
+ *
  * Copyright(c) 2011 - 2012 T-Systems Multimedia Solutions GmbH
  * Riesaer Str. 5, 01129 Dresden
  * All rights reserved.
  */
 package eu.tsystems.mms.tic.testframework.qcrest.wrapper;
 
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.FolderFinder;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * Java class for TestWr complex type.
- * 
+ *
  * @author sepr
  */
 public class TestPlanTest extends AbstractEntity {
-    /** Logger */
-    private static final Logger LOG = LoggerFactory.getLogger(TestPlanTest.class);
     /** Cache parent */
     private TestPlanFolder parent;
 
     /**
      * Default constructor.
-     * 
+     *
      * @param entity Entity representing the object.
      */
     public TestPlanTest(final Entity entity) {
@@ -45,7 +38,7 @@ public class TestPlanTest extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getDescription() {
@@ -54,7 +47,7 @@ public class TestPlanTest extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getName() {
@@ -63,7 +56,7 @@ public class TestPlanTest extends AbstractEntity {
 
     /**
      * Get's the folder that contains this test.
-     * 
+     *
      * @return TestPlanFolder object
      */
     public TestPlanFolder getParent() {
@@ -76,17 +69,15 @@ public class TestPlanTest extends AbstractEntity {
                     oneEntity = RestConnector.getInstance().getEntity(
                             RestConnector.getInstance().buildEntityCollectionUrl("test-folder") + "/" + parentId,
                             null);
-                } catch (IOException e) {
-                    LoggerFactory.getLogger(this.getClass()).error("Error getting parent of testsetfolder.", e);
-                    throw new TesterraRuntimeException("Error getting Entity with id " + parentId, e);
+                } catch (Exception e) {
+                    log().error(e.getMessage());
+                    return null;
                 }
-                if (oneEntity == null) {
-                    throw new TesterraRuntimeException("Error getting Entity with id " + parentId);
-                } else {
+                if (oneEntity != null) {
                     parent = new TestPlanFolder(oneEntity);
                 }
             } else {
-                LoggerFactory.getLogger(TestSetFolder.class).trace("Can't get instance of Subject folder");
+                log().trace("Can't get instance of Subject folder");
                 return null;
             }
         }
@@ -96,7 +87,7 @@ public class TestPlanTest extends AbstractEntity {
     /**
      * Gets the TestPlanFolders path by recursive call of getName on parents. RuntimeException could occur if there is
      * an IOException while getting a parent folder.
-     * 
+     *
      * @return The TestPlanFolders path.
      */
     public String getPath() {
@@ -119,7 +110,7 @@ public class TestPlanTest extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getStatus() {
@@ -128,7 +119,7 @@ public class TestPlanTest extends AbstractEntity {
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public int getStepsCount() {
@@ -136,14 +127,14 @@ public class TestPlanTest extends AbstractEntity {
         try {
             return Integer.parseInt(value);
         } catch (Exception e) {
-            LOG.warn("Could not get Steps Count of property value " + value);
+            log().warn("Could not get Steps Count of property value " + value);
             return 0;
         }
     }
 
     /**
      * Gets the value of the appropriate entity field.
-     * 
+     *
      * @return Fields value as String object.
      */
     public String getType() {
@@ -152,10 +143,10 @@ public class TestPlanTest extends AbstractEntity {
 
     /**
      * Gets the value of a user defined field.
-     * 
+     *
      * @param index of userfield (01-24).
      * @return possible object is {@link String }
-     * 
+     *
      */
     public String getUserField(final String index) {
         return getFieldValueByName("user-" + index);
@@ -164,9 +155,9 @@ public class TestPlanTest extends AbstractEntity {
     /**
      * Sets the value of the description property. Setting a value won't have any affect as long as you don't post this
      * object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setDescription(final String value) {
         setFieldValue("description", value);
@@ -175,9 +166,9 @@ public class TestPlanTest extends AbstractEntity {
     /**
      * Sets the value of the name property. Setting a value won't have any affect as long as you don't post this object
      * to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setName(final String value) {
         setFieldValue("name", value);
@@ -186,9 +177,9 @@ public class TestPlanTest extends AbstractEntity {
     /**
      * Sets the value of the parent-id property. Setting a value won't have any affect as long as you don't post this
      * object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setParentId(final int value) {
         setFieldValue("parent-id", value + "");
@@ -197,9 +188,9 @@ public class TestPlanTest extends AbstractEntity {
     /**
      * Sets the value of the status property. Setting a value won't have any affect as long as you don't post this
      * object to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setStatus(final String value) {
         setFieldValue("status", value);
@@ -208,9 +199,9 @@ public class TestPlanTest extends AbstractEntity {
     /**
      * Sets the value of the type property. Setting a value won't have any affect as long as you don't post this object
      * to the REST Service.
-     * 
+     *
      * @param value New value to set.
-     * 
+     *
      */
     public void setType(final String value) {
         setFieldValue("subtype-id", value);
@@ -219,10 +210,10 @@ public class TestPlanTest extends AbstractEntity {
     /**
      * Sets the value of the user defined field. Setting a value won't have any affect as long as you don't post this
      * object to the REST Service.
-     * 
+     *
      * @param index Index of userfield (01-24) to set.
      * @param value allowed object is {@link String }
-     * 
+     *
      */
     public void setUserField(final String index, final String value) {
         setFieldValue("user-" + index, value);

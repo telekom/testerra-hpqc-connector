@@ -7,21 +7,21 @@
  */
 package eu.tsystems.mms.tic.testframework.qcconnector.exceptions;
 
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
+import eu.tsystems.mms.tic.testframework.exceptions.SystemException;
 
 /**
  * Own Exception to bundle mark missing qc test set annotation when sync is active (to qc/testlink).
  *
  * @author sepr
  */
-public class TesterraMissingQcTestSetAnnotationException extends TesterraSystemException {
+public class MissingQcTestSetAnnotationException extends SystemException {
 
     /**
      * default Constructor.
      *
      * @param cause Exception causing the sync error.
      */
-    public TesterraMissingQcTestSetAnnotationException(Throwable cause) {
+    public MissingQcTestSetAnnotationException(Throwable cause) {
         super(cause);
     }
 
@@ -30,7 +30,7 @@ public class TesterraMissingQcTestSetAnnotationException extends TesterraSystemE
      *
      * @param string error message
      */
-    public TesterraMissingQcTestSetAnnotationException(String string) {
+    public MissingQcTestSetAnnotationException(String string) {
         super(string);
     }
 }

@@ -12,13 +12,14 @@ import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.connectors.util.AbstractCommonSynchronizer;
 import eu.tsystems.mms.tic.testframework.connectors.util.SyncType;
 import eu.tsystems.mms.tic.testframework.events.MethodEndEvent;
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
+import eu.tsystems.mms.tic.testframework.exceptions.SystemException;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCFieldValues;
-import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.TesterraMissingQcTestSetAnnotationException;
+import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.MissingQcTestSetAnnotationException;
 import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.TesterraQcResultSyncException;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.Attachment;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
+import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import java.io.File;
 import java.io.IOException;
@@ -64,21 +65,21 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
     /**
      * Public constructor. Creates a new <code>QualityCenterTestResultSynchronizer</code> object.
      *
-     * @throws TesterraSystemException thrown if no connection to Quality Center can established.
+     * @throws SystemException thrown if no connection to Quality Center can established.
      */
-    public QualityCenterTestResultSynchronizer() throws TesterraSystemException {
+    public QualityCenterTestResultSynchronizer() throws SystemException {
     }
 
     /**
      * Inititalize fields.
      *
-     * @throws TesterraSystemException .
+     * @throws SystemException .
      */
-    private static void init() throws TesterraSystemException {
+    private static void init() throws SystemException {
         try {
 
             PropertyManager.loadProperties("qcconnection.properties");
-            isSyncActive = PropertyManager.getBooleanProperty(QCProperties.SYNC_ACTIVE, true);
+            isSyncActive = PropertyManager.getBooleanProperty(QCProperties.SYNC_ACTIVE, false);
 
             if (!isSyncActive) {
                 LOGGER.info("QC Synchronization turned off.");
@@ -97,8 +98,12 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
                 error.append("no message");
             }
 
-            throw new TesterraSystemException(error.toString(), e);
+            throw new SystemException(error.toString(), e);
         }
+    }
+
+    public static boolean isActive() {
+        return isSyncActive;
     }
 
     /**
@@ -193,37 +198,47 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
             }
 
             if (runId > 0) {
-                // Save the runId as a result Attribute.
-                ExecutionContextController.getCurrentTestResult().setAttribute("RunId", runId);
+                ITestResult currentTestResult = ExecutionContextController.getCurrentTestResult();
+                if (currentTestResult != null) {
+                    // Save the runId as a result Attribute.
+                    currentTestResult.setAttribute("RunId", runId);
+                }
             } else {
                 throw new TesterraQcResultSyncException("Error during sync occured. See previous logs.");
             }
 
-            ExecutionContextController.getCurrentMethodContext().infos.add("Synchronization to QualityCenter / ALM successful.");
-        } catch (TesterraMissingQcTestSetAnnotationException xmqe) {
+            MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
+            if (currentMethodContext!=null) {
+                currentMethodContext.infos.add("Synchronization to QualityCenter / ALM successful.");
+            }
+
+        } catch (MissingQcTestSetAnnotationException xmqe) {
             LOGGER.warn("Found missing QCTestSet annotation when QCSync is active.");
         } catch (TesterraQcResultSyncException xse) {
-            LOGGER.error("Sync failed.", xse);
-            ExecutionContextController.getCurrentMethodContext().addPriorityMessage("Synchronization to QualityCenter / ALM failed.");
+            LOGGER.error(xse.getMessage());
+            MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
+            if (currentMethodContext!=null) {
+                currentMethodContext.addPriorityMessage("Synchronization to QualityCenter / ALM failed.");
+            };
         }
         QCFieldValues.resetThreadLocalFields();
     }
 
     @Override
-    protected void pOnTestSuccess(final ITestResult result) {
+    protected void pOnTestSuccess(MethodEndEvent event) {
 
         if (isSyncActive) {
-            final TestRun run = createTestRun(result);
-            syncTestRun(result, run);
+            final TestRun run = createTestRun(event.getTestResult());
+            syncTestRun(event.getTestResult(), run);
         }
     }
 
     @Override
-    protected void pOnTestFailure(final ITestResult result) {
+    protected void pOnTestFailure(MethodEndEvent event) {
 
         if (isSyncActive) {
-            final TestRun run = createTestRun(result);
-            syncTestRun(result, run);
+            final TestRun run = createTestRun(event.getTestResult());
+            syncTestRun(event.getTestResult(), run);
         }
     }
 
