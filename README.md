@@ -7,11 +7,11 @@ QualityCenter. The module will register automatically by using `ModuleHook`.
 
 ## Releases
 
-* Latest Release: `1.0-RC-5`
+* Latest Release: `1.0-RC-6`
 
 ## Requirements
 
-* Testerra in Version `1.0-RC-15`
+* Testerra in Version `1.0-RC-30`
 
 ## Usage
 
@@ -20,17 +20,16 @@ Include the following dependency in your project.
 Gradle:
 
 ````groovy
-implementation 'eu.tsystems.mms.tic.testerra:qc11-connector:1.0-RC-5'
+implementation 'eu.tsystems.mms.tic.testerra:qc11-connector:1.0-RC-6'
 ````
 
 Maven:
 
 ````xml
-
 <dependency>
     <groupId>eu.tsystems.mms.tic.testerra</groupId>
     <artifactId>qc11-connector</artifactId>
-    <version>1.0-RC-5</version>
+    <version>1.0-RC-6</version>
 </dependency>
 ````
 
