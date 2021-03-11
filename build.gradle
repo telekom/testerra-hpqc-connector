@@ -6,7 +6,7 @@ ext {
     doNotPublish = this.&dnp
 
     // Minimum required Testerra version
-    testerraCompileVersion = '1.0-RC-15'
+    testerraCompileVersion = '1.0-RC-30'
     // Unit tests use the latest Testerra version
     testerraTestVersion = '[1.0-RC,2-SNAPSHOT)'
     moduleVersion = '1-SNAPSHOT'
@@ -37,7 +37,7 @@ subprojects {
     dependencies {
         compileOnly "eu.tsystems.mms.tic.testerra:core:" + testerraCompileVersion
     }
-    
+
     tasks.whenTaskAdded { t ->
         if (t.name.startsWith("publish")) {
             boolean e = t.project.publish.enabled
