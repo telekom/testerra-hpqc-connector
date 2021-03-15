@@ -26,7 +26,6 @@ implementation 'eu.tsystems.mms.tic.testerra:qc11-connector:2.0-RC-1'
 Maven:
 
 ````xml
-
 <dependency>
     <groupId>eu.tsystems.mms.tic.testerra</groupId>
     <artifactId>qc11-connector</artifactId>
