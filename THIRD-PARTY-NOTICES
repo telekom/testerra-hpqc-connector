@@ -1,0 +1,41 @@
+ThirdPartyNotices
+-----------------
+Testerra uses third-party software or other resources that may be distributed 
+under licenses different from Testerra.
+
+In the event that we overlooked to list a required notice, please bring this
+to our attention by contacting us via an GitHub issue.
+
+
+Components:
+-----------
+
+Component: 	eu.tsystems.mms.tic.testerra.driver-ui-desktop
+Version:	1.0-RC-30
+Website:   	https://testerra.io
+Repository:	https://github.com/telekom/testerra
+License:   	Apache-2.0
+
+Component: 	eu.tsystems.mms.tic.testerra.surefire-connector
+Version:	1.0-RC-30
+Website:   	https://testerra.io
+Repository:	https://github.com/telekom/testerra
+License:   	Apache-2.0
+
+Component: 	commons-codec.commons-codec
+Version:	1.13
+Website:   	https://commons.apache.org/proper/commons-codec/
+Repository:	https://github.com/apache/commons-codec
+License:   	Apache 2.0
+
+Component: 	org.javassist:javassist
+Version:	3.26.0-GA
+Website:   	http://www.javassist.org/
+Repository:	https://github.com/jboss-javassist/javassist
+License:   	Apache 2.0
+
+Component: 	org.apache.maven.surefire:surefire-testng
+Version:	2.19.1
+Website:   	https://maven.apache.org/surefire/maven-surefire-plugin/
+Repository:	https://github.com/apache/maven-surefire
+License:   	Apache 2.0
