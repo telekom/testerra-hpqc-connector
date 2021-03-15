@@ -7,9 +7,8 @@
 </p>
 
 <p align="center">
-  <a href="#installation">Installation</a> •
+  <a href="#setup">Setup</a> •
   <a href="#documentation">Documentation</a> •
-  <a href="#development">Development</a> •
   <a href="#support-and-feedback">Support</a> •
   <a href="#how-to-contribute">Contribute</a> •
   <a href="#contributors">Contributors</a> •
@@ -18,16 +17,18 @@
 
 ## About this module
 
+This module provides additional features for [Testerra Framework](https://github.com/telekom/testerra) for automated tests.
+
 This module provides an automatic test result synchronization to HP Application Lifecycle Management, former called HP
 QualityCenter. The module will register automatically by using `ModuleHook`.
 
-----
+## Setup
 
-## Requirements
+### Requirements
 
 * Testerra in Version `1.0-RC-30`
 
-## Usage
+### Usage
 
 Include the following dependency in your project.
 
@@ -47,7 +48,9 @@ Maven:
 </dependency>
 ````
 
-## Synchronization
+## Documenation
+
+### Synchronization
 
 The easiest way to setup your project for automatic synchronization is by adding a `qcconnection.properties` file to
 your `/src/test/resources/` directory.
@@ -66,7 +69,7 @@ qc.test.failed.upload.videos=true
 
 Basically the synchronization will work by two explicit annotations that can be set.
 
-### Annotated class mode
+#### Annotated class mode
 
 To enable synchronization you should add the annotation `QCTestset` to your class containing the test methods. The given value
 should match the complete path of Quality Center or Application Lifecycle Management test set, for an example see code snipped
@@ -85,7 +88,7 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 This little snippet will search for a test set called `\\Root\\My\\Full\\Path\\TestSet`. If found, the method name will be extracted
 and searched as test name in QC/ALM. If found, the result will be synchronized to this test case.
 
-### Annotated test method mode
+#### Annotated test method mode
 
 While the class annotation is necessary, the method annotation is not. In case, you don't use the method names as test names you can
 set the `QCTestname` at each test method. The hpqc-connector will then lookup the given value as test name instead of the method
@@ -104,7 +107,7 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 }
 ````
 
-## Properties
+### Properties
 
 |Property|Default|Description|
 |---|---|---|
@@ -169,10 +172,6 @@ Thank you for considering contributing to the Testerra framework! The contributi
 ## License
 The Testerra framework is open-sourced software licensed under the [Apache License Version 2.0](LICENSE).
 
-## Documentation
-
-Check out our comprehensive [Testerra documentation](http://docs.testerra.io)!
-
 ## Code of Conduct
 
 This project has adopted the [Contributor Covenant](https://www.contributor-covenant.org/) in version 2.0 as our code of conduct. Please see the details in our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). All contributors must abide by the code of conduct.
@@ -192,15 +191,6 @@ The following channels are available for discussions, feedback, and support requ
 | ------------------------ | ------------------------------------------------------ |
 | **Issues**   | <a href="/../../issues/new/choose" title="Issues"><img src="https://img.shields.io/github/issues/telekom/testerra-hpqc-connector?style=flat"></a>  |
 | **Other Requests**    | <a href="mailto:testerra@t-systems-mms.com" title="Email us"><img src="https://img.shields.io/badge/email-CWA%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
-
-
-## Repositories
-
-| Repository          | Description                                                           |
-| ------------------- | --------------------------------------------------------------------- |
-| [testerra] | Testerra |
-
-[testerra]: https://github.com/telekom/testerra
 
 ## How to Contribute
 
