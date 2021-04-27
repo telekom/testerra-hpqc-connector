@@ -1,7 +1,7 @@
 dependencies {
     implementation project(':qc-restclient')
 
-    implementation 'io.testerra:core:' + testerraCompileVersion
+    compileOnly 'io.testerra:core:' + testerraCompileVersion
     compileOnly "io.testerra:surefire-connector:" + testerraCompileVersion
 
 //    implementation (group: 'org.apache.maven.surefire', name: 'surefire-testng', version: '2.19.1') {
