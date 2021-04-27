@@ -1,6 +1,7 @@
 # Testerra HPQC connector
 
 <p align="center">
+    <a href="https://mvnrepository.com/artifact/io.testerra/hpqc-connector" title="MavenCentral"><img src="https://img.shields.io/maven-central/v/io.testerra/hpqc-connector/1?label=Maven%20Central"></a>
     <a href="/../../commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/telekom/testerra-hpqc-connector?style=flat"></a>
     <a href="/../../issues" title="Open Issues"><img src="https://img.shields.io/github/issues/telekom/testerra-hpqc-connector?style=flat"></a>
     <a href="./LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat"></a>
@@ -34,17 +35,17 @@ Include the following dependency in your project.
 
 Gradle:
 
-````groovy
+```groovy
 implementation 'io.testerra:qc11-connector:1.0.0'
 implementation 'io.testerra:surefire-connector:1.0.0'
-````
+```
 
 Maven:
 
-````xml
+```xml
 <dependency>
   <groupId>io.testerra</groupId>
-  <artifactId>xray-connector</artifactId>
+  <artifactId>qc11-connector</artifactId>
   <version>1.0.0</version>
 </dependency>
 <dependency>
@@ -52,7 +53,7 @@ Maven:
   <artifactId>surefire-connector</artifactId>
   <version>1.0.0</version>
 </dependency>
-````
+```
 
 ## Documenation
 
