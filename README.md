@@ -1,6 +1,7 @@
 # Testerra HPQC connector
 
 <p align="center">
+    <a href="https://mvnrepository.com/artifact/io.testerra/qc11-connector" title="MavenCentral"><img src="https://img.shields.io/maven-central/v/io.testerra/qc11-connector?label=Maven%20Central"></a>
     <a href="/../../commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/telekom/testerra-hpqc-connector?style=flat"></a>
     <a href="/../../issues" title="Open Issues"><img src="https://img.shields.io/github/issues/telekom/testerra-hpqc-connector?style=flat"></a>
     <a href="./LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat"></a>
@@ -26,7 +27,7 @@ QualityCenter. The module will register automatically by using `ModuleHook`.
 
 ### Requirements
 
-* Testerra in Version `1.0-RC-30`
+![Maven Central](https://img.shields.io/maven-central/v/io.testerra/core/1.0-RC-32?label=Testerra)
 
 ### Usage
 
@@ -35,16 +36,24 @@ Include the following dependency in your project.
 Gradle:
 
 ````groovy
-implementation 'eu.tsystems.mms.tic.testerra:qc11-connector:1.0-RC-6'
+implementation 'io.testerra:qc11-connector:1.0'
+// From Testerra framework
+implementation 'io.testerra:surefire-connector:1.0'
 ````
 
 Maven:
 
 ````xml
 <dependency>
-    <groupId>eu.tsystems.mms.tic.testerra</groupId>
+    <groupId>io.testerra</groupId>
     <artifactId>qc11-connector</artifactId>
-    <version>1.0-RC-6</version>
+    <version>1.0</version>
+</dependency>
+<!-- From Testerra framework -->
+<dependency>
+    <groupId>io.testerra</groupId>
+    <artifactId>surefire-connector</artifactId>
+    <version>1.0</version>
 </dependency>
 ````
 
@@ -131,40 +140,24 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 
 ## Publication
 
-#### ... to a Maven repo
+This module is deployed and published to Maven Central. All JAR files are signed via Gradle signing plugin.
 
-_Preparation_
+The following properties have to be set via command line or ``~/.gradle/gradle.properties``
 
-* All publish settings are located in ``publish.gradle``.
-* All modules will be published.
-* To prevent publishing, add the following line to the ``build.gradle`` of the module:
-  ```groovy
-  doNotPublish(this)
-  ```
+| Property                      | Description                                         |
+| ----------------------------- | --------------------------------------------------- |
+| `moduleVersion`               | Version of deployed module, default is `1-SNAPSHOT` |
+| `deployUrl`                   | Maven repository URL                                |
+| `deployUsername`              | Maven repository username                           |
+| `deployPassword`              | Maven repository password                           |
+| `signing.keyId`               | GPG private key ID (short form)                     |
+| `signing.password`            | GPG private key password                            |
+| `signing.secretKeyRingFile`   | Path to GPG private key                             |
 
-_Publishing to local repo_
-
-```shell
-gradle publishToMavenLocal
-```
-
-_Publishing to remote repo_
-
-```shell
-gradle publish -DdeployUrl=<repo-url> -DdeployUsername=<repo-user> -DdeployPassword=<repo-password>
-```
-
-_Set a custom version_
-```shell
-gradle publish -DttVersion=<version>
-```
-
-#### ... to GitHub
-
-Some hints for using GitHub Packages as Maven repository
-
-* Deploy URL is https://maven.pkg.github.com/OWNER/REPOSITRY
-* As password generate an access token and grant permissions to ``write:packages`` (Settings -> Developer settings -> Personal access token)
+If all properties are set, call the following to build, deploy and release this module:
+````shell
+gradle publish closeAndReleaseRepository
+````
 
 ## Contributing
 Thank you for considering contributing to the Testerra framework! The contribution guide can be found here: [CONTRIBUTING.md](CONTRIBUTING.md).

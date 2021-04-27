@@ -2,5 +2,5 @@ dependencies {
     implementation 'commons-codec:commons-codec:1.13'
     implementation 'org.javassist:javassist:3.20.0-GA'
 
-    testImplementation 'eu.tsystems.mms.tic.testerra:core:' + testerraTestVersion
+    testImplementation 'io.testerra:core:' + testerraTestVersion
 }
