@@ -1,23 +1,19 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-
 ext {
     doNotPublish = this.&dnp
 
     // Minimum required Testerra version
-    testerraCompileVersion = '1.0-RC-30'
+    testerraCompileVersion = '1.0.0'
     // Unit tests use the latest Testerra version
-    testerraTestVersion = '[1.0-RC,2-SNAPSHOT)'
+    testerraTestVersion = '[1.0,2-SNAPSHOT)'
     moduleVersion = '1-SNAPSHOT'
     if (System.properties.containsKey('moduleVersion')) {
         moduleVersion = System.getProperty('moduleVersion')
     }
 }
 
-subprojects {
+allprojects {
 
-    group 'eu.tsystems.mms.tic.testerra'
+    group 'io.testerra'
     version moduleVersion
 
     apply plugin: 'java'
@@ -33,10 +29,6 @@ subprojects {
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-
-    dependencies {
-        compileOnly "eu.tsystems.mms.tic.testerra:core:" + testerraCompileVersion
-    }
 
     tasks.whenTaskAdded { t ->
         if (t.name.startsWith("publish")) {

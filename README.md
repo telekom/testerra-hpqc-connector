@@ -26,7 +26,7 @@ QualityCenter. The module will register automatically by using `ModuleHook`.
 
 ### Requirements
 
-* Testerra in Version `1.0-RC-30`
+![Maven Central](https://img.shields.io/maven-central/v/io.testerra/core/1.0.0?label=Testerra)
 
 ### Usage
 
@@ -35,16 +35,22 @@ Include the following dependency in your project.
 Gradle:
 
 ````groovy
-implementation 'eu.tsystems.mms.tic.testerra:qc11-connector:1.0-RC-6'
+implementation 'io.testerra:qc11-connector:1.0.0'
+implementation 'io.testerra:surefire-connector:1.0.0'
 ````
 
 Maven:
 
 ````xml
 <dependency>
-    <groupId>eu.tsystems.mms.tic.testerra</groupId>
-    <artifactId>qc11-connector</artifactId>
-    <version>1.0-RC-6</version>
+  <groupId>io.testerra</groupId>
+  <artifactId>xray-connector</artifactId>
+  <version>1.0.0</version>
+</dependency>
+<dependency>
+  <groupId>io.testerra</groupId>
+  <artifactId>surefire-connector</artifactId>
+  <version>1.0.0</version>
 </dependency>
 ````
 
