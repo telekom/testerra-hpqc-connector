@@ -1,10 +1,14 @@
 dependencies {
     implementation project(':qc-restclient')
+
+    compileOnly 'io.testerra:core:' + testerraCompileVersion
     compileOnly "io.testerra:surefire-connector:" + testerraCompileVersion
-    implementation (group: 'org.apache.maven.surefire', name: 'surefire-testng', version: '2.19.1') {
-        exclude group: 'org.testng'
-        exclude module: 'testng'
-    }
+
+//    implementation (group: 'org.apache.maven.surefire', name: 'surefire-testng', version: '2.19.1') {
+//        exclude group: 'org.testng'
+//        exclude module: 'testng'
+//    }
 
     testImplementation "io.testerra:driver-ui-desktop:" + testerraTestVersion
+    testImplementation "io.testerra:surefire-connector:" + testerraCompileVersion
 }

@@ -1,14 +1,14 @@
+ext {
 plugins {
     id "io.codearte.nexus-staging" version "0.30.0"
 }
 
 apply plugin: 'io.codearte.nexus-staging'
 
-ext {
     // Minimum required Testerra version
-    testerraCompileVersion = '1.0-RC-32'
+    testerraCompileVersion = '1.0.0'
     // Unit tests use the latest Testerra version
-    testerraTestVersion = '[1.0-RC,2-SNAPSHOT)'
+    testerraTestVersion = '[1.0,2-SNAPSHOT)'
     moduleVersion = '1-SNAPSHOT'
     if (System.properties.containsKey('moduleVersion')) {
         moduleVersion = System.getProperty('moduleVersion')
@@ -16,16 +16,8 @@ ext {
 }
 
 allprojects {
-    apply plugin: 'java'
-    apply plugin: 'maven'
 
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-subprojects {
-
-    group 'eu.tsystems.mms.tic.testerra'
+    group 'io.testerra'
     version moduleVersion
 
     apply plugin: 'maven-publish'
@@ -38,9 +30,8 @@ subprojects {
         jcenter()
     }
 
-    dependencies {
-        compileOnly "io.testerra:core:" + testerraCompileVersion
-    }
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
     tasks.whenTaskAdded { t ->
         if (t.name.startsWith("publish")) {
