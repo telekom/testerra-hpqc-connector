@@ -1,5 +1,6 @@
 dependencies {
     implementation 'commons-codec:commons-codec:1.13'
     implementation 'org.javassist:javassist:3.20.0-GA'
-    implementation 'io.testerra:core:' + testerraCompileVersion
+
+    testImplementation 'io.testerra:core:' + testerraTestVersion
 }

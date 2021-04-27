@@ -1,5 +1,9 @@
 ext {
-    doNotPublish = this.&dnp
+plugins {
+    id "io.codearte.nexus-staging" version "0.30.0"
+}
+
+apply plugin: 'io.codearte.nexus-staging'
 
     // Minimum required Testerra version
     testerraCompileVersion = '1.0.0'
@@ -16,9 +20,8 @@ allprojects {
     group 'io.testerra'
     version moduleVersion
 
-    apply plugin: 'java'
-    apply plugin: 'maven'
     apply plugin: 'maven-publish'
+    apply plugin: 'signing'
 
     // important!
     repositories {
@@ -43,14 +46,6 @@ allprojects {
     test {
         useTestNG()
     }
-}
-
-def dnp(prj) {
-    // Add `doNotPublish(this)` to module's build.gradle if no publishing is needed
-    prj.jar.enabled = true
-    prj.publish.enabled = false
-    prj.publishToMavenLocal.enabled = false
-    println("Do not publish JAR from " + prj)
 }
 
 // Do not move this integration because `group` and `version` is needed for publishing
