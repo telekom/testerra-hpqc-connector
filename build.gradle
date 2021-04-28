@@ -1,10 +1,10 @@
-ext {
 plugins {
     id "io.codearte.nexus-staging" version "0.30.0"
 }
 
 apply plugin: 'io.codearte.nexus-staging'
 
+ext {
     // Minimum required Testerra version
     testerraCompileVersion = '1.0.0'
     // Unit tests use the latest Testerra version
@@ -20,6 +20,7 @@ allprojects {
     group 'io.testerra'
     version moduleVersion
 
+    apply plugin: 'java'
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
 
