@@ -31,6 +31,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
+import org.testng.annotations.Test;
 
 /**
  * A helper class for Quality Center. Automatically handles the test run result synchronization by listening to the
@@ -193,6 +194,12 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
             if (syncType == SyncType.ANNOTATION) {
                 final Class<?> clazz = result.getTestClass().getRealClass();
                 final Method method = result.getMethod().getConstructorOrMethod().getMethod();
+
+                // do not synchronize non-test methods
+                if( ! method.isAnnotationPresent(Test.class) ) {
+                    return;
+                }
+
                 final String methodName = result.getMethod().getMethodName();
                 runId = QualityCenterSyncUtils.syncWithSyncType3(clazz, method, methodName, run, result);
             }
