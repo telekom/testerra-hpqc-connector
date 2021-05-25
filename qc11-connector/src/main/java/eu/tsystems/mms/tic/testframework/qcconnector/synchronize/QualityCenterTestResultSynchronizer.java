@@ -196,7 +196,7 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
                 final Method method = result.getMethod().getConstructorOrMethod().getMethod();
 
                 // do not synchronize non-test methods
-                if( ! method.isAnnotationPresent(Test.class) ) {
+                if( ! result.getMethod().isTest() ) {
                     return;
                 }
 
