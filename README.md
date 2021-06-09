@@ -1,7 +1,7 @@
 # Testerra HPQC connector
 
 <p align="center">
-    <a href="https://mvnrepository.com/artifact/io.testerra/qc11-connector" title="MavenCentral"><img src="https://img.shields.io/maven-central/v/io.testerra/qc11-connector?label=Maven%20Central"></a>
+    <a href="https://mvnrepository.com/artifact/io.testerra/qc11-connector" title="MavenCentral"><img alt="Maven Central" src="https://img.shields.io/maven-central/v/io.testerra/qc11-connector/1?label=MavenCentral"></a>
     <a href="/../../commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/telekom/testerra-hpqc-connector?style=flat"></a>
     <a href="/../../issues" title="Open Issues"><img src="https://img.shields.io/github/issues/telekom/testerra-hpqc-connector?style=flat"></a>
     <a href="./LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat"></a>
@@ -27,7 +27,9 @@ QualityCenter. The module will register automatically by using `ModuleHook`.
 
 ### Requirements
 
-![Maven Central](https://img.shields.io/maven-central/v/io.testerra/core/1.0.0?label=Testerra)
+| HPQC connector | Testerra     |
+| -------------- | -------------|
+| `1.0`          | ` >= 1.0.0`  |
 
 ### Usage
 
@@ -36,7 +38,7 @@ Include the following dependency in your project.
 Gradle:
 
 ```groovy
-implementation 'io.testerra:qc11-connector:1.0.0'
+implementation 'io.testerra:qc11-connector:1.0'
 // From Testerra framework
 implementation 'io.testerra:surefire-connector:1.0.0'
 ```
@@ -47,7 +49,7 @@ Maven:
 <dependency>
   <groupId>io.testerra</groupId>
   <artifactId>qc11-connector</artifactId>
-  <version>1.0.0</version>
+  <version>1.0</version>
 </dependency>
 <!-- From Testerra framework -->
 <dependency>
