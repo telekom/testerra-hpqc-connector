@@ -10,5 +10,5 @@ dependencies {
 //    }
 
     testImplementation "io.testerra:driver-ui-desktop:" + testerraTestVersion
-    testImplementation "io.testerra:surefire-connector:" + testerraCompileVersion
+    testImplementation "io.testerra:surefire-connector:" + testerraTestVersion
 }
