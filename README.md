@@ -1,15 +1,15 @@
 # Testerra HPQC connector
 
 <p align="center">
+    <a href="https://mvnrepository.com/artifact/io.testerra/qc11-connector" title="MavenCentral"><img alt="Maven Central" src="https://img.shields.io/maven-central/v/io.testerra/qc11-connector/1?label=MavenCentral"></a>
     <a href="/../../commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/telekom/testerra-hpqc-connector?style=flat"></a>
     <a href="/../../issues" title="Open Issues"><img src="https://img.shields.io/github/issues/telekom/testerra-hpqc-connector?style=flat"></a>
     <a href="./LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat"></a>
 </p>
 
 <p align="center">
-  <a href="#installation">Installation</a> •
+  <a href="#setup">Setup</a> •
   <a href="#documentation">Documentation</a> •
-  <a href="#development">Development</a> •
   <a href="#support-and-feedback">Support</a> •
   <a href="#how-to-contribute">Contribute</a> •
   <a href="#contributors">Contributors</a> •
@@ -18,36 +18,51 @@
 
 ## About this module
 
+This module provides additional features for [Testerra Framework](https://github.com/telekom/testerra) for automated tests.
+
 This module provides an automatic test result synchronization to HP Application Lifecycle Management, former called HP
 QualityCenter. The module will register automatically by using `ModuleHook`.
 
-----
+## Setup
 
-## Requirements
+### Requirements
 
-* Testerra in Version `2.0-RC-1`
+| HPQC connector | Testerra     |
+| -------------- | -------------|
+| `1.0`          | ` >= 1.0.0`  |
+| `2.0-RC-1`     | ` >= 2.0-RC-1` |
 
-## Usage
+### Usage
 
 Include the following dependency in your project.
 
 Gradle:
 
-````groovy
-implementation 'eu.tsystems.mms.tic.testerra:qc11-connector:2.0-RC-1'
-````
+```groovy
+implementation 'io.testerra:qc11-connector:1.0'
+// From Testerra framework
+implementation 'io.testerra:surefire-connector:1.0.0'
+```
 
 Maven:
 
-````xml
+```xml
 <dependency>
-    <groupId>eu.tsystems.mms.tic.testerra</groupId>
-    <artifactId>qc11-connector</artifactId>
-    <version>2.0-RC-1</version>
+  <groupId>io.testerra</groupId>
+  <artifactId>qc11-connector</artifactId>
+  <version>2.0-RC-1</version>
 </dependency>
-````
+<!-- From Testerra framework -->
+<dependency>
+  <groupId>io.testerra</groupId>
+  <artifactId>surefire-connector</artifactId>
+  <version>2.0-RC-1</version>
+</dependency>
+```
 
-## Synchronization
+## Documenation
+
+### Synchronization
 
 The easiest way to setup your project for automatic synchronization is by adding a `qcconnection.properties` file to
 your `/src/test/resources/` directory.
@@ -66,7 +81,7 @@ qc.test.failed.upload.videos=true
 
 Basically the synchronization will work by two explicit annotations that can be set.
 
-### Annotated class mode
+#### Annotated class mode
 
 To enable synchronization you should add the annotation `QCTestset` to your class containing the test methods. The given value
 should match the complete path of Quality Center or Application Lifecycle Management test set, for an example see code snipped
@@ -85,7 +100,7 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 This little snippet will search for a test set called `\\Root\\My\\Full\\Path\\TestSet`. If found, the method name will be extracted
 and searched as test name in QC/ALM. If found, the result will be synchronized to this test case.
 
-### Annotated test method mode
+#### Annotated test method mode
 
 While the class annotation is necessary, the method annotation is not. In case, you don't use the method names as test names you can
 set the `QCTestname` at each test method. The hpqc-connector will then lookup the given value as test name instead of the method
@@ -104,7 +119,7 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 }
 ````
 
-## Properties
+### Properties
 
 |Property|Default|Description|
 |---|---|---|
@@ -128,50 +143,30 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 
 ## Publication
 
-#### ... to a Maven repo
+This module is deployed and published to Maven Central. All JAR files are signed via Gradle signing plugin.
 
-_Preparation_
+The following properties have to be set via command line or ``~/.gradle/gradle.properties``
 
-* All publish settings are located in ``publish.gradle``.
-* All modules will be published.
-* To prevent publishing, add the following line to the ``build.gradle`` of the module:
-  ```groovy
-  doNotPublish(this)
-  ```
+| Property                      | Description                                         |
+| ----------------------------- | --------------------------------------------------- |
+| `moduleVersion`               | Version of deployed module, default is `1-SNAPSHOT` |
+| `deployUrl`                   | Maven repository URL                                |
+| `deployUsername`              | Maven repository username                           |
+| `deployPassword`              | Maven repository password                           |
+| `signing.keyId`               | GPG private key ID (short form)                     |
+| `signing.password`            | GPG private key password                            |
+| `signing.secretKeyRingFile`   | Path to GPG private key                             |
 
-_Publishing to local repo_
-
-```shell
-gradle publishToMavenLocal
-```
-
-_Publishing to remote repo_
-
-```shell
-gradle publish -DdeployUrl=<repo-url> -DdeployUsername=<repo-user> -DdeployPassword=<repo-password>
-```
-
-_Set a custom version_
-```shell
-gradle publish -DttVersion=<version>
-```
-
-#### ... to GitHub
-
-Some hints for using GitHub Packages as Maven repository
-
-* Deploy URL is https://maven.pkg.github.com/OWNER/REPOSITRY
-* As password generate an access token and grant permissions to ``write:packages`` (Settings -> Developer settings -> Personal access token)
+If all properties are set, call the following to build, deploy and release this module:
+````shell
+gradle publish closeAndReleaseRepository
+````
 
 ## Contributing
 Thank you for considering contributing to the Testerra framework! The contribution guide can be found here: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 The Testerra framework is open-sourced software licensed under the [Apache License Version 2.0](LICENSE).
-
-## Documentation
-
-Check out our comprehensive [Testerra documentation](http://docs.testerra.io)!
 
 ## Code of Conduct
 
@@ -192,15 +187,6 @@ The following channels are available for discussions, feedback, and support requ
 | ------------------------ | ------------------------------------------------------ |
 | **Issues**   | <a href="/../../issues/new/choose" title="Issues"><img src="https://img.shields.io/github/issues/telekom/testerra-hpqc-connector?style=flat"></a>  |
 | **Other Requests**    | <a href="mailto:testerra@t-systems-mms.com" title="Email us"><img src="https://img.shields.io/badge/email-CWA%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
-
-
-## Repositories
-
-| Repository          | Description                                                           |
-| ------------------- | --------------------------------------------------------------------- |
-| [testerra] | Testerra |
-
-[testerra]: https://github.com/telekom/testerra
 
 ## How to Contribute
 
