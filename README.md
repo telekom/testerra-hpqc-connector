@@ -30,7 +30,7 @@ QualityCenter. The module will register automatically by using `ModuleHook`.
 | HPQC connector | Testerra     |
 | -------------- | -------------|
 | `1.0`          | ` >= 1.0.0`  |
-| `2.0-RC-1`     | ` >= 2.0-RC-1` |
+| `2.0-RC-1`     | ` >= 2.0-RC-4` |
 
 ### Usage
 
@@ -39,9 +39,9 @@ Include the following dependency in your project.
 Gradle:
 
 ```groovy
-implementation 'io.testerra:qc11-connector:1.0'
+implementation 'io.testerra:qc11-connector:2.0-RC-1'
 // From Testerra framework
-implementation 'io.testerra:surefire-connector:1.0.0'
+implementation 'io.testerra:surefire-connector:2.0-RC-4'
 ```
 
 Maven:
@@ -56,7 +56,7 @@ Maven:
 <dependency>
   <groupId>io.testerra</groupId>
   <artifactId>surefire-connector</artifactId>
-  <version>2.0-RC-1</version>
+  <version>2.0-RC-4</version>
 </dependency>
 ```
 
