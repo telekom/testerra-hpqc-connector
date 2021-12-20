@@ -8,3 +8,6 @@ out
 build
 gradlew*
 gradle.properties
+/qc-restclient/src/test/resources/qcconnection.properties
+/qc11-connector/src/test/resources/qcconnection.properties
+/qc-restclient/test-report/

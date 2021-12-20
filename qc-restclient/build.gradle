@@ -3,5 +3,35 @@ dependencies {
     implementation 'org.javassist:javassist:3.20.0-GA'
     compileOnly 'io.testerra:core:' + testerraCompileVersion
 
-    testImplementation "io.testerra:driver-ui-desktop:" + testerraTestVersion
+    testImplementation 'io.testerra:driver-ui-desktop:' + testerraTestVersion
+    testImplementation 'io.testerra:report-ng:' + testerraTestVersion
+}
+
+test {
+//    def profiles = [
+//            "restclient": "qc-restclient/src/test/resources/suite.xml",
+//    ]
+//
+//    def suiteFiles = []
+//    profiles.each { k, v ->
+//        if (project.hasProperty("" + k)) {
+////                def f = v
+//            suiteFiles << v
+//        }
+//    }
+
+    useTestNG() {
+        suites("src/test/resources/suite.xml")
+    }
+
+    testLogging {
+        outputs.upToDateWhen { false }
+        showStandardStreams = true
+    }
+
+    options {
+        systemProperties(System.getProperties())
+    }
+
+    ignoreFailures = true
 }

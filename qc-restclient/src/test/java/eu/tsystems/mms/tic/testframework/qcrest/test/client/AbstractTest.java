@@ -13,6 +13,8 @@ import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
 import java.io.IOException;
 import java.util.List;
+
+import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import org.testng.annotations.AfterSuite;
 
 /**
@@ -20,7 +22,7 @@ import org.testng.annotations.AfterSuite;
  *
  * @author sepr
  */
-public abstract class AbstractTest {
+public abstract class AbstractTest extends TesterraTest {
     /** The test folders path. **/
     protected static final String TESTSET_PATH = "Root\\Xeta\\QC WebServiceClient";
     /** Name of TestSet. */

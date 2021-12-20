@@ -6,7 +6,7 @@ apply plugin: 'io.codearte.nexus-staging'
 
 ext {
     // Minimum required Testerra version
-    testerraCompileVersion = '1.0.0'
+    testerraCompileVersion = '1.10'
     // Unit tests use the latest Testerra version
     testerraTestVersion = '[1.0,2-SNAPSHOT)'
     moduleVersion = '1-SNAPSHOT'
@@ -20,7 +20,7 @@ allprojects {
     group 'io.testerra'
     version moduleVersion
 
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
 
@@ -28,7 +28,6 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
     }
 
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -44,10 +43,9 @@ allprojects {
         }
     }
 
-    test {
-        useTestNG()
-    }
 }
+
+
 
 // Do not move this integration because `group` and `version` is needed for publishing
 apply from: rootProject.file('publish.gradle')

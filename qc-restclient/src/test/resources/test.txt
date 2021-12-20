@@ -1,0 +1,2 @@
+This File is used for testing the QCWebService. 
+It is uploaded as an Attachment. Tests will fail, if this file doesn't exist. Please don't remove it.
