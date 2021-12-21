@@ -43,7 +43,7 @@ import org.testng.annotations.Test;
  *
  * @author sepr, mibu
  */
-@QCTestset("Root\\Xeta\\QC WebServiceClient\\RestClientTests")
+//@QCTestset("Root\\Testerra\\QCRestClient\\RestClientTests")
 public class RunClientTest extends AbstractTest {
 
     /**
@@ -54,9 +54,6 @@ public class RunClientTest extends AbstractTest {
      * Trash Folder.
      */
     private static final String TRASH = "TrashCan";
-
-    /** Path to test in testlab. */
-    // private static final String TEST_PATH = "Subject\\Xeta\\QCWebServiceClient";
 
     /**
      * Creates a TestRunWr object.

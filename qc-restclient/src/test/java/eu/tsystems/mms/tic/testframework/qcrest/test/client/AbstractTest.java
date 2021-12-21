@@ -7,6 +7,7 @@
  */
 package eu.tsystems.mms.tic.testframework.qcrest.test.client;
 
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
@@ -22,9 +23,10 @@ import org.testng.annotations.AfterSuite;
  *
  * @author sepr
  */
-public abstract class AbstractTest extends TesterraTest {
+public abstract class AbstractTest extends TesterraTest implements Loggable {
     /** The test folders path. **/
-    protected static final String TESTSET_PATH = "Root\\Xeta\\QC WebServiceClient";
+//    protected static final String TESTSET_PATH = "Root\\Xeta\\QC WebServiceClient";
+    protected static final String TESTSET_PATH = "Root\\Testerra\\QCRestClient";
     /** Name of TestSet. */
     protected static final String TESTSET = "TestSetUnderTest";
     /** Name of tests in testlab */
