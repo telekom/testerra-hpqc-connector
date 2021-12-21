@@ -46,7 +46,7 @@ public class QcExecutionFilterTest extends AbstractQcTest {
     public void testExecutionFilterSyncType3() {
 
         System.setProperty(QCProperties.EXECUTION_FILTER, "exclude:status:failed");
-        String testSetPath = QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME;
+        String testSetPath = QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME;
         LinkedList<Class<?>> classesContainingTestsUnderTest = new LinkedList<Class<?>>();
         classesContainingTestsUnderTest.add(CorrectClassAnnotationTest.class);
         QCSynTestHelper qc11SynchronizerTest = new QCSynTestHelper(classesContainingTestsUnderTest, testSetPath);

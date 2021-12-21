@@ -21,7 +21,6 @@
  */
 package eu.tsystems.mms.tic.testframework.qc11connector.test;
 
-import eu.tsystems.mms.tic.testframework.connectors.util.TestFileUtils;
 import eu.tsystems.mms.tic.testframework.exceptions.SystemException;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
@@ -72,18 +71,10 @@ public class QCynchronizerTest extends TesterraTest implements Loggable {
     @BeforeClass
     public void init() {
         LinkedList<Class<?>> classesContainingTestsUnderTest = getClassesContainingTestsUnderTest();
-        String testSetPath = QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME;
+        String testSetPath = QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME;
         qc11SynchronizerTest = new QCSynTestHelper(classesContainingTestsUnderTest, testSetPath);
         qc11SynchronizerTest.createTestResults();
 
-    }
-
-    protected void synchronizeTestAndAssertStatus(QCTestUnderTest testUnderTest, QCTestStatus status, Testframework framework) {
-        qc11SynchronizerTest.synchronizeTestAndAssertStatus(testUnderTest, status, framework);
-    }
-
-    protected void synchronizeTestRun(QCTestUnderTest testUnderTest, Testframework framework) {
-        qc11SynchronizerTest.synchronizeTestRun(testUnderTest, framework);
     }
 
     /**
@@ -118,10 +109,6 @@ public class QCynchronizerTest extends TesterraTest implements Loggable {
     public void testT08_wrongClassAnnotationTestNG() throws SystemException {
         TestStep.begin("current_test");
         synchronizeTestRun(QCTestUnderTest.QCSYNC3_WRONGCLASS, Testframework.TESTNG);
-        log().info("Foobar");
-        // TODO: Find somethin to get current logs
-//        TestFileUtils.assertEntryInLogFile(ErrorMessages.wrongQCTestSetAnnotation(QCConstants.NOT_EXISTING_PATH,
-//                wrongClassAnnotation.getName()));
         this.findInMethodLogs(ErrorMessages.wrongQCTestSetAnnotation(QCConstants.NOT_EXISTING_PATH, wrongClassAnnotation.getName()));
     }
 
@@ -140,8 +127,7 @@ public class QCynchronizerTest extends TesterraTest implements Loggable {
     @Test
     public void testT12_wrongMethodAnnotationTestNG() {
         synchronizeTestRun(QCTestUnderTest.QCSYNC3_WRONGMETHOD, Testframework.TESTNG);
-        TestFileUtils.assertEntryInLogFile(ErrorMessages.wrongQCTestSetAnnotation(QCConstants.NOT_EXISTING_PATH,
-                noClassAnnotation.getName()));
+        this.findInMethodLogs(ErrorMessages.wrongQCTestSetAnnotation(QCConstants.NOT_EXISTING_PATH, noClassAnnotation.getName()));
     }
 
     /**
@@ -150,8 +136,7 @@ public class QCynchronizerTest extends TesterraTest implements Loggable {
      */
     @Test
     public void testT14_correctMethodAnnotationOverridesWrongClassAnnotationTestNG() {
-        synchronizeTestAndAssertStatus(QCTestUnderTest.QCSYNC3_METHODCORRECTOVERRIDE, QCTestStatus.PASSED,
-                Testframework.TESTNG);
+        synchronizeTestAndAssertStatus(QCTestUnderTest.QCSYNC3_METHODCORRECTOVERRIDE, QCTestStatus.PASSED, Testframework.TESTNG);
     }
 
     /**
@@ -161,8 +146,7 @@ public class QCynchronizerTest extends TesterraTest implements Loggable {
     @Test
     public void testT16_wrongMethodAnnotationOverridesCorrectClassAnnotationTestNG() {
         synchronizeTestRun(QCTestUnderTest.QCSYNC3_METHODWRONGOVERRIDE, Testframework.TESTNG);
-        TestFileUtils.assertEntryInLogFile(ErrorMessages.wrongQCTestSetAnnotation(QCConstants.NOT_EXISTING_PATH,
-                correctClassAnnotation.getName()));
+        this.findInMethodLogs(ErrorMessages.wrongQCTestSetAnnotation(QCConstants.NOT_EXISTING_PATH, correctClassAnnotation.getName()));
     }
 
     /**
@@ -178,8 +162,7 @@ public class QCynchronizerTest extends TesterraTest implements Loggable {
      */
     @Test
     public void testT18_correctMethodAnnotationTestNG() {
-        synchronizeTestAndAssertStatus(QCTestUnderTest.QCSYNC3_CORRECTTESTNAME, QCTestStatus.PASSED,
-                Testframework.TESTNG);
+        synchronizeTestAndAssertStatus(QCTestUnderTest.QCSYNC3_CORRECTTESTNAME, QCTestStatus.PASSED, Testframework.TESTNG);
     }
 
     /**
@@ -195,12 +178,8 @@ public class QCynchronizerTest extends TesterraTest implements Loggable {
      */
     @Test
     public void testT20_wrongMethodAnnotationTestNG() {
-
         synchronizeTestRun(QCTestUnderTest.QCSYNC3_WRONGTESTNAME, Testframework.TESTNG);
-
-        TestFileUtils.assertEntryInLogFile(
-                ErrorMessages.noTestMethodFoundInQC(QCTestUnderTest.QCSYNC3_WRONGTESTNAME.testName,
-                        QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME));
+        this.findInMethodLogs(ErrorMessages.noTestMethodFoundInQC(QCTestUnderTest.QCSYNC3_WRONGTESTNAME.testName, QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME));
     }
 
     /**
@@ -209,6 +188,14 @@ public class QCynchronizerTest extends TesterraTest implements Loggable {
     @Test
     public void testT21_correctTestNameAnnotationWithInstanceCountTwo() {
         synchronizeTestAndAssertStatus(QCTestUnderTest.QCSYNC3_CORRECTTESTNAME_WITHINSTANCE_TWO, QCTestStatus.FAILED, Testframework.TESTNG);
+    }
+
+    private void synchronizeTestRun(QCTestUnderTest testUnderTest, Testframework framework) {
+        qc11SynchronizerTest.synchronizeTestRun(testUnderTest, framework);
+    }
+
+    private void synchronizeTestAndAssertStatus(QCTestUnderTest testUnderTest, QCTestStatus status, Testframework framework) {
+        qc11SynchronizerTest.synchronizeTestAndAssertStatus(testUnderTest, status, framework);
     }
 
     private void findInMethodLogs(String value) {

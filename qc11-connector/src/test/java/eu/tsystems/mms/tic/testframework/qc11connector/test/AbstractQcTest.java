@@ -48,7 +48,7 @@ public abstract class AbstractQcTest extends TesterraTest implements Loggable {
     @AfterSuite
     public void cleanUp() throws Exception {
         log().info("Cleanup created testruns");
-        String[] testsets = new String[]{QCConstants.QCSYNC3_TESTSET_NAME};
+        String[] testsets = new String[]{QCConstants.SYNC_TESTSET_NAME};
         for (String testSet : testsets) {
             TestSet ts = QcRestClient.getTestSet(testSet, QCConstants.QC_TESTSUNDERTEST_FOLDER);
             for (TestSetTest tst : QcRestClient.getTestSetTests(ts)) {

@@ -29,7 +29,7 @@ public final class QCConstants {
     /**
      * QC Path where all TestSets are placed.
      */
-    public static final String QC_TESTSUNDERTEST_FOLDER = "Root\\Xeta\\TestSetsUnderTest\\";
+    public static final String QC_TESTSUNDERTEST_FOLDER = "Root\\Testerra\\TestSetsUnderTest\\";
 
     /**
      * Maximum of time that has been gone between QC Synchronization of tests and control by integration tests. Tests
@@ -43,12 +43,12 @@ public final class QCConstants {
     /**
      * Path that does not exist in QC
      */
-    public static final String NOT_EXISTING_FOLDER = "Root\\Xeta\\Not\\Existing\\";
+    public static final String NOT_EXISTING_FOLDER = "Root\\Testerra\\Not\\Existing\\";
     public static final String NOT_EXISTING_TESTSET = "NotExistingTestSet";
     public static final String NOT_EXISTING_PATH = NOT_EXISTING_FOLDER + NOT_EXISTING_TESTSET;
 
     /**
      * Name of the TestSets for QC Sync Tests, for both System- and UnitTests
      */
-    public static final String QCSYNC3_TESTSET_NAME = "QCSync3";
+    public static final String SYNC_TESTSET_NAME = "SyncTests";
 }

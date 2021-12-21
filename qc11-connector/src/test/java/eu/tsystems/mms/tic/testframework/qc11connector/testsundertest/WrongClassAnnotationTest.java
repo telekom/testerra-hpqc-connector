@@ -44,7 +44,7 @@ public class WrongClassAnnotationTest {
      * Test under test for test methodOverridesClassAnnotation Path in annotation is correct and must override the wrong
      * path in class annotation
      */
-    @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME)
+    @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
     @org.testng.annotations.Test
     public void correctMethodAnnotationOverridesWrongClassAnnotation() {
         Assert.assertTrue(true);

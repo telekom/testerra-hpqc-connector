@@ -35,7 +35,7 @@ public class NoClassAnnotationTest {
     /**
      *
      */
-    @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME)
+    @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
     @org.testng.annotations.Test
     public void correctMethodAnnotation() {
         Assert.assertTrue(true);
@@ -56,27 +56,27 @@ public class NoClassAnnotationTest {
     }
 
     @org.testng.annotations.Test
-    @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME)
+    @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
     @QCTestname("correctTestNameAnnotation")
     public void someNotKnownTestname() {
         Assert.assertTrue(true);
     }
 
-    @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME)
+    @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
     @org.testng.annotations.Test
     @QCTestname(value = "correctTestNameAnnotationWithoutInstanceCount")
     public void correctTestNameAnnotationWithoutInstanceCount() {
         Assert.assertTrue(true);
     }
 
-    @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME)
+    @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
     @org.testng.annotations.Test
     @QCTestname(value = "correctTestNameAnnotationWithInstanceCount", instanceCount = 1)
     public void correctTestNameAnnotationWithInstanceCount() {
         Assert.assertTrue(true);
     }
 
-    @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME)
+    @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
     @org.testng.annotations.Test
     @QCTestname(value = "correctTestNameAnnotationWithInstanceCount", instanceCount = 2)
     public void correctTestNameAnnotationWithInstanceCountTwo() {

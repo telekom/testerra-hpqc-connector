@@ -30,7 +30,7 @@ import org.testng.Assert;
  * Sample test with QCTestSet class-annotation for integration-tests of QCSync Type 3.
  *
  */
-@QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME)
+@QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
 public class CorrectClassAnnotationTest {
 
 
