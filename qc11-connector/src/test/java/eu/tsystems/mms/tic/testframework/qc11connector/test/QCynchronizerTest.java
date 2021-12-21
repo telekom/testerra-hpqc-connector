@@ -1,7 +1,29 @@
+/*
+ * Testerra
+ *
+ * (C) 2013, Stefan Prasse, T-Systems Multimedia Solutions GmbH, Deutsche Telekom AG
+ *
+ * Deutsche Telekom AG and all other contributors /
+ * copyright owners license this file to you under the Apache
+ * License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
 package eu.tsystems.mms.tic.testframework.qc11connector.test;
 
 import eu.tsystems.mms.tic.testframework.connectors.util.TestFileUtils;
 import eu.tsystems.mms.tic.testframework.exceptions.SystemException;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.Testframework;
 import eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.CorrectClassAnnotationTest;
@@ -11,17 +33,23 @@ import eu.tsystems.mms.tic.testframework.qc11connector.util.QCSynTestHelper;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestStatus;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestUnderTest;
+import eu.tsystems.mms.tic.testframework.report.model.context.LogMessage;
+import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
+import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
+import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.LinkedList;
+import java.util.Optional;
 
 /**
  * This class contains tests that check the behaviour of the QC Synchronization. The testsUnderTest of the
  * referenced classes are executed and synchronized with qc according to their QCTestset annotation.
  */
-public class QCynchronizerTest extends TesterraTest {
+public class QCynchronizerTest extends TesterraTest implements Loggable {
 
     private QCSynTestHelper qc11SynchronizerTest;
 
@@ -88,11 +116,13 @@ public class QCynchronizerTest extends TesterraTest {
      */
     @Test
     public void testT08_wrongClassAnnotationTestNG() throws SystemException {
+        TestStep.begin("current_test");
         synchronizeTestRun(QCTestUnderTest.QCSYNC3_WRONGCLASS, Testframework.TESTNG);
-//        MethodContext methodContext = ExecutionContextController.getMethodContextForThread().get();
+        log().info("Foobar");
         // TODO: Find somethin to get current logs
-        TestFileUtils.assertEntryInLogFile(ErrorMessages.wrongQCTestSetAnnotation(QCConstants.NOT_EXISTING_PATH,
-                wrongClassAnnotation.getName()));
+//        TestFileUtils.assertEntryInLogFile(ErrorMessages.wrongQCTestSetAnnotation(QCConstants.NOT_EXISTING_PATH,
+//                wrongClassAnnotation.getName()));
+        this.findInMethodLogs(ErrorMessages.wrongQCTestSetAnnotation(QCConstants.NOT_EXISTING_PATH, wrongClassAnnotation.getName()));
     }
 
     /**
@@ -179,6 +209,17 @@ public class QCynchronizerTest extends TesterraTest {
     @Test
     public void testT21_correctTestNameAnnotationWithInstanceCountTwo() {
         synchronizeTestAndAssertStatus(QCTestUnderTest.QCSYNC3_CORRECTTESTNAME_WITHINSTANCE_TWO, QCTestStatus.FAILED, Testframework.TESTNG);
+    }
+
+    private void findInMethodLogs(String value) {
+        MethodContext methodContext = ExecutionContextController.getMethodContextForThread().get();
+        Optional<LogMessage> first = methodContext.readTestSteps()
+                .flatMap(testStep -> testStep.getTestStepActions().stream())
+                .flatMap(testStepAction -> testStepAction.readEntries(LogMessage.class))
+                .filter(elem -> elem.getMessage().contains(value))
+                .findFirst();
+
+        Assert.assertTrue(first.isPresent(), value + " should part of log messages.");
     }
 
 }
