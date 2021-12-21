@@ -8,8 +8,8 @@
 package eu.tsystems.mms.tic.testframework.qc11connector.test;
 
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
-import eu.tsystems.mms.tic.testframework.qc11connector.test.abstracts.AbstractQcTest;
 import eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.qcsync3.CorrectClassAnnotationTest;
+import eu.tsystems.mms.tic.testframework.qc11connector.util.QCSynTestHelper;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestUnderTest;
 import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterSyncUtils;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
@@ -35,7 +35,7 @@ public class QcExecutionFilterTest extends AbstractQcTest {
         String testSetPath = QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME;
         LinkedList<Class<?>> classesContainingTestsUnderTest = new LinkedList<Class<?>>();
         classesContainingTestsUnderTest.add(CorrectClassAnnotationTest.class);
-        QC11SynchronizerTest qc11SynchronizerTest = new QC11SynchronizerTest(classesContainingTestsUnderTest, testSetPath);
+        QCSynTestHelper qc11SynchronizerTest = new QCSynTestHelper(classesContainingTestsUnderTest, testSetPath);
         qc11SynchronizerTest.createTestResults();
         TestSetTest failingTest = qc11SynchronizerTest.getTestSetTest(QCTestUnderTest.QCSYNC3_FAILINGTEST);
         Assert.assertFalse(QualityCenterSyncUtils.matchesExecutionFilter(failingTest), "Failing Test should not run");

@@ -1,20 +1,26 @@
-package eu.tsystems.mms.tic.testframework.qc11connector.test.abstracts;
+package eu.tsystems.mms.tic.testframework.qc11connector.test;
 
 import eu.tsystems.mms.tic.testframework.connectors.util.TestFileUtils;
 import eu.tsystems.mms.tic.testframework.exceptions.SystemException;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.Testframework;
+import eu.tsystems.mms.tic.testframework.qc11connector.util.QCSynTestHelper;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestStatus;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestUnderTest;
+import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.LinkedList;
 
 /**
- * User: rnhb Date: 15.01.14
+ * This class contains tests that check the behaviour of the QC Synchronization. The testsUnderTest of the
+ * referenced classes are executed and synchronized with qc according to their QCTestset annotation.
  */
-public abstract class CommonQCSync3SynchronizerTest {
+public class QCynchronizerTest extends TesterraTest {
+
+    private QCSynTestHelper qc11SynchronizerTest;
 
     protected Class<?> noClassAnnotation = eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.qcsync3.NoClassAnnotationTest.class;
     protected Class<?> correctClassAnnotation = eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.qcsync3.CorrectClassAnnotationTest.class;
@@ -29,9 +35,25 @@ public abstract class CommonQCSync3SynchronizerTest {
         return classesContainingTestsUnderTest;
     }
 
-    protected abstract void synchronizeTestAndAssertStatus(QCTestUnderTest testUnderTest, QCTestStatus status, Testframework framework);
+    /**
+     * test the qc synchronizer and creates results
+     */
+    @BeforeClass
+    public void init() {
+        LinkedList<Class<?>> classesContainingTestsUnderTest = getClassesContainingTestsUnderTest();
+        String testSetPath = QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME;
+        qc11SynchronizerTest = new QCSynTestHelper(classesContainingTestsUnderTest, testSetPath);
+        qc11SynchronizerTest.createTestResults();
 
-    protected abstract void synchronizeTestRun(QCTestUnderTest testUnderTest, Testframework framework);
+    }
+
+    protected void synchronizeTestAndAssertStatus(QCTestUnderTest testUnderTest, QCTestStatus status, Testframework framework) {
+        qc11SynchronizerTest.synchronizeTestAndAssertStatus(testUnderTest, status, framework);
+    }
+
+    protected void synchronizeTestRun(QCTestUnderTest testUnderTest, Testframework framework) {
+        qc11SynchronizerTest.synchronizeTestRun(testUnderTest, framework);
+    }
 
     /**
      * Check if the synchronization of a successful Test is correct.
@@ -64,6 +86,8 @@ public abstract class CommonQCSync3SynchronizerTest {
     @Test
     public void testT08_wrongClassAnnotationTestNG() throws SystemException {
         synchronizeTestRun(QCTestUnderTest.QCSYNC3_WRONGCLASS, Testframework.TESTNG);
+//        MethodContext methodContext = ExecutionContextController.getMethodContextForThread().get();
+        // TODO: Find somethin to get current logs
         TestFileUtils.assertEntryInLogFile(ErrorMessages.wrongQCTestSetAnnotation(QCConstants.NOT_EXISTING_PATH,
                 wrongClassAnnotation.getName()));
     }
@@ -117,11 +141,33 @@ public abstract class CommonQCSync3SynchronizerTest {
     }
 
     /**
+     * Check if a Test is synchronized to the TestSet with a name specified by its own Method-Annotation.
+     */
+    @Test
+    public void testT18_correctMethodAnnotationTestNG() {
+        synchronizeTestAndAssertStatus(QCTestUnderTest.QCSYNC3_CORRECTTESTNAME, QCTestStatus.PASSED,
+                Testframework.TESTNG);
+    }
+
+    /**
      * Instance Count 1 on annotation provided.
      */
     @Test
     public void testT19_correctTestNameAnnotationWithInstanceCount() {
         synchronizeTestAndAssertStatus(QCTestUnderTest.QCSYNC3_CORRECTTESTNAME_WITHINSTANCE, QCTestStatus.PASSED, Testframework.TESTNG);
+    }
+
+    /**
+     * Check behaviour of a Test with a not existing Testname specified by its own Method-Annotation.
+     */
+    @Test
+    public void testT20_wrongMethodAnnotationTestNG() {
+
+        synchronizeTestRun(QCTestUnderTest.QCSYNC3_WRONGTESTNAME, Testframework.TESTNG);
+
+        TestFileUtils.assertEntryInLogFile(
+                ErrorMessages.noTestMethodFoundInQC(QCTestUnderTest.QCSYNC3_WRONGTESTNAME.testName,
+                        QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.QCSYNC3_TESTSET_NAME));
     }
 
     /**

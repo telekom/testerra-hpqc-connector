@@ -1,12 +1,13 @@
-package eu.tsystems.mms.tic.testframework.qc11connector.test;
+package eu.tsystems.mms.tic.testframework.qc11connector.util;
 
 import eu.tsystems.mms.tic.testframework.connectors.util.SyncType;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.AssertionMessages;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.Testframework;
-import eu.tsystems.mms.tic.testframework.qc11connector.test.abstracts.AbstractCommonSynchronizerTest;
 import eu.tsystems.mms.tic.testframework.qc11connector.util.CommonQCTestUtils;
 import eu.tsystems.mms.tic.testframework.qc11connector.util.QC11TestUtils;
 import eu.tsystems.mms.tic.testframework.qc11connector.util.QCConsistencyChecker;
+import eu.tsystems.mms.tic.testframework.qc11connector.util.TestNgResultCatcher;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestStatus;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestUnderTest;
 import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterSyncUtils;
@@ -14,20 +15,26 @@ import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterTe
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.QcTest;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
+import org.testng.Assert;
+import org.testng.ITestResult;
+import org.testng.TestNG;
+
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.Assert;
-import org.testng.ITestResult;
 
 /**
  * User: rnhb Date: 18.12.13
  */
-public class QC11SynchronizerTest extends AbstractCommonSynchronizerTest {
+public class QCSynTestHelper implements Loggable {
 
-    private static Logger logger = LoggerFactory.getLogger(QC11SynchronizerTest.class);
+    /**
+     * Listener saves all testng testresults.
+     */
+    protected final TestNgResultCatcher testngListener = new TestNgResultCatcher();
+
+    protected LinkedList<Class<?>> classesContainingTestsUnderTest;
+    protected String testSetPath;
 
     /**
      * The synchronizer to test.
@@ -43,19 +50,18 @@ public class QC11SynchronizerTest extends AbstractCommonSynchronizerTest {
      * the qc11 synchronizer test
      *
      * @param classesContainingTestsUnderTest .
-     * @param testSetPath                     .
+     * @param testSetPath .
      */
-    public QC11SynchronizerTest(LinkedList<Class<?>> classesContainingTestsUnderTest, String testSetPath) {
+    public QCSynTestHelper(LinkedList<Class<?>> classesContainingTestsUnderTest, String testSetPath) {
         this.classesContainingTestsUnderTest = classesContainingTestsUnderTest;
         this.testSetPath = testSetPath;
-        logger.debug("Initializing synchronizer for TestSet " + testSetPath);
+        log().debug("Initializing synchronizer for TestSet " + testSetPath);
         if (synchronizer == null) {
             synchronizer = new QualityCenterTestResultSynchronizer();
         }
         synchronizer.setSyncType(SyncType.getSyncMethod());
     }
 
-    @Override
     protected void checkConsistencyWithQC() {
         checkIfTestSetExists();
         updateTestSetTestList();
@@ -76,7 +82,6 @@ public class QC11SynchronizerTest extends AbstractCommonSynchronizerTest {
      * gets the testSetTest
      *
      * @param test .
-     *
      * @return testSetTest
      */
     public TestSetTest getTestSetTest(QCTestUnderTest test) {
@@ -116,11 +121,11 @@ public class QC11SynchronizerTest extends AbstractCommonSynchronizerTest {
     /**
      * synchronizes test runs
      *
-     * @param test      .
+     * @param test .
      * @param framework .
      */
-    protected void synchronizeTestRun(QCTestUnderTest test, Testframework framework) {
-        logger.debug("Synchronizing" + framework + "-Test " + test.getTestName());
+    public void synchronizeTestRun(QCTestUnderTest test, Testframework framework) {
+        log().debug("Synchronizing" + framework + "-Test " + test.getTestName());
         switch (framework) {
             case TESTNG:
                 ITestResult result = getITestResult(test);
@@ -130,7 +135,7 @@ public class QC11SynchronizerTest extends AbstractCommonSynchronizerTest {
         }
     }
 
-    protected void synchronizeTestAndAssertStatus(QCTestUnderTest test, QCTestStatus status, Testframework framework) {
+    public void synchronizeTestAndAssertStatus(QCTestUnderTest test, QCTestStatus status, Testframework framework) {
         synchronizeTestRun(test, framework);
         updateTestSetTestList();
         TestSetTest testSetTest = getTestSetTest(test);
@@ -142,5 +147,50 @@ public class QC11SynchronizerTest extends AbstractCommonSynchronizerTest {
         TestSetTest testSetTest = getTestSetTest(test);
         Method method = result.getMethod().getConstructorOrMethod().getMethod();
         QualityCenterSyncUtils.addTestMapping(method, testSetTest);
+    }
+
+    /**
+     * Some basic functionality common to all Unit-Tests for QCSynchronizer. There exist a number of TestsUnderTest that
+     * should be run and detected by the listeners of both testNG and jUnit. Furthermore, these tests have to exist in a
+     * certain QC TestSet, to validate synchronization. These prerequisites are checked here, otherwise we could get
+     * false positives/negatives.
+     */
+    protected void runTestsUnderTest() {
+
+        TestNG testng = new TestNG();
+        testng.addListener(testngListener);
+
+        final Class<?>[] classes = new Class[classesContainingTestsUnderTest.size()];
+        for (int i = 0; i < classesContainingTestsUnderTest.size(); i++) {
+            final Class<?> aClass = classesContainingTestsUnderTest.get(i);
+            classes[i] = aClass;
+        }
+
+        testng.setTestClasses(classes);
+        testng.run();
+    }
+
+    public void createTestResults() {
+        log().debug("Running tests under test to get results which can be synchronized.");
+        runTestsUnderTest();
+        checkConsistencyWithQC();
+    }
+
+    protected ITestResult getITestResult(QCTestUnderTest test) {
+
+        for (ITestResult result : testngListener.getPassedTests()) {
+            if (result.getName().equals(test.getMethodName())) {
+                return result;
+            }
+        }
+
+        for (ITestResult result : testngListener.getFailedTests()) {
+            if (result.getName().equals(test.getMethodName())) {
+                return result;
+            }
+        }
+
+        Assert.fail(AssertionMessages.testUnderTestNotRunOrHeardTestNG(test.getMethodName()));
+        return null;
     }
 }

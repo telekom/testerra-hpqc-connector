@@ -7,7 +7,6 @@
  */
 package eu.tsystems.mms.tic.testframework.qc11connector.test;
 
-import eu.tsystems.mms.tic.testframework.qc11connector.test.abstracts.AbstractQcTest;
 import eu.tsystems.mms.tic.testframework.qc11connector.util.QC11TestUtils;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestStatus;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestUnderTest;
@@ -16,11 +15,11 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
- * test manual sync to qc.
+ * Test of QualityCenterSyncUtils with manual synchronize to QC.
  *
  * @author sepr
  */
-public class QcProgSyncTest extends AbstractQcTest {
+public class QCSyncUtilsTest extends AbstractQcTest {
 
     /**
      * Name of testUnderTest
