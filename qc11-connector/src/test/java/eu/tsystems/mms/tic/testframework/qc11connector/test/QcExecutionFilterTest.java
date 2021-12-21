@@ -8,7 +8,7 @@
 package eu.tsystems.mms.tic.testframework.qc11connector.test;
 
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
-import eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.qcsync3.CorrectClassAnnotationTest;
+import eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.CorrectClassAnnotationTest;
 import eu.tsystems.mms.tic.testframework.qc11connector.util.QCSynTestHelper;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestUnderTest;
 import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterSyncUtils;

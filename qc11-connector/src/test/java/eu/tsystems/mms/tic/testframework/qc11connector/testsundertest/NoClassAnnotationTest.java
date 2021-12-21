@@ -5,7 +5,7 @@
  * Riesaer Str. 5, 01129 Dresden
  * All rights reserved.
  */
-package eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.qcsync3;
+package eu.tsystems.mms.tic.testframework.qc11connector.testsundertest;
 
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestname;

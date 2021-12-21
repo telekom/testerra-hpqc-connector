@@ -4,6 +4,9 @@ import eu.tsystems.mms.tic.testframework.connectors.util.TestFileUtils;
 import eu.tsystems.mms.tic.testframework.exceptions.SystemException;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.Testframework;
+import eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.CorrectClassAnnotationTest;
+import eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.NoClassAnnotationTest;
+import eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.WrongClassAnnotationTest;
 import eu.tsystems.mms.tic.testframework.qc11connector.util.QCSynTestHelper;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestStatus;
@@ -22,9 +25,9 @@ public class QCynchronizerTest extends TesterraTest {
 
     private QCSynTestHelper qc11SynchronizerTest;
 
-    protected Class<?> noClassAnnotation = eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.qcsync3.NoClassAnnotationTest.class;
-    protected Class<?> correctClassAnnotation = eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.qcsync3.CorrectClassAnnotationTest.class;
-    protected Class<?> wrongClassAnnotation = eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.qcsync3.WrongClassAnnotationTest.class;
+    protected Class<?> noClassAnnotation = NoClassAnnotationTest.class;
+    protected Class<?> correctClassAnnotation = CorrectClassAnnotationTest.class;
+    protected Class<?> wrongClassAnnotation = WrongClassAnnotationTest.class;
 
     protected LinkedList<Class<?>> getClassesContainingTestsUnderTest() {
 
