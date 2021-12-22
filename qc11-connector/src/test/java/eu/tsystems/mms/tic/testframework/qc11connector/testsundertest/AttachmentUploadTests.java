@@ -24,7 +24,6 @@ package eu.tsystems.mms.tic.testframework.qc11connector.testsundertest;
 import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
-import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
@@ -42,7 +41,7 @@ import java.lang.reflect.Method;
  * @author sepr
  */
 @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
-public class AttachmentUploadTests extends TesterraTest {
+public class AttachmentUploadTests {
 
     /**
      * Enable Screencaster

@@ -50,6 +50,16 @@ import java.util.Optional;
  */
 public class QCynchronizerTest extends TesterraTest implements Loggable {
 
+    // TODO: refactoring:
+    //      aktuell werden Testundertest von hier aus programmatisch mit eigenem TestNG-Listener ausgeführt und ausgewertet
+    //      Der Sync wird manuell angestoßen, Grundlage ist das gespeicerte Ergebnises des Testundertest-Tests
+    //      Prüfung erfolgt, ob das Testergebnis des TestNG-Tests mit dem im QC übereinstimmt oder ob bei Nicht-Synch eine Fehlermeldung existiert
+    //      -> komplex...
+    //      Vereinfachung:
+    //          - Testundertest -> Testerra-Test, läuft vorher in eigener Suite, vorher werden alle Runs gelöscht (saubere Grundlage)
+    //          - Eigentlichen Tests prüfen über REST-API die Ergebnisse im QC
+    //          - Nicht prüfbar: Fehler beim Sync resultieren nur über Nicht-Sync im QC --> sollte reichen
+
     private QCSynTestHelper qc11SynchronizerTest;
 
     protected Class<?> noClassAnnotation = NoClassAnnotationTest.class;

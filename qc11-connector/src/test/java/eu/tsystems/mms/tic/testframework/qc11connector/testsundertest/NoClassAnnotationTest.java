@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
 /**
  * Sample test with QCTestSet method-annotations for integration-tests of QCSync Type 3.
  */
-public class NoClassAnnotationTest extends TesterraTest {
+public class NoClassAnnotationTest  {
 
     @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
     @Test

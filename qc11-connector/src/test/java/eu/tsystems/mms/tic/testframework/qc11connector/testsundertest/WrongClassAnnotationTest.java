@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
  * Sample test with wrong QCTestSet class annotation for integration-test of QCSync Type 3.
  */
 @QCTestset(QCConstants.NOT_EXISTING_FOLDER + QCConstants.NOT_EXISTING_TESTSET)
-public class WrongClassAnnotationTest extends TesterraTest {
+public class WrongClassAnnotationTest  {
 
     /**
      * Test under test for test wrongClassAnnotation
