@@ -38,7 +38,15 @@ import eu.tsystems.mms.tic.testframework.qcrest.wrapper.QcTest;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSet;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
+import eu.tsystems.mms.tic.testframework.report.model.context.Video;
+import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestname;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.ITestResult;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,16 +58,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.ITestResult;
 
 /**
  * A helper class containing methods for Synchronizer.
- *
  */
 public final class QualityCenterSyncUtils {
 
@@ -105,11 +108,11 @@ public final class QualityCenterSyncUtils {
     /**
      * Synchronize to QC with syncType 3.
      *
-     * @param clazz      Class of test.
-     * @param method     of test.
+     * @param clazz Class of test.
+     * @param method of test.
      * @param methodName Name of testMethod.
-     * @param run        RunWrapper for TestRun.
-     * @param result     result containing testParameters
+     * @param run RunWrapper for TestRun.
+     * @param result result containing testParameters
      * @return Id of added run or 0 if it could not be added.
      * @throws TesterraQcResultSyncException sync error
      */
@@ -127,7 +130,7 @@ public final class QualityCenterSyncUtils {
      * Adds the Testrun to given Testset with RunClient.
      *
      * @param test The TestSetTest.
-     * @param run  The TestRun.
+     * @param run The TestRun.
      * @return Id of added run or 0 if it could not be added.
      */
     private static int addTestRunToTestSet(final TestSetTest test, final TestRun run) {
@@ -172,11 +175,11 @@ public final class QualityCenterSyncUtils {
     /**
      * Reads the QCTestset path from Annotation and synchronize result to QC.
      *
-     * @param clazz      The class to search the annotation.
-     * @param method     The method to read the annotation.
+     * @param clazz The class to search the annotation.
+     * @param method The method to read the annotation.
      * @param methodName The name of the Testmethod.
-     * @param run        The TestRun.
-     * @param result     result containing testParameters
+     * @param run The TestRun.
+     * @param result result containing testParameters
      * @return Id of added run or 0 if it could not be added.
      */
     private static int readAnnotationAndSync(final Class<?> clazz, final Method method, final String methodName,
@@ -199,10 +202,10 @@ public final class QualityCenterSyncUtils {
     /**
      * Get the TestSetTest for the TestSet annotated on this test method.
      *
-     * @param clazz      Test class.
-     * @param method     Test method
+     * @param clazz Test class.
+     * @param method Test method
      * @param methodName Method name.
-     * @param result     TestResult.
+     * @param result TestResult.
      * @return QC TestSetTest
      */
     public static TestSetTest getTestSetTestForAnnotation(final Class<?> clazz, final Method method,
@@ -372,7 +375,7 @@ public final class QualityCenterSyncUtils {
     /**
      * Add an entry to the TestMapping.
      *
-     * @param method      local TestMethod that matches QC TestSetTest.
+     * @param method local TestMethod that matches QC TestSetTest.
      * @param testSetTest QCTestSetTest that is executed.
      */
     public static void addTestMapping(final Method method, final TestSetTest testSetTest) {
@@ -382,7 +385,7 @@ public final class QualityCenterSyncUtils {
     /**
      * Add an entry to the TestMapping.
      *
-     * @param method      local TestMethod that matches QC TestSetTest.
+     * @param method local TestMethod that matches QC TestSetTest.
      * @param testSetTest QCTestSetTest that is executed.
      */
     private static void pAddTestMapping(final Method method, final TestSetTest testSetTest) {
@@ -487,7 +490,6 @@ public final class QualityCenterSyncUtils {
         }
     }
 
-
     /**
      * gets test result
      *
@@ -499,12 +501,11 @@ public final class QualityCenterSyncUtils {
         return pGetTestAttachments(result);
     }
 
-
     /**
      * Add an arbitary inputstream as attachment.
      *
      * @param inputStream the additionalRunAttachment to set
-     * @param fileName    Name of attachment to add (incl. file type)
+     * @param fileName Name of attachment to add (incl. file type)
      */
     public static void addRunAttachment(final InputStream inputStream, final String fileName) {
 
@@ -526,7 +527,6 @@ public final class QualityCenterSyncUtils {
             LOGGER.error("Could not save inputstream as attachment " + fileName);
         }
     }
-
 
     /**
      * @param result TestResult
@@ -561,8 +561,10 @@ public final class QualityCenterSyncUtils {
 
         // Upload videos...
         if (isVideoUpload) {
-            final List<File> videoFiles = SyncUtils.getVideoFiles();
-            attachments.addAll(videoFiles);
+            ExecutionContextController.getMethodContextForThread().get().readSessionContexts().forEach(sessionContext -> {
+                Optional<Video> video = sessionContext.getVideo();
+                video.ifPresent(value -> attachments.add(value.getVideoFile()));
+            });
         }
 
         List<File> additionalAttachments = getAdditionalRunAttachments();
@@ -634,10 +636,10 @@ public final class QualityCenterSyncUtils {
     /**
      * Creates a testrun for the given test in the specified TestSet.
      *
-     * @param qcPath           path to TestSet
+     * @param qcPath path to TestSet
      * @param testInstanceName name of test to create run for
-     * @param status           Status of test
-     * @param attachments      List of possible attchments
+     * @param status Status of test
+     * @param attachments List of possible attchments
      * @return true if run could be synced.
      */
     public static boolean syncTestRun(final String qcPath, final String testInstanceName, final String status,
@@ -648,10 +650,10 @@ public final class QualityCenterSyncUtils {
     /**
      * Creates a testrun for the given test in the specified TestSet.
      *
-     * @param qcPath           path to TestSet
+     * @param qcPath path to TestSet
      * @param testInstanceName name of test to create run for
-     * @param status           Status of test
-     * @param attachments      List of possible attchments
+     * @param status Status of test
+     * @param attachments List of possible attchments
      * @return true if run could be synced.
      */
     private static boolean pSyncTestRun(final String qcPath, final String testInstanceName, final String status, List<File> attachments) {
@@ -683,8 +685,8 @@ public final class QualityCenterSyncUtils {
      * Creates a TestRun.
      *
      * @param testInstanceName name of test to create run for
-     * @param status           Status of test
-     * @param attachments      List of possible attchments
+     * @param status Status of test
+     * @param attachments List of possible attchments
      * @return A TestRun instance.
      */
     private static TestRun createTestRun(final String testInstanceName, final String status, List<File> attachments) {
