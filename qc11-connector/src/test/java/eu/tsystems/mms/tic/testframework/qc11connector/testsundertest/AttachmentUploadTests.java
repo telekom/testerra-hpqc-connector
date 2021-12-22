@@ -22,7 +22,10 @@
 package eu.tsystems.mms.tic.testframework.qc11connector.testsundertest;
 
 import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
+import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
+import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
+import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import org.openqa.selenium.WebDriver;
@@ -38,7 +41,8 @@ import java.lang.reflect.Method;
  *
  * @author sepr
  */
-public class AttachmentUploadTests {
+@QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
+public class AttachmentUploadTests extends TesterraTest {
 
     /**
      * Enable Screencaster
@@ -86,18 +90,8 @@ public class AttachmentUploadTests {
         System.setProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED, "true");
         final WebDriver driver = WebDriverManager.getWebDriver();
         UITestUtils.takeScreenshot(driver, false);
-        Assert.fail();
+        Assert.fail("Test fails for reasons.");
     }
-
-//    /**
-//     * Test using property qc.test.failed.upload.automatic.screenshot
-//     */
-//    @org.testng.annotations.Test
-//    public void testScreenshotUploadAutoFailed() {
-//        final WebDriver driver = WebDriverManager.getWebDriver();
-//        UITestUtils.takeScreenshot(driver, false);
-//        Assert.fail();
-//    }
 
     /**
      * Test using property qc.test.failed.upload.videos, default=true
@@ -106,18 +100,8 @@ public class AttachmentUploadTests {
     public void testScreencastUploadFailed() {
         final WebDriver driver = WebDriverManager.getWebDriver();
         UITestUtils.takeScreenshot(driver, false);
-        Assert.fail();
+        Assert.fail("Test fails for reasons.");
     }
-
-//    /**
-//     * Test using property qc.test.failed.upload.videos
-//     */
-//    @Test
-//    public void testScreenshotUploadFallback() {
-//        final WebDriver driver = WebDriverManager.getWebDriver();
-//        UITestUtils.takeScreenshot(driver, false);
-//        Assert.fail();
-//    }
 
     /**
      * Test using property qc.test.failed.upload.videos=false
@@ -126,6 +110,6 @@ public class AttachmentUploadTests {
     public void testAttachmentUploadNone() {
         System.setProperty(QCProperties.UPLOAD_VIDEOS, "false");
         WebDriverManager.getWebDriver();
-        Assert.fail();
+        Assert.fail("Test fails for reasons.");
     }
 }

@@ -22,23 +22,23 @@
 package eu.tsystems.mms.tic.testframework.qc11connector.testsundertest;
 
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
+import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestname;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * Sample test with QCTestSet class-annotation for integration-tests of QCSync Type 3.
- *
  */
 @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
-public class CorrectClassAnnotationTest {
-
+public class CorrectClassAnnotationTest extends TesterraTest {
 
     /**
      * Test under test for unit-test correctClassAnnotation. The integration-test will also
      * control the methodname-mapping (e.g. cutting of 'test_').
      */
-    @org.testng.annotations.Test
+    @Test
     public void correctClassAnnotation() {
         Assert.assertTrue(true);
     }
@@ -47,7 +47,7 @@ public class CorrectClassAnnotationTest {
      * Test under test for test wrongMethodAnnotationOverridesCorrectClassAnnotation
      */
     @QCTestset(QCConstants.NOT_EXISTING_FOLDER + QCConstants.NOT_EXISTING_TESTSET)
-    @org.testng.annotations.Test
+    @Test
     public void wrongMethodAnnotationOverridesCorrectClassAnnotation() {
         Assert.assertTrue(true);
     }
@@ -55,7 +55,7 @@ public class CorrectClassAnnotationTest {
     /**
      *
      */
-    @org.testng.annotations.Test
+    @Test
     public void failingTest() {
         Assert.assertTrue(false);
     }
@@ -63,12 +63,12 @@ public class CorrectClassAnnotationTest {
     /**
      *
      */
-    @org.testng.annotations.Test
+    @Test
     public void successfulTest() {
         Assert.assertTrue(true);
     }
 
-    @org.testng.annotations.Test
+    @Test
     @QCTestname("notExistingTestNameAnnotation")
     public void someNotKnownTestnameWithWrongAnnotation() {
         Assert.assertTrue(true);

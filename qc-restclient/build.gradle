@@ -7,7 +7,7 @@ dependencies {
     testImplementation 'io.testerra:report-ng:' + testerraTestVersion
 }
 
-test {
+task testRestClient(type: Test) {
 //    def profiles = [
 //            "restclient": "qc-restclient/src/test/resources/suite.xml",
 //    ]

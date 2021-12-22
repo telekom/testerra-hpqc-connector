@@ -38,7 +38,6 @@ public final class QCConstants {
     public static final long SYSTEMTEST_SYNCINTERVAL = 3000000;
 
     public static final long QCREST_SYNCINTERVAL = 15000;
-    public static final long QCWEBSERVICE_SYNCINTERVAL = 60000;
 
     /**
      * Path that does not exist in QC

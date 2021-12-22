@@ -4,31 +4,27 @@ dependencies {
     compileOnly 'io.testerra:core:' + testerraCompileVersion
     compileOnly 'io.testerra:surefire-connector:' + testerraCompileVersion
 
-//    implementation (group: 'org.apache.maven.surefire', name: 'surefire-testng', version: '2.19.1') {
-//        exclude group: 'org.testng'
-//        exclude module: 'testng'
-//    }
-
     testImplementation 'io.testerra:driver-ui-desktop:' + testerraTestVersion
     testImplementation 'io.testerra:surefire-connector:' + testerraTestVersion
     testImplementation 'io.testerra:report-ng:' + testerraTestVersion
 }
 
-test {
-//    def profiles = [
-//            "restclient": "qc-restclient/src/test/resources/suite.xml",
-//    ]
-//
-//    def suiteFiles = []
-//    profiles.each { k, v ->
-//        if (project.hasProperty("" + k)) {
-////                def f = v
-//            suiteFiles << v
-//        }
-//    }
+task testQCConn(type: Test) {
+    def profiles = [
+            "testundertest": "testundertest.xml",
+            "suite": "suite.xml"
+    ]
+
+    def suiteFiles = []
+    profiles.each { k, v ->
+        if (project.hasProperty("" + k)) {
+            def f = 'src/test/resources/' + v
+            suiteFiles << f
+        }
+    }
 
     useTestNG() {
-        suites("src/test/resources/suite.xml")
+        suites(suiteFiles as String[])
     }
 
     testLogging {

@@ -140,6 +140,25 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 
 ---
 
+## Unit test
+
+### qc-restclient
+
+* Add a ``qcconnection.properties`` to `qc-restclient/src/test/resources`
+* Run ``gradle testRestClient``
+
+### qc11-connector
+
+The test includes two single test runs:
+
+* The ``testundertest`` creates different scenarios for result synchronization. The result has failed tests.
+* The ``suite`` verifies the result of synchronization by connecting to HP QC via REST API to check the `Run` items.   
+
+* Add a ``qcconnection.properties`` to `qc11-connector/src/test/resources`
+* You need a Selenium server for ``testundertest`` suite
+* Run ``gradle testQCConn -Ptestundertest``
+* Run ``gradle testQCConn -Psuite``
+
 ## Publication
 
 This module is deployed and published to Maven Central. All JAR files are signed via Gradle signing plugin.
