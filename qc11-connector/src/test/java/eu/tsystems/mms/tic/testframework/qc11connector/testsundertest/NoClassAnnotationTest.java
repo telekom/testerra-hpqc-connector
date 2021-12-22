@@ -22,63 +22,58 @@
 package eu.tsystems.mms.tic.testframework.qc11connector.testsundertest;
 
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
+import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestname;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * Sample test with QCTestSet method-annotations for integration-tests of QCSync Type 3.
- *
  */
-public class NoClassAnnotationTest {
+public class NoClassAnnotationTest extends TesterraTest {
 
-    /**
-     *
-     */
     @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
-    @org.testng.annotations.Test
+    @Test
     public void correctMethodAnnotation() {
         Assert.assertTrue(true);
     }
 
-    /**
-     *
-     */
     @QCTestset(QCConstants.NOT_EXISTING_FOLDER + QCConstants.NOT_EXISTING_TESTSET)
-    @org.testng.annotations.Test
+    @Test
     public void wrongMethodAnnotation() {
         Assert.assertTrue(true);
     }
 
-    @org.testng.annotations.Test
+    @Test
     public void noAnnotation() {
         Assert.assertTrue(true);
     }
 
-    @org.testng.annotations.Test
     @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
     @QCTestname("correctTestNameAnnotation")
+    @Test
     public void someNotKnownTestname() {
         Assert.assertTrue(true);
     }
 
     @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
-    @org.testng.annotations.Test
     @QCTestname(value = "correctTestNameAnnotationWithoutInstanceCount")
+    @Test
     public void correctTestNameAnnotationWithoutInstanceCount() {
         Assert.assertTrue(true);
     }
 
     @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
-    @org.testng.annotations.Test
     @QCTestname(value = "correctTestNameAnnotationWithInstanceCount", instanceCount = 1)
+    @Test
     public void correctTestNameAnnotationWithInstanceCount() {
         Assert.assertTrue(true);
     }
 
     @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
-    @org.testng.annotations.Test
     @QCTestname(value = "correctTestNameAnnotationWithInstanceCount", instanceCount = 2)
+    @Test
     public void correctTestNameAnnotationWithInstanceCountTwo() {
         Assert.assertTrue(false, "Error.");
     }

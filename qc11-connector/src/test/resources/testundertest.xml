@@ -3,8 +3,11 @@
 <!-- Suite to run for QCSync3 integration tests. -->
 <suite name="Suite1" verbose="1" parallel="false"><!--parallel="methods">   -->
     <test name="test">
-        <packages>
-            <package name="eu.tsystems.mms.tic.testframework.qc11connector.testsundertest"></package>
-        </packages>
+        <classes>
+            <class name="eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.CorrectClassAnnotationTest"></class>
+            <class name="eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.AttachmentUploadTests"></class>
+            <class name="eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.NoClassAnnotationTest"></class>
+            <class name="eu.tsystems.mms.tic.testframework.qc11connector.testsundertest.WrongClassAnnotationTest"></class>
+        </classes>
     </test>
 </suite>

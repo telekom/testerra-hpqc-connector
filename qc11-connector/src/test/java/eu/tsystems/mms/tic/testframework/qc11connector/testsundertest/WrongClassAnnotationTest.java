@@ -22,20 +22,21 @@
 package eu.tsystems.mms.tic.testframework.qc11connector.testsundertest;
 
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
+import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * Sample test with wrong QCTestSet class annotation for integration-test of QCSync Type 3.
- *
  */
 @QCTestset(QCConstants.NOT_EXISTING_FOLDER + QCConstants.NOT_EXISTING_TESTSET)
-public class WrongClassAnnotationTest {
+public class WrongClassAnnotationTest extends TesterraTest {
 
     /**
      * Test under test for test wrongClassAnnotation
      */
-    @org.testng.annotations.Test
+    @Test
     public void wrongClassAnnotation() {
         Assert.assertTrue(true);
     }
@@ -45,7 +46,7 @@ public class WrongClassAnnotationTest {
      * path in class annotation
      */
     @QCTestset(QCConstants.QC_TESTSUNDERTEST_FOLDER + QCConstants.SYNC_TESTSET_NAME)
-    @org.testng.annotations.Test
+    @Test
     public void correctMethodAnnotationOverridesWrongClassAnnotation() {
         Assert.assertTrue(true);
     }
