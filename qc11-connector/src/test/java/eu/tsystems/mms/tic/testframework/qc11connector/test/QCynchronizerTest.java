@@ -59,6 +59,7 @@ public class QCynchronizerTest extends TesterraTest implements Loggable {
     //          - Testundertest -> Testerra-Test, läuft vorher in eigener Suite, vorher werden alle Runs gelöscht (saubere Grundlage)
     //          - Eigentlichen Tests prüfen über REST-API die Ergebnisse im QC
     //          - Nicht prüfbar: Fehler beim Sync resultieren nur über Nicht-Sync im QC --> sollte reichen
+    //          - Sync wird über eigentliche QC-Connector-Funktionalität geprüft, nicht mehr über Aufruf der QC-Conn-Methoden
 
     private QCSynTestHelper qc11SynchronizerTest;
 

@@ -4,8 +4,8 @@
     <test name="test">
         <classes>
             <class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QCynchronizerTest" />
-            <class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QCSyncUtilsTest"/>
-            <class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QcExecutionFilterTest"/>
+<!--            <class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QCSyncUtilsTest"/>-->
+<!--            <class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QcExecutionFilterTest"/>-->
         </classes>
     </test>
 </suite>
