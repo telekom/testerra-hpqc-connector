@@ -744,12 +744,13 @@ public final class QcRestClient {
                     MarshallingUtils.unmarshal(Entity.class, change.getEntity()).getBytes(),
                     headers);
 //            Entity entity = MarshallingUtils.marshal(Entity.class, putResponse.toString());
-            Entity entity;
+            Entity entity = null;
             if (putResponse.toString().contains("Entity")) {
                 entity = MarshallingUtils.marshal(Entity.class, putResponse.toString());
             } else {
                 QCRestException qcRestException = MarshallingUtils.marshal(QCRestException.class, putResponse.toString());
-                throw new RuntimeException(qcRestException.getStackTrace().toString());
+                LOGGER.error(String.format("Error while updating Testset %s (%s)", qcRestException.getTitle(), qcRestException.getId()));
+                LOGGER.error("QC exception: " + qcRestException.getStackTrace().toString());
             }
             List<TestRun> lastRuns = getXTestRuns(new TestSetTest(entity), 1);
             if (lastRuns.size() == 1) {
