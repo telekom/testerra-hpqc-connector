@@ -751,6 +751,7 @@ public final class QcRestClient {
                 QCRestException qcRestException = MarshallingUtils.marshal(QCRestException.class, putResponse.toString());
                 LOGGER.error(String.format("Error while updating Testset %s (%s)", qcRestException.getTitle(), qcRestException.getId()));
                 LOGGER.error("QC exception: " + qcRestException.getStackTrace().toString());
+                throw new RuntimeException("QC sync aborted because of QC exception");
             }
             List<TestRun> lastRuns = getXTestRuns(new TestSetTest(entity), 1);
             if (lastRuns.size() == 1) {
