@@ -6,7 +6,7 @@ apply plugin: 'io.codearte.nexus-staging'
 
 ext {
     // Minimum required Testerra version
-    testerraCompileVersion = '1.10'
+    testerraCompileVersion = '1.12'
     // Unit tests use the latest Testerra version
     testerraTestVersion = '[1.0,2-SNAPSHOT)'
     moduleVersion = '1-SNAPSHOT'

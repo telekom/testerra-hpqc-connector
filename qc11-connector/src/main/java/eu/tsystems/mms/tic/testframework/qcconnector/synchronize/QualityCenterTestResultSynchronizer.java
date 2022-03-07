@@ -27,6 +27,7 @@ import eu.tsystems.mms.tic.testframework.connectors.util.AbstractCommonSynchroni
 import eu.tsystems.mms.tic.testframework.connectors.util.SyncType;
 import eu.tsystems.mms.tic.testframework.events.MethodEndEvent;
 import eu.tsystems.mms.tic.testframework.exceptions.SystemException;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCFieldValues;
 import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.MissingQcTestSetAnnotationException;
 import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.TesterraQcResultSyncException;
@@ -35,17 +36,16 @@ import eu.tsystems.mms.tic.testframework.qcrest.wrapper.Attachment;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
+import org.apache.commons.io.FileUtils;
+import org.testng.ITestResult;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.ITestResult;
-import org.testng.annotations.Test;
+import java.util.Optional;
 
 /**
  * A helper class for Quality Center. Automatically handles the test run result synchronization by listening to the
@@ -55,16 +55,7 @@ import org.testng.annotations.Test;
  */
 public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchronizer {
 
-    /**
-     * The logger.
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(QualityCenterTestResultSynchronizer.class);
-
-    static {
-        LOGGER.info("Initializing " + QualityCenterTestResultSynchronizer.class.getSimpleName()
-                + " over QCRestService");
-        init();
-    }
+    private boolean isSyncActive = false;
 
     @Subscribe
     @Override
@@ -83,6 +74,7 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
      * @throws SystemException thrown if no connection to Quality Center can established.
      */
     public QualityCenterTestResultSynchronizer() throws SystemException {
+        this.init();
     }
 
     /**
@@ -90,14 +82,15 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
      *
      * @throws SystemException .
      */
-    private static void init() throws SystemException {
+    private void init() throws SystemException {
+        log().info("Initializing " + this.getClass().getSimpleName() + " over QCRestService");
         try {
 
             PropertyManager.loadProperties("qcconnection.properties");
-            isSyncActive = PropertyManager.getBooleanProperty(QCProperties.SYNC_ACTIVE, false);
+            this.isSyncActive = PropertyManager.getBooleanProperty(QCProperties.SYNC_ACTIVE, false);
 
-            if (!isSyncActive) {
-                LOGGER.info("QC Synchronization turned off.");
+            if (!this.isSyncActive) {
+                log().info("QC Synchronization turned off.");
                 return;
             }
 
@@ -117,15 +110,10 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
         }
     }
 
-    public static boolean isActive() {
-        return isSyncActive;
-    }
-
     /**
      * Interface for test methods.
      *
      * @param result r
-     *
      * @return run
      */
     public TestRun helpCreateTestRun(final ITestResult result) {
@@ -136,7 +124,6 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
      * Creates a TestRun based on the data given by the result.
      *
      * @param result The result given to the listener methods.
-     *
      * @return A TestRun instance.
      */
     private TestRun createTestRun(final ITestResult result) {
@@ -173,7 +160,7 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
                         testRun.addAttachments(att);
                     }
                 } catch (final IOException e) {
-                    LOGGER.error("Error setting content of attachment from File.");
+                    log().error("Error setting content of attachment from File.");
                 }
             }
         }
@@ -186,10 +173,12 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
      * run.
      *
      * @param result TestResult containing Test infos.
-     * @param run    TestRun to sync.
+     * @param run TestRun to sync.
      */
     public void syncTestRun(final ITestResult result, final TestRun run) {
-        pSyncTestRun(result, run);
+        if (this.isSyncActive) {
+            pSyncTestRun(result, run);
+        }
     }
 
     /**
@@ -197,9 +186,11 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
      * run.
      *
      * @param result TestResult containing Test infos.
-     * @param run    TestRun to sync.
+     * @param run TestRun to sync.
      */
     private void pSyncTestRun(final ITestResult result, final TestRun run) {
+
+        Optional<MethodContext> methodContext = ExecutionContextController.getMethodContextForThread();
 
         try {
             int runId = 0;
@@ -210,7 +201,7 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
                 final Method method = result.getMethod().getConstructorOrMethod().getMethod();
 
                 // do not synchronize non-test methods
-                if( ! result.getMethod().isTest() ) {
+                if (!result.getMethod().isTest()) {
                     return;
                 }
 
@@ -219,28 +210,29 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
             }
 
             if (runId > 0) {
-                ITestResult currentTestResult = ExecutionContextController.getCurrentTestResult();
-                if (currentTestResult != null) {
-                    // Save the runId as a result Attribute.
-                    currentTestResult.setAttribute("RunId", runId);
-                }
+                // Save the runId as a result Attribute.
+                int finalRunId = runId;
+                methodContext.ifPresent(context -> {
+                    context.getTestNgResult().ifPresent(currentResult -> currentResult.setAttribute("RunId", finalRunId));
+                });
             } else {
                 throw new TesterraQcResultSyncException("Error during sync occured. See previous logs.");
             }
-
-            MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
-            if (currentMethodContext!=null) {
-                currentMethodContext.infos.add("Synchronization to QualityCenter / ALM successful.");
-            }
+            methodContext.ifPresent(context -> {
+                log().info("Synchronization to QualityCenter / ALM successful.", context, Loggable.prompt);
+            });
 
         } catch (MissingQcTestSetAnnotationException xmqe) {
-            LOGGER.warn("Found missing QCTestSet annotation when QCSync is active.");
+            methodContext.ifPresent(context -> {
+                log().warn("Found missing QCTestSet annotation when QCSync is active.", context, Loggable.prompt);
+            });
+
         } catch (TesterraQcResultSyncException xse) {
-            LOGGER.error(xse.getMessage());
-            MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
-            if (currentMethodContext!=null) {
-                currentMethodContext.addPriorityMessage("Synchronization to QualityCenter / ALM failed.");
-            };
+            log().error(xse.getMessage());
+            methodContext.ifPresent(context -> {
+                log().error("Synchronization to QualityCenter / ALM failed.", context, Loggable.prompt);
+            });
+
         }
         QCFieldValues.resetThreadLocalFields();
     }
@@ -266,7 +258,7 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
     @Override
     public void setSyncType(final SyncType syncType) {
 
-        LOGGER.info("QC sync type: " + syncType.name());
+        log().info("QC sync type: " + syncType.name());
         QualityCenterTestResultSynchronizer.syncType = syncType;
     }
 }

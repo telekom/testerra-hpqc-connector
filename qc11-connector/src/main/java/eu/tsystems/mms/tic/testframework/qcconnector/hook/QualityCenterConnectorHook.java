@@ -45,16 +45,15 @@ public class QualityCenterConnectorHook implements ModuleHook {
         EventBus eventBus = TesterraListener.getEventBus();
         eventBus.register(new QualityCenterExecutionFilterWorker());
         eventBus.register(new QualityCenterAfterExecutionFilterWorker());
-        if (QualityCenterTestResultSynchronizer.isActive()) {
-            eventBus.register(new QualityCenterTestResultSynchronizer());
-        }
+//        if (QualityCenterTestResultSynchronizer.isActive()) {
+        eventBus.register(new QualityCenterTestResultSynchronizer());
+//        }
     }
 
     @Override
     public void terminate() {
-        if (QualityCenterTestResultSynchronizer.isActive()) {
-            // Logout.
-            RestConnector.getInstance().logout();
-        }
+//        if (QualityCenterTestResultSynchronizer.isActive()) {
+        // Logout.
+        RestConnector.getInstance().logout();
     }
 }
