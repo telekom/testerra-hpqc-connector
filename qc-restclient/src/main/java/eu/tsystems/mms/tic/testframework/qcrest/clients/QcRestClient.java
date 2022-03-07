@@ -23,6 +23,7 @@ package eu.tsystems.mms.tic.testframework.qcrest.clients;
 
 import eu.tsystems.mms.tic.testframework.qcrest.constants.ErrorMessages;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity;
+import eu.tsystems.mms.tic.testframework.qcrest.generated.QCRestException;
 import eu.tsystems.mms.tic.testframework.qcrest.utils.MarshallingUtils;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.Attachment;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.QcTest;
@@ -33,6 +34,11 @@ import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSet;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetFolder;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
+import javassist.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,10 +46,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javassist.NotFoundException;
-import javax.xml.bind.JAXBException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * JavaClient for QC REST API.
@@ -56,7 +58,9 @@ import org.slf4j.LoggerFactory;
  */
 public final class QcRestClient {
 
-    /** Logger. */
+    /**
+     * Logger.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(QcRestClient.class);
 
     /**
@@ -682,7 +686,7 @@ public final class QcRestClient {
      * @return true if the TestSetFolder exists, false otherwise.
      * @throws IOException Exception during communication with REST Service.
      * @deprecated !!! Aus Performancegruenden sollten hier nicht alle TestFolder-Informationen geholt werden, nur um
-     *             dann zu sagen, dass sie existieren, ums sie anschließend nochmal zu holen!!
+     * dann zu sagen, dass sie existieren, ums sie anschließend nochmal zu holen!!
      */
     @Deprecated
     public static boolean isExistingTestSetFolder(final String pFolderPath) throws Exception {
@@ -753,7 +757,16 @@ public final class QcRestClient {
             Response putResponse = connector.httpPut(restUrl,
                     MarshallingUtils.unmarshal(Entity.class, change.getEntity()).getBytes(),
                     headers);
-            Entity entity = MarshallingUtils.marshal(Entity.class, putResponse.toString());
+//            Entity entity = MarshallingUtils.marshal(Entity.class, putResponse.toString());
+            Entity entity = null;
+            if (putResponse.toString().contains("Entity")) {
+                entity = MarshallingUtils.marshal(Entity.class, putResponse.toString());
+            } else {
+                QCRestException qcRestException = MarshallingUtils.marshal(QCRestException.class, putResponse.toString());
+                LOGGER.error(String.format("Error while updating Testset %s (%s)", qcRestException.getTitle(), qcRestException.getId()));
+                LOGGER.error("QC exception: " + qcRestException.getStackTrace().toString());
+                throw new RuntimeException("QC sync aborted because of QC exception");
+            }
             List<TestRun> lastRuns = getXTestRuns(new TestSetTest(entity), 1);
             if (lastRuns.size() == 1) {
                 TestRun lastRun = lastRuns.get(0);
