@@ -43,9 +43,10 @@ allprojects {
         }
     }
 
+    test {
+        useTestNG()
+    }
 }
-
-
 
 // Do not move this integration because `group` and `version` is needed for publishing
 apply from: rootProject.file('publish.gradle')

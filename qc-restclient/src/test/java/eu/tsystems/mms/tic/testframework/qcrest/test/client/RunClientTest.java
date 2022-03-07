@@ -33,7 +33,7 @@ import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSet;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetFolder;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
-import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +74,6 @@ public class RunClientTest extends AbstractTest {
      * Creates a TestRunWr object.
      *
      * @param passed Create Run that is passed (true) or failed (false).
-     *
      * @return A newly created TestRunWr.
      */
     private TestRun createTestRun(boolean passed) {
@@ -91,9 +91,9 @@ public class RunClientTest extends AbstractTest {
     /**
      * Prints a QC folder hierarchy (recursively) to the given StringBuilder.
      *
-     * @param pStr    A StringBuilder.
+     * @param pStr A StringBuilder.
      * @param pFolder A TestSetFolderWr. instance
-     * @param pDeep   An integer indicating hierarchical deepness of pFolder.
+     * @param pDeep An integer indicating hierarchical deepness of pFolder.
      */
     private void printFolder(final StringBuilder pStr,
                              final TestSetFolder pFolder, final int pDeep) throws Exception {
@@ -151,7 +151,6 @@ public class RunClientTest extends AbstractTest {
 
         final TestSetTest tsTest = QcRestClient.getTestSetTest(TEST, TESTSET, TESTSET_PATH);
         final TestRun testRun = createTestRun(false);
-
         final List<Attachment> lAttachmentsList = new ArrayList<Attachment>();
 
         final Attachment attach1 = new Attachment();
@@ -168,7 +167,7 @@ public class RunClientTest extends AbstractTest {
 
         testRun.addAttachments(lAttachmentsList);
         int runId = 0;
-        runId = QcRestClient.addTestRun(tsTest, testRun);
+        runId = QcRestClient.addTestRunToTestSet(tsTest, testRun);
         Assert.assertNotEquals(runId, 0);
         LOG.debug(testRun.getName() + " with "
                 + lAttachmentsList.size() + " attachments added to TestSetTest "
@@ -208,8 +207,8 @@ public class RunClientTest extends AbstractTest {
                     if (attachment.getRefType().equalsIgnoreCase(Attachment.Type.FILE.getValue())) {
                         LOG.debug("\tAttachment path       : "
                                 + FileByteConverter.getFileFromBytes(
-                                attachment.getName(),
-                                attachment.getContent())
+                                        attachment.getName(),
+                                        attachment.getContent())
                                 .getAbsolutePath());
                     } else {
                         LOG.debug("\tAttachment entry       : "
@@ -419,7 +418,6 @@ public class RunClientTest extends AbstractTest {
      * Save a resource to the filesystem.
      *
      * @param resourceName Name of resource to save.
-     *
      * @return Filename.
      */
     protected static File getResourceAsFile(String resourceName) {
@@ -506,7 +504,7 @@ public class RunClientTest extends AbstractTest {
             requestHeaders.put("Accept", "application/xml");
             if (parent != null) {
                 RestConnector.getInstance().httpDelete(
-                        RestConnector.getInstance().buildEntityCollectionUrl("test-set") + "/" + parent.getId())
+                                RestConnector.getInstance().buildEntityCollectionUrl("test-set") + "/" + parent.getId())
                         .toString();
                 RestConnector
                         .getInstance()

@@ -136,12 +136,12 @@ public final class QualityCenterSyncUtils {
     private static int addTestRunToTestSet(final TestSetTest test, final TestRun run) {
         int runId = 0;
         try {
-            runId = QcRestClient.addTestRun(test, run);
+            runId = QcRestClient.addTestRunToTestSet(test, run);
             if (runId != 0) {
                 LOGGER.info("Added TestRun to QC for TestSetTest " + test);
             } else {
                 LOGGER.error("TestRun was not added by RestClient. Try a second time");
-                runId = QcRestClient.addTestRun(test, run);
+                runId = QcRestClient.addTestRunToTestSet(test, run);
                 if (runId != 0) {
                     LOGGER.info("Added TestRun to QC for TestSetTest " + test);
                 } else {
@@ -152,7 +152,7 @@ public final class QualityCenterSyncUtils {
         } catch (final Exception io) {
             LOGGER.error("Error adding TestRun through webservice. Trying second time.", io);
             try {
-                runId = QcRestClient.addTestRun(test, run);
+                runId = QcRestClient.addTestRunToTestSet(test, run);
                 if (runId != 0) {
                     LOGGER.info("Added TestRun to QC for TestSetTest " + test);
                 } else {
@@ -669,7 +669,7 @@ public final class QualityCenterSyncUtils {
         TestSetTest testSetTest;
         try {
             testSetTest = QcRestClient.getTestSetTest(testInstanceName, qcPath.substring(splitIndex + 1), qcPath.substring(0, splitIndex));
-            int id = QcRestClient.addTestRun(testSetTest, testRun);
+            int id = QcRestClient.addTestRunToTestSet(testSetTest, testRun);
             LOGGER.info("Synced testRun with id: " + id);
             return id > 0;
         } catch (Exception e) {

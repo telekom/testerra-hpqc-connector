@@ -239,7 +239,6 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
 
     @Override
     protected void pOnTestSuccess(MethodEndEvent event) {
-
         if (isSyncActive) {
             final TestRun run = createTestRun(event.getTestResult());
             syncTestRun(event.getTestResult(), run);
@@ -248,7 +247,6 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
 
     @Override
     protected void pOnTestFailure(MethodEndEvent event) {
-
         if (isSyncActive) {
             final TestRun run = createTestRun(event.getTestResult());
             syncTestRun(event.getTestResult(), run);
@@ -257,7 +255,6 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
 
     @Override
     public void setSyncType(final SyncType syncType) {
-
         log().info("QC sync type: " + syncType.name());
         QualityCenterTestResultSynchronizer.syncType = syncType;
     }

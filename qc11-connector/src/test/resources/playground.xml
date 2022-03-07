@@ -6,6 +6,7 @@
             <class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QcStatusSyncTest">
                 <methods>
                     <include name="testT01_QcSyncResultFailed" />
+                    <include name="testT02_QcSyncResultPassed" />
                 </methods>
             </class>
 <!--            <class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QCSyncUtilsTest"/>-->

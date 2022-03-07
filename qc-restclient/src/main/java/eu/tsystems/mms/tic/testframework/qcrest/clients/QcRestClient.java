@@ -71,18 +71,6 @@ public final class QcRestClient {
      * @throws IOException Exception during communication with REST Service.
      */
     public static void addAttachmentsToTestRun(final int runId, final List<Attachment> attachments) throws Exception {
-        pAddAttachmentsToTestRun(runId, attachments);
-    }
-
-    /**
-     * Add Attachments to a Test Run.
-     *
-     * @param runId Id of TestRun.
-     * @param attachments Attachments to add.
-     * @throws IOException Exception during communication with REST Service.
-     */
-    private static void pAddAttachmentsToTestRun(final int runId, final List<Attachment> attachments)
-            throws Exception {
         LOGGER.trace("add " + attachments.size() + "Attachments To TestRun" + runId);
         final RestConnector connector = RestConnector.getInstance();
         for (Attachment attachment : attachments) {
@@ -134,19 +122,7 @@ public final class QcRestClient {
      * @return Id of run or 0 if run could not be added.
      * @throws IOException Exception during communication with REST Service.
      */
-    public static int addTestRun(final TestSetTest testSetTest, final TestRun testRun) throws Exception {
-        return pAddTestRun(testSetTest, testRun);
-    }
-
-    /**
-     * Adds a Test Run to the given TestSetTest.
-     *
-     * @param testSetTest The TestSetTest of the new Run.
-     * @param testRun Test Run to save.
-     * @return Id of run or 0 if run could not be added.
-     * @throws IOException Exception during communication with REST Service.
-     */
-    private static int pAddTestRun(final TestSetTest testSetTest, final TestRun testRun) throws Exception {
+    public static int addTestRunToTestSet(final TestSetTest testSetTest, final TestRun testRun) throws Exception {
         LOGGER.debug("addTestRun:");
         final RestConnector connector = RestConnector.getInstance();
         if (testSetTest.getId() == 0) {
@@ -183,7 +159,13 @@ public final class QcRestClient {
             testRun.setFieldValue("subtype-id", "hp.qc.run.MANUAL");
         }
 
+        // Backup status of testrun.
+        // A testrun should created with "Not completed" and updated later with real state
+        // https://lobsterautomation.wordpress.com/2017/01/18/hp-alm-rest-api/
+        final String finalStatus = testRun.getStatus();
+        testRun.setStatus("Not Completed");
         int idReturned = addEntity(testRun.getEntity());
+        testRun.setStatus(finalStatus);
 
         if (idReturned != 0) {
             LOGGER.debug("Set TestSetTest properties for run execution");
@@ -198,8 +180,46 @@ public final class QcRestClient {
                     LOGGER.error("Error adding attachments to testrun {}", idReturned, io);
                 }
             }
+            updateTestRun(idReturned, testRun);
         }
         return idReturned;
+    }
+
+    /**
+     * Update an existing testrun
+     *
+     * @param testRunId
+     * @param testRun
+     * @return
+     */
+    private static TestRun updateTestRun(int testRunId, TestRun testRun) {
+        if (testRun == null || testRunId == 0) {
+            return testRun;
+        }
+
+        final RestConnector connector = RestConnector.getInstance();
+        final String requestUrl = connector.buildEntityCollectionUrl("run") + "/" + testRunId;
+        try {
+            final Map<String, String> headers = new HashMap<String, String>();
+            headers.put("Content-Type", "application/xml");
+            Response putResponse = connector.httpPut(
+                    requestUrl,
+                    MarshallingUtils.unmarshal(Entity.class, testRun.getEntity()).getBytes(),
+                    headers);
+//            Entity entity = MarshallingUtils.marshal(Entity.class, putResponse.toString());
+//            Entity entity = null;
+//            if (putResponse.toString().contains("Entity")) {
+//                entity = MarshallingUtils.marshal(Entity.class, putResponse.toString());
+//            } else {
+//                QCRestException qcRestException = MarshallingUtils.marshal(QCRestException.class, putResponse.toString());
+//                LOGGER.error(String.format("Error while updating Testrun %s (%s)", qcRestException.getTitle(), qcRestException.getId()));
+//            }
+        } catch (JAXBException e) {
+            LOGGER.error("Error parsing TestSetTestObject to xml.", e);
+        } catch (Exception e) {
+            LOGGER.error("Error updating Run", e);
+        }
+        return testRun;
     }
 
     /**
@@ -253,16 +273,6 @@ public final class QcRestClient {
      * @throws IOException Exception during communication with REST Service.
      */
     public static List<TestSet> getAllTestSets() throws Exception {
-        return pGetAllTestSets();
-    }
-
-    /**
-     * Gets all TestSets.
-     *
-     * @return A List containing the TestSets.
-     * @throws IOException Exception during communication with REST Service.
-     */
-    private static List<TestSet> pGetAllTestSets() throws Exception {
         LOGGER.debug("getAllTestSets");
         final List<TestSet> testSets = new LinkedList<TestSet>();
 
@@ -285,17 +295,6 @@ public final class QcRestClient {
      * @throws IOException Exception during communication with REST Service.
      */
     public static QcTest getTestById(final int id) throws Exception {
-        return pGetTestById(id);
-    }
-
-    /**
-     * Gets a Test by its Id.
-     *
-     * @param id Id of Test.
-     * @return Test object.
-     * @throws IOException Exception during communication with REST Service.
-     */
-    private static QcTest pGetTestById(final int id) throws Exception {
         LOGGER.trace("getTestById " + id);
         final RestConnector connector = RestConnector.getInstance();
         final String restUrl = connector.buildEntityCollectionUrl("test") + "/" + id;
@@ -386,18 +385,6 @@ public final class QcRestClient {
      * @throws IOException Exception during communication with REST Service.
      */
     public static TestSet getTestSet(final String testSetName, final TestSetFolder testSetFolder) throws Exception {
-        return pGetTestSet(testSetName, testSetFolder);
-    }
-
-    /**
-     * Get a TestSet with the given Name of the given TestSetFolder.
-     *
-     * @param testSetName The name of the testset.
-     * @param testSetFolder The folder containing the testset.
-     * @return The TestSet object.
-     * @throws IOException Exception during communication with REST Service.
-     */
-    private static TestSet pGetTestSet(final String testSetName, final TestSetFolder testSetFolder) throws Exception {
         LOGGER.debug("getTestSet " + testSetName + " of " + testSetFolder);
         TestSet testSet = null;
         if (testSetFolder == null) {
@@ -427,17 +414,6 @@ public final class QcRestClient {
      * @throws IOException Exception during communication with REST Service.
      */
     public static TestSet getTestSetById(final int id) throws Exception {
-        return pGetTestSetById(id);
-    }
-
-    /**
-     * Get a TestSet by its id.
-     *
-     * @param id Id of TestSet.
-     * @return TestSet object.
-     * @throws IOException Exception during communication with REST Service.
-     */
-    private static TestSet pGetTestSetById(final int id) throws Exception {
         LOGGER.trace("getTestSetById " + id);
         final RestConnector connector = RestConnector.getInstance();
         final String restUrl = connector.buildEntityCollectionUrl("test-set") + "/" + id;
@@ -453,17 +429,6 @@ public final class QcRestClient {
      * @throws IOException Exception during communication with REST Service.
      */
     public static TestSetFolder getTestSetFolder(final String testSetFolderPath) throws Exception {
-        return pGetTestSetFolder(testSetFolderPath);
-    }
-
-    /**
-     * Get a TestSetFolder by its path.
-     *
-     * @param testSetFolderPath The testSetFolder path. Something like 'Root\ProjectsTest\v1.0'
-     * @return The TestSetFolder.
-     * @throws IOException Exception during communication with REST Service.
-     */
-    private static TestSetFolder pGetTestSetFolder(final String testSetFolderPath) throws Exception {
         LOGGER.debug("Searching for testSetFolderPath: " + testSetFolderPath);
 
         FolderFinder folderFinder = new FolderFinder(testSetFolderPath);
@@ -493,17 +458,6 @@ public final class QcRestClient {
      * @throws IOException Exception during communication with REST Service.
      */
     public static List<TestSet> getTestSets(final TestSetFolder testSetFolder) throws Exception {
-        return pGetTestSets(testSetFolder);
-    }
-
-    /**
-     * Get all TestSets of the given TestSetFolder.
-     *
-     * @param testSetFolder The folder containing the TestSets to get.
-     * @return A list containing the TestSets.
-     * @throws IOException Exception during communication with REST Service.
-     */
-    private static List<TestSet> pGetTestSets(final TestSetFolder testSetFolder) throws Exception {
         LOGGER.debug("getTestSets for " + testSetFolder.toString());
         final List<TestSet> testSets = new LinkedList<TestSet>();
 
@@ -529,22 +483,7 @@ public final class QcRestClient {
      * @return TestSetTestWr object.
      * @throws IOException Exception during communication with REST Service.
      */
-    public static TestSetTest getTestSetTest(final String name, final String testSetName, final String testSetPath)
-            throws Exception {
-        return pGetTestSetTest(name, testSetName, testSetPath);
-    }
-
-    /**
-     * Get the TestSetTest by its name, the TestSet name and TestSetFolder path.
-     *
-     * @param name Name of Testinstance.
-     * @param testSetName Name of testSet the instance should be in.
-     * @param testSetPath Path of TestSetFolder the TestSet belongs to.
-     * @return TestSetTestWr object.
-     * @throws IOException Exception during communication with REST Service.
-     */
-    private static TestSetTest pGetTestSetTest(final String name, final String testSetName, final String testSetPath)
-            throws Exception {
+    public static TestSetTest getTestSetTest(final String name, final String testSetName, final String testSetPath) throws Exception {
         final TestSet testSet = getTestSet(testSetName, testSetPath);
         LOGGER.debug("getTestSetTest " + name + " from " + testSet);
         final RestConnector connector = RestConnector.getInstance();
@@ -606,17 +545,6 @@ public final class QcRestClient {
      * @throws IOException Exception during communication with REST Service.
      */
     public static List<TestSetTest> getTestSetTests(final TestSet testSet) throws Exception {
-        return pGetTestSetTests(testSet);
-    }
-
-    /**
-     * Get a list of TestSetTests for a given TestSet.
-     *
-     * @param testSet The testset containing the TestSetTests.
-     * @return A list containing the TestSetTests.
-     * @throws IOException Exception during communication with REST Service.
-     */
-    private static List<TestSetTest> pGetTestSetTests(final TestSet testSet) throws Exception {
         LOGGER.debug("getTestSetTests for " + testSet);
         final List<TestSetTest> testSetTests = new LinkedList<TestSetTest>();
         final RestConnector connector = RestConnector.getInstance();
@@ -638,18 +566,6 @@ public final class QcRestClient {
      * @throws IOException Exception during communication with REST Service.
      */
     public static boolean isExistingTestSet(final String testSetName, final String testSetPath) throws Exception {
-        return pIsExistingTestSet(testSetName, testSetPath);
-    }
-
-    /**
-     * Check if the given TestSet exists in the given TestSetFolder.
-     *
-     * @param testSetName The name of the TestSet.
-     * @param testSetPath The path of the TestSetFolder, that should contain the TestSet.
-     * @return True if it exists.
-     * @throws IOException Exception during communication with REST Service.
-     */
-    private static boolean pIsExistingTestSet(final String testSetName, final String testSetPath) throws Exception {
         LOGGER.debug("isExistingTestSet: " + testSetPath + "\\" + testSetName);
 
         final TestSetFolder folder = QcRestClient.getTestSetFolder(testSetPath);
@@ -703,18 +619,6 @@ public final class QcRestClient {
      * @throws IOException Exception during communication with REST Service.
      */
     public static boolean isExistingTestSetTest(final String testName, final TestSet testSet) throws IOException {
-        return pIsExistingTestSetTest(testName, testSet);
-    }
-
-    /**
-     * Checks if a TestSetTest with the given name exists in a given TestSet.
-     *
-     * @param testName The name of the TestSetTest.
-     * @param testSet The TestSet that should contain a TestSetTest with the name.
-     * @return True if the TestSetTest exists.
-     * @throws IOException Exception during communication with REST Service.
-     */
-    private static boolean pIsExistingTestSetTest(final String testName, final TestSet testSet) throws IOException {
         LOGGER.debug("isExistingTestSetTest: " + testSet + ":" + testName);
         final RestConnector connector = RestConnector.getInstance();
         final String restUrl = connector.buildEntityCollectionUrl("test-instance");
@@ -821,17 +725,6 @@ public final class QcRestClient {
     /**
      * Get a test from testPlan by its id.
      *
-     * @param id Id of test to get
-     * @return Test object.
-     * @throws IOException Rest communication error.
-     */
-    public static TestPlanTest getTestPlanTestById(int id) throws Exception {
-        return pGetTestPlanTestById(id);
-    }
-
-    /**
-     * Get a test from testPlan by its id.
-     *
      * @param testName Name of test to get
      * @param testFolder Path of folder containing test.
      * @return Test object.
@@ -928,7 +821,7 @@ public final class QcRestClient {
      * @return Test object.
      * @throws IOException Rest communication error.
      */
-    private static TestPlanTest pGetTestPlanTestById(int id) throws Exception {
+    public static TestPlanTest getTestPlanTestById(int id) throws Exception {
         LOGGER.trace("getTestPlanById " + id);
         final RestConnector connector = RestConnector.getInstance();
         final String restUrl = connector.buildEntityCollectionUrl("test") + "/" + id;
@@ -973,17 +866,6 @@ public final class QcRestClient {
      * @throws IOException Rest communication error.
      */
     public static int createTestFolder(final TestPlanFolder folder) throws Exception {
-        return pCreateTestFolder(folder);
-    }
-
-    /**
-     * Creates a new folder in a given one.
-     *
-     * @param folder Folder to create (should contain name and parent-id.)
-     * @return id of created folder.
-     * @throws IOException Rest communication error.
-     */
-    private static int pCreateTestFolder(final TestPlanFolder folder) throws Exception {
         LOGGER.info("Create TestPlanFolder");
         if (folder.getName() == null || folder.getParentId() == 0) {
             LOGGER.error("Name and parent-id of folder to create must not be null!");
@@ -1039,20 +921,11 @@ public final class QcRestClient {
     /**
      * creates testSetFolder
      *
-     * @param creater TestSetFolder to create.
+     * @param folder TestSetFolder to create.
      * @return id of created folder
      * @throws IOException Rest communication error.
      */
-    public static int createTestSetFolder(final TestSetFolder creater) throws Exception {
-        return pCreateTestSetFolder(creater);
-    }
-
-    /**
-     * @param folder TestSetFolder to create.
-     * @return id of created folder
-     * @throws IOException IOException Rest communication error.
-     */
-    private static int pCreateTestSetFolder(final TestSetFolder folder) throws Exception {
+    public static int createTestSetFolder(final TestSetFolder folder) throws Exception {
         LOGGER.info("Create TestSetFolder");
         if (folder.getName() == null || folder.getParentId() == 0) {
             LOGGER.error("Name and parent-id of folder to create must not be null!");
@@ -1069,15 +942,6 @@ public final class QcRestClient {
      * @throws IOException Rest communication error.
      */
     public static int createTestSet(final TestSet toCreate) throws Exception {
-        return pCreateTestSet(toCreate);
-    }
-
-    /**
-     * @param toCreate TestSet to create
-     * @return id of created testSet.
-     * @throws IOException Rest communication error.
-     */
-    private static int pCreateTestSet(final TestSet toCreate) throws Exception {
         LOGGER.info("Create TestSet");
         if (toCreate.getName() == null || toCreate.getParentId() == 0) {
             LOGGER.error("Name and parent-id of testSet to create must not be null!");
@@ -1134,15 +998,6 @@ public final class QcRestClient {
      * @throws IOException REST connection error.
      */
     public static int addTestToTestSet(final TestSetTest testInstance) throws Exception {
-        return pAddTestToTestSet(testInstance);
-    }
-
-    /**
-     * @param testInstance TestSetTest to create.
-     * @return Id of generated TestSetTest
-     * @throws IOException REST connection error.
-     */
-    private static int pAddTestToTestSet(final TestSetTest testInstance) throws Exception {
         LOGGER.info("Create TestSet");
         if (testInstance.getTestId() == 0 || testInstance.getCycleId() == 0) {
             LOGGER.error("test-id and cycle-id (testSet) of testSetTest to create must not be null!");
