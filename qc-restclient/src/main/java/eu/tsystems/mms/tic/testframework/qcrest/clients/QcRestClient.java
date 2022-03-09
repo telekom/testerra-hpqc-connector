@@ -169,7 +169,9 @@ public final class QcRestClient {
 
         if (idReturned != 0) {
             LOGGER.debug("Set TestSetTest properties for run execution");
-            updateTestSetTest(testSetTest, testRun);
+            // Not needed, updates of testset tests are set automatically by updating testrun
+            // Otherwise 'Fast_Run_xxx' are created
+//            updateTestSetTest(testSetTest, testRun);
             LOGGER.debug("Update RunSteps' Status'");
             updateRunStepStatuses(idReturned, testRun.getStatus());
             LOGGER.debug("Upload Attachments to TestRun " + testRun);

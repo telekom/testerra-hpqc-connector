@@ -20,16 +20,19 @@
 
 This module provides additional features for [Testerra Framework](https://github.com/telekom/testerra) for automated tests.
 
-This module provides an automatic test result synchronization to HP Application Lifecycle Management, former called HP
+This module provides an automatic test result synchronization to MicroFocus Application Lifecycle Management, former called HP
 QualityCenter. The module will register automatically by using `ModuleHook`.
+
+See more details about the MicroFocus ALM REST API here: https://admhelp.microfocus.com/alm/en/12.55/api_refs/REST_TECH_PREVIEW/ALM_REST_API_TP.html
 
 ## Setup
 
 ### Requirements
 
-| HPQC connector | Testerra     |
-| -------------- | -------------|
-| `1.0`          | ` >= 1.0.0`  |
+| HPQC connector | Testerra         |
+|----------------|------------------|
+| `1.0`          | ` 1.0.0 .. 1.11` |
+| `1.1`          | `>= 1.12`        |
 
 ### Usage
 
@@ -49,13 +52,13 @@ Maven:
 <dependency>
   <groupId>io.testerra</groupId>
   <artifactId>qc11-connector</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
 </dependency>
 <!-- From Testerra framework -->
 <dependency>
   <groupId>io.testerra</groupId>
   <artifactId>surefire-connector</artifactId>
-  <version>1.0.0</version>
+  <version>1.12</version>
 </dependency>
 ```
 
@@ -90,7 +93,7 @@ below:
 @QCTestset("\\Root\\My\\Full\\Path\\TestSet")
 public class CorrectClassAnnotationTest extends TesterraTest {
 
-    @org.testng.annotations.Test
+    @Test
     public void testMethodPass() {
       Assert.assertTrue(true);
     }
@@ -110,7 +113,7 @@ name itself.
 @QCTestset("\\Root\\My\\Full\\Path\\TestSet")
 public class CorrectClassAnnotationTest extends TesterraTest {
 
-    @org.testng.annotations.Test
+    @Test
     @QCTestname("Pass_Test_01")
     public void testMethodPass() {
         Assert.assertTrue(true);
