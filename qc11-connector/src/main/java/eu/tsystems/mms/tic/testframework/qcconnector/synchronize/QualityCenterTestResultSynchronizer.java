@@ -176,38 +176,25 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
      * @param run TestRun to sync.
      */
     public void syncTestRun(final ITestResult result, final TestRun run) {
-        if (this.isSyncActive) {
-            pSyncTestRun(result, run);
+        if (!this.isSyncActive) {
+            return;
         }
-    }
-
-    /**
-     * Sync a TestRun with the appropiate SyncType. Safe the id of the synced run to allow uploads of screenshots to the
-     * run.
-     *
-     * @param result TestResult containing Test infos.
-     * @param run TestRun to sync.
-     */
-    private void pSyncTestRun(final ITestResult result, final TestRun run) {
 
         Optional<MethodContext> methodContext = ExecutionContextController.getMethodContextForThread();
 
         try {
             int runId = 0;
 
-            // Should not happen.
-            if (syncType == SyncType.ANNOTATION) {
-                final Class<?> clazz = result.getTestClass().getRealClass();
-                final Method method = result.getMethod().getConstructorOrMethod().getMethod();
+            final Class<?> clazz = result.getTestClass().getRealClass();
+            final Method method = result.getMethod().getConstructorOrMethod().getMethod();
 
-                // do not synchronize non-test methods
-                if (!result.getMethod().isTest()) {
-                    return;
-                }
-
-                final String methodName = result.getMethod().getMethodName();
-                runId = QualityCenterSyncUtils.syncWithSyncType3(clazz, method, methodName, run, result);
+            // do not synchronize non-test methods
+            if (!result.getMethod().isTest()) {
+                return;
             }
+
+            final String methodName = result.getMethod().getMethodName();
+            runId = QualityCenterSyncUtils.syncWithSyncType3(clazz, method, methodName, run, result);
 
             if (runId > 0) {
                 // Save the runId as a result Attribute.

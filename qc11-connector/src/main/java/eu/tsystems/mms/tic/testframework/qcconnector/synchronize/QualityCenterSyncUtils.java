@@ -491,48 +491,10 @@ public final class QualityCenterSyncUtils {
     }
 
     /**
-     * gets test result
-     *
      * @param result TestResult
      * @return List of screenshots and screencasts to upload.
      */
     public static List<File> getTestAttachments(ITestResult result) {
-
-        return pGetTestAttachments(result);
-    }
-
-    /**
-     * Add an arbitary inputstream as attachment.
-     *
-     * @param inputStream the additionalRunAttachment to set
-     * @param fileName Name of attachment to add (incl. file type)
-     */
-    public static void addRunAttachment(final InputStream inputStream, final String fileName) {
-
-        if (inputStream == null || eu.tsystems.mms.tic.testframework.utils.StringUtils.isStringEmpty(fileName)) {
-            LOGGER.error("No inputstream or filename given for attachment to add to run.");
-            return;
-        }
-        if (additionalRunAttachments.get() == null) {
-            additionalRunAttachments.set(new LinkedList<File>());
-        }
-        final File tempFolder = new File(System.getProperty("java.io.tmpdir"), Thread.currentThread().getName());
-        tempFolder.mkdirs();
-        final File destination = new File(tempFolder, fileName);
-        try {
-            FileUtils.copyInputStreamToFile(inputStream, destination);
-            additionalRunAttachments.get().add(destination);
-            LOGGER.info("Added attachment to current run:" + fileName);
-        } catch (IOException e) {
-            LOGGER.error("Could not save inputstream as attachment " + fileName);
-        }
-    }
-
-    /**
-     * @param result TestResult
-     * @return List of screenshots and screencasts.
-     */
-    private static List<File> pGetTestAttachments(ITestResult result) {
 
         List<File> attachments = new LinkedList<File>();
         boolean testSuccess;
@@ -576,6 +538,33 @@ public final class QualityCenterSyncUtils {
                     attachments.stream().map(File::getName).collect(Collectors.joining(",")));
         }
         return attachments;
+    }
+
+    /**
+     * Add an arbitary inputstream as attachment.
+     *
+     * @param inputStream the additionalRunAttachment to set
+     * @param fileName Name of attachment to add (incl. file type)
+     */
+    public static void addRunAttachment(final InputStream inputStream, final String fileName) {
+
+        if (inputStream == null || eu.tsystems.mms.tic.testframework.utils.StringUtils.isStringEmpty(fileName)) {
+            LOGGER.error("No inputstream or filename given for attachment to add to run.");
+            return;
+        }
+        if (additionalRunAttachments.get() == null) {
+            additionalRunAttachments.set(new LinkedList<File>());
+        }
+        final File tempFolder = new File(System.getProperty("java.io.tmpdir"), Thread.currentThread().getName());
+        tempFolder.mkdirs();
+        final File destination = new File(tempFolder, fileName);
+        try {
+            FileUtils.copyInputStreamToFile(inputStream, destination);
+            additionalRunAttachments.get().add(destination);
+            LOGGER.info("Added attachment to current run:" + fileName);
+        } catch (IOException e) {
+            LOGGER.error("Could not save inputstream as attachment " + fileName);
+        }
     }
 
     /**

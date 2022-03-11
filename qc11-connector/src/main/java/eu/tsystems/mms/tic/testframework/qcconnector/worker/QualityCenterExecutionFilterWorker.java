@@ -41,6 +41,7 @@ import org.testng.SkipException;
  */
 public class QualityCenterExecutionFilterWorker implements Loggable, MethodStartEvent.Listener {
 
+    // TODO: Remove execution filter because test execution should not impact by QC, only given TestNG suite file and Testerra logic should responsible for it.
     @Override
     @Subscribe
     public void onMethodStart(MethodStartEvent event) {
