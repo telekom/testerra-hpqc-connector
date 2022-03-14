@@ -139,7 +139,6 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 |qc.upload.videos|false|Enable video upload|
 |qc.test.failed.upload.videos|false|Upload videos in case of test failure|
 |qc.test.passed.upload.videos|false|Upload videos in case of test successful|
-|qc.test.execution.filter|false|Filter test cases in QC/ALM test set by status to determine it should be executed. <br> Value can be <br>- exclude:status:passed <br> - include:status:failed <br>- or other in format "include/exclude" + "status" + <explicit name of status>|
 
 ---
 

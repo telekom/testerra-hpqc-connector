@@ -21,92 +21,16 @@
  */
 package eu.tsystems.mms.tic.testframework.qcconnector.constants;
 
-
 public final class ErrorMessages {
 
-    private ErrorMessages() {}
-
-    /**
-     * Error message when the specified TestSet couldn't be found
-     *
-     * @param testSetName .
-     *
-     * @return formatted error message
-     */
-    public static String cannotFindTestSet(String testSetName) {
-        return "An error occurred while reading the testSetTests for testSet "
-                + testSetName
-                + ".";
-    }
-
-    /**
-     * Error message when a method from in QC was not found in the package that
-     * is specified in the qcconnection property file.
-     *
-     * @param methodName  .
-     * @param packageName .
-     *
-     * @return formatted error message
-     */
-    public static String cannotFindMethodInPackage(String methodName, String packageName) {
-        return "Cannot find the method \""
-                + methodName
-                + "\" in any class in package \""
-                + packageName
-                + "\". Test will not run!";
-    }
-
-    /**
-     * Error message when a class defined in ta_scriptname in QC was not found in the package that
-     * is specified in the qcconnection property file.
-     *
-     * @param className .
-     *
-     * @return formatted error message
-     */
-    public static String cannotFindClass(String className) {
-        return "Cannot find the class "
-                + className
-                + ".";
-    }
-
-    /**
-     * Error message when a method defined in ta_scriptname in QC was not found in the specified class
-     *
-     * @param className  .
-     * @param methodName .
-     *
-     * @return formatted error message
-     */
-    public static String cannotFindMethodInClass(String methodName, String className) {
-        return "Cannot find the test method "
-                + methodName
-                + " in class "
-                + className
-                + ".";
+    private ErrorMessages() {
     }
 
     /**
      * Error message when ta_scriptname in QC was not set
      *
-     * @param testName .
-     *
-     * @return formatted error message
-     */
-    public static String taScriptnameIsNull(String testName) {
-        return "Test "
-                + testName
-                + " couldn't run! ta_scriptname for testSetTest "
-                + testName
-                + " was null.";
-    }
-
-    /**
-     * Error message when ta_scriptname in QC was not set
-     *
-     * @param testSetPath    .
+     * @param testSetPath .
      * @param annotatedClass .
-     *
      * @return formatted error message
      */
     public static String wrongQCTestSetAnnotation(String testSetPath, String annotatedClass) {
@@ -120,9 +44,8 @@ public final class ErrorMessages {
     /**
      * Error message when no method with matching name was found in testset.
      *
-     * @param methodname  .
+     * @param methodname .
      * @param testSetPath .
-     *
      * @return formatted error message
      */
     public static String noTestMethodFoundInQC(String methodname, String testSetPath) {
@@ -131,26 +54,6 @@ public final class ErrorMessages {
                 + " found in Testset "
                 + testSetPath
                 + ". Could not synchronize with QC!";
-    }
-
-    /**
-     * Error message when ta_scriptname in QC was not set
-     *
-     * @param qcTestMethodName .
-     * @param packageName      .
-     *
-     * @return formatted error message
-     */
-    public static String multipleMethodsInPackage(String qcTestMethodName, String packageName) {
-        return "Found multiple methods with name "
-                + qcTestMethodName
-                + " in package "
-                + packageName
-                + ". Test will not run! Please rename some methods to make Quality Center synchronization possible.";
-    }
-
-    public static String skippedByQcExecutionFilter() {
-        return "Skipped by QC execution filter!";
     }
 
 }

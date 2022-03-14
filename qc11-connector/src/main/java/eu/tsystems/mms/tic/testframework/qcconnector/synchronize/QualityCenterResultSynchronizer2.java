@@ -64,7 +64,7 @@ public class QualityCenterResultSynchronizer2 implements TestStatusUpdateEvent.L
                 break;
             case RETRIED:
                 log().info("Method " + methodContext.getName() + " was retried and will not sync.");
-                break;
+                return;
             case SKIPPED:
                 qcStatus = "N/A";
                 break;
@@ -72,6 +72,7 @@ public class QualityCenterResultSynchronizer2 implements TestStatusUpdateEvent.L
                 return;
             default:
                 log().info(String.format("Method state %s of %s cannot handle.", status.toString(), methodContext.getName()));
+                return;
         }
         final TestRun run = createTestRun(qcStatus, methodContext);
         this.syncTestRun(run, methodContext);
