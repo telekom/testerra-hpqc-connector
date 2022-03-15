@@ -27,14 +27,6 @@ import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterRe
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 
-/**
- * QualityCenterConnectorHook
- * <p>
- * Date: 20.08.2019
- * Time: 15:34
- *
- * @author erku
- */
 public class QualityCenterConnectorHook implements ModuleHook {
 
     @Override
