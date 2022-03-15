@@ -21,14 +21,13 @@
  */
 package eu.tsystems.mms.tic.testframework.qc11connector.util;
 
-import eu.tsystems.mms.tic.testframework.connectors.util.SyncType;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.AssertionMessages;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.Testframework;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestStatus;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCTestUnderTest;
+import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterResultSynchronizer;
 import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterSyncUtils;
-import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterTestResultSynchronizer;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.QcTest;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
@@ -56,7 +55,7 @@ public class QCSynTestHelper implements Loggable {
     /**
      * The synchronizer to test.
      */
-    private static QualityCenterTestResultSynchronizer synchronizer;
+    private static QualityCenterResultSynchronizer synchronizer;
 
     /**
      * List with TestSetTest. If we want to check TestSetTests from QC, we load them into this List.
@@ -74,9 +73,8 @@ public class QCSynTestHelper implements Loggable {
         this.testSetPath = testSetPath;
         log().debug("Initializing synchronizer for TestSet " + testSetPath);
         if (synchronizer == null) {
-            synchronizer = new QualityCenterTestResultSynchronizer();
+            synchronizer = new QualityCenterResultSynchronizer();
         }
-        synchronizer.setSyncType(SyncType.getSyncMethod());
     }
 
     protected void checkConsistencyWithQC() {
@@ -135,30 +133,31 @@ public class QCSynTestHelper implements Loggable {
         testSetTests = QC11TestUtils.getTestSetTestsFromTestSetPath(testSetPath);
     }
 
-    /**
-     * synchronizes test runs
-     *
-     * @param test .
-     * @param framework .
-     */
-    public void synchronizeTestRun(QCTestUnderTest test, Testframework framework) {
-        log().debug("Synchronizing" + framework + "-Test " + test.getTestName());
-        switch (framework) {
-            case TESTNG:
-                ITestResult result = getITestResult(test);
-                addTestMapping(result, test);
-                synchronizer.syncTestRun(result, this.createTestRun(result.isSuccess(), test.getMethodName()));
-                break;
-        }
-    }
+    // TODO: Rewrite synchronize tests
+//    /**
+//     * synchronizes test runs
+//     *
+//     * @param test .
+//     * @param framework .
+//     */
+//    public void synchronizeTestRun(QCTestUnderTest test, Testframework framework) {
+//        log().debug("Synchronizing" + framework + "-Test " + test.getTestName());
+//        switch (framework) {
+//            case TESTNG:
+//                ITestResult result = getITestResult(test);
+//                addTestMapping(result, test);
+//                synchronizer.syncTestRun(result, this.createTestRun(result.isSuccess(), test.getMethodName()));
+//                break;
+//        }
+//    }
 
-    public void synchronizeTestAndAssertStatus(QCTestUnderTest test, QCTestStatus status, Testframework framework) {
-        synchronizeTestRun(test, framework);
-        updateTestSetTestList();
-        TestSetTest testSetTest = getTestSetTest(test);
-        QC11TestUtils.assertRecentSynchronizationUnitTest(testSetTest);
-        QC11TestUtils.assertStatusOfTestInQC(testSetTest, status);
-    }
+//    public void synchronizeTestAndAssertStatus(QCTestUnderTest test, QCTestStatus status, Testframework framework) {
+//        synchronizeTestRun(test, framework);
+//        updateTestSetTestList();
+//        TestSetTest testSetTest = getTestSetTest(test);
+//        QC11TestUtils.assertRecentSynchronizationUnitTest(testSetTest);
+//        QC11TestUtils.assertStatusOfTestInQC(testSetTest, status);
+//    }
 
     private void addTestMapping(ITestResult result, QCTestUnderTest test) {
         TestSetTest testSetTest = getTestSetTest(test);

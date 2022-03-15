@@ -22,7 +22,6 @@
 package eu.tsystems.mms.tic.testframework.qcconnector.synchronize;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.connectors.util.SyncUtils;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCPathUtil;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.TMInfoContainer;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
@@ -50,7 +49,6 @@ import org.testng.ITestResult;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -263,8 +261,8 @@ public final class QualityCenterSyncUtils {
                         String mName;
                         for (final TestSetTest test : testSetTests) {
                             String qcTestMethodName = test.getTest().getName();
-                            qcTestMethodName = SyncUtils.cutTestFromString(qcTestMethodName, methodName);
-                            mName = SyncUtils.cutTestFromString(methodName, qcTestMethodName);
+                            qcTestMethodName = cutTestFromString(qcTestMethodName, methodName);
+                            mName = cutTestFromString(methodName, qcTestMethodName);
                             if (qcTestMethodName.equalsIgnoreCase(mName)) {
                                 matchingTest = test;
                                 break;
@@ -529,35 +527,29 @@ public final class QualityCenterSyncUtils {
         return attachments;
     }
 
-    /**
-     * Add an arbitary inputstream as attachment.
-     *
-     * @param inputStream the additionalRunAttachment to set
-     * @param fileName Name of attachment to add (incl. file type)
-     */
-    public static void addRunAttachment(final InputStream inputStream, final String fileName) {
+    private static String cutTestFromString(final String stringToCut, final String stringToCompare) {
+        final String TEST = "test";
+        final String TEST2 = "test_";
+        if (!stringToCut.equalsIgnoreCase(stringToCompare)) {
 
-        if (inputStream == null || eu.tsystems.mms.tic.testframework.utils.StringUtils.isStringEmpty(fileName)) {
-            LOGGER.error("No inputstream or filename given for attachment to add to run.");
-            return;
+            if (stringToCut.length() > TEST2.length() && stringToCut.matches("[Tt]est_.*")
+                    && stringToCut.substring(TEST2.length()).equalsIgnoreCase(stringToCompare)) {
+
+                return stringToCut.substring(TEST2.length());
+            }
+            if (stringToCut.length() > TEST.length() && stringToCut.matches("[Tt]est.*")
+                    && stringToCut.substring(TEST.length()).equalsIgnoreCase(stringToCompare)) {
+
+                return stringToCut.substring(TEST.length());
+            }
         }
-        if (additionalRunAttachments.get() == null) {
-            additionalRunAttachments.set(new LinkedList<File>());
-        }
-        final File tempFolder = new File(System.getProperty("java.io.tmpdir"), Thread.currentThread().getName());
-        tempFolder.mkdirs();
-        final File destination = new File(tempFolder, fileName);
-        try {
-            FileUtils.copyInputStreamToFile(inputStream, destination);
-            additionalRunAttachments.get().add(destination);
-            LOGGER.info("Added attachment to current run:" + fileName);
-        } catch (IOException e) {
-            LOGGER.error("Could not save inputstream as attachment " + fileName);
-        }
+        return stringToCut;
     }
 
     /**
      * Creates a testrun for the given test in the specified TestSet.
+     * <p>
+     * // TODO: Check if can be removed, only used in tests
      *
      * @param qcPath path to TestSet
      * @param testInstanceName name of test to create run for
