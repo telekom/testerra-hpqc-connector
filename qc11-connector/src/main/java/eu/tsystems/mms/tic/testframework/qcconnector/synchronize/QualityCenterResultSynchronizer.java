@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author mgn
  */
-public class QualityCenterResultSynchronizer2 implements TestStatusUpdateEvent.Listener, Loggable {
+public class QualityCenterResultSynchronizer implements TestStatusUpdateEvent.Listener, Loggable {
 
     private boolean isSyncActive = false;
 
@@ -37,7 +37,7 @@ public class QualityCenterResultSynchronizer2 implements TestStatusUpdateEvent.L
      */
     private static boolean uploadScreenshot;
 
-    public QualityCenterResultSynchronizer2() {
+    public QualityCenterResultSynchronizer() {
         this.init();
     }
 

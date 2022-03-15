@@ -1,7 +1,7 @@
 /*
  * Testerra
  *
- * (C) 2013, Eric Kubenka, T-Systems Multimedia Solutions GmbH, Deutsche Telekom AG
+ * (C) 2022, Martin Großmann, T-Systems Multimedia Solutions GmbH, Deutsche Telekom AG
  *
  * Deutsche Telekom AG and all other contributors /
  * copyright owners license this file to you under the Apache
@@ -23,7 +23,7 @@ package eu.tsystems.mms.tic.testframework.qcconnector.hook;
 
 import com.google.common.eventbus.EventBus;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
-import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterResultSynchronizer2;
+import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterResultSynchronizer;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 
@@ -41,7 +41,7 @@ public class QualityCenterConnectorHook implements ModuleHook {
     public void init() {
 
         EventBus eventBus = TesterraListener.getEventBus();
-        eventBus.register(new QualityCenterResultSynchronizer2());
+        eventBus.register(new QualityCenterResultSynchronizer());
     }
 
     @Override
