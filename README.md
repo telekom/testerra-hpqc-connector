@@ -42,8 +42,6 @@ Gradle:
 
 ```groovy
 implementation 'io.testerra:qc11-connector:1.0'
-// From Testerra framework
-implementation 'io.testerra:surefire-connector:1.0.0'
 ```
 
 Maven:
@@ -53,12 +51,6 @@ Maven:
   <groupId>io.testerra</groupId>
   <artifactId>qc11-connector</artifactId>
   <version>1.1</version>
-</dependency>
-<!-- From Testerra framework -->
-<dependency>
-  <groupId>io.testerra</groupId>
-  <artifactId>surefire-connector</artifactId>
-  <version>1.12</version>
 </dependency>
 ```
 
