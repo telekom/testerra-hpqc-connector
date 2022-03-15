@@ -32,19 +32,14 @@ import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCFieldValues;
 import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.MissingQcTestSetAnnotationException;
 import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.TesterraQcResultSyncException;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
-import eu.tsystems.mms.tic.testframework.qcrest.wrapper.Attachment;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
-import org.apache.commons.io.FileUtils;
 import org.testng.ITestResult;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -116,9 +111,9 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
      * @param result r
      * @return run
      */
-    public TestRun helpCreateTestRun(final ITestResult result) {
-        return createTestRun(result);
-    }
+//    public TestRun helpCreateTestRun(final ITestResult result) {
+//        return createTestRun(result);
+//    }
 
     /**
      * Creates a TestRun based on the data given by the result.
@@ -146,24 +141,24 @@ public class QualityCenterTestResultSynchronizer extends AbstractCommonSynchroni
         QualityCenterSyncUtils.addQCUserFields(testRun);
 
         // Add Attachments
-        final List<File> attachments = QualityCenterSyncUtils.getTestAttachments(result);
-        if (!attachments.isEmpty()) {
-            for (final File attachment : attachments) {
-                Attachment att;
-                try {
-                    if (attachment.isFile()) {
-                        att = new Attachment();
-                        att.setName(attachment.getName());
-                        att.setRefType("File");
-                        att.setEntityName("RUN");
-                        att.setContent(FileUtils.readFileToByteArray(attachment));
-                        testRun.addAttachments(att);
-                    }
-                } catch (final IOException e) {
-                    log().error("Error setting content of attachment from File.");
-                }
-            }
-        }
+//        final List<File> attachments = QualityCenterSyncUtils.getTestAttachments(result);
+//        if (!attachments.isEmpty()) {
+//            for (final File attachment : attachments) {
+//                Attachment att;
+//                try {
+//                    if (attachment.isFile()) {
+//                        att = new Attachment();
+//                        att.setName(attachment.getName());
+//                        att.setRefType("File");
+//                        att.setEntityName("RUN");
+//                        att.setContent(FileUtils.readFileToByteArray(attachment));
+//                        testRun.addAttachments(att);
+//                    }
+//                } catch (final IOException e) {
+//                    log().error("Error setting content of attachment from File.");
+//                }
+//            }
+//        }
 
         return testRun;
     }

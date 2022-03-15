@@ -76,9 +76,8 @@ qc.connection.project=
 qc.connection.user=
 qc.connection.password=
 qc.sync.active=true
-qc.test.failed.upload.screenshots=true
+qc.upload.screenshots=true
 qc.upload.videos=true
-qc.test.failed.upload.videos=true
 ````
 
 Basically the synchronization will work by two explicit annotations that can be set.
@@ -123,22 +122,18 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 
 ### Properties
 
-|Property|Default|Description|
-|---|---|---|
-|qc.sync.active|true|Enables synchronization fo test results|
-|qc.connection.server| |URI of ALM / QC server|
-|qc.connection.user| |User to use for synchronization|
-|qc.connection.password| |Password of user used for synchronization|
-|qc.connection.domain}| |Domain of user to log in|
-|qc.connection.project| |Project of user to log in|
-|qc.version|12|Version of Quality Center or ALM 11, 12 or higher|
-|qc.field.mapping.testrun| |Customize field-value mapping for synchronize properties to the quality center testrun. Use the format key:value&#124;key2:value2 for multiple values.|
-|qc.upload.screenshots.off|false|Disabled the upload of screenshots globally|
-|qc.test.failed.upload.screenshots|false|Upload screenshots in case of test failure|
-|qc.test.passed.upload.screenshots|false|Upload screenshots in case of test successful|
-|qc.upload.videos|false|Enable video upload|
-|qc.test.failed.upload.videos|false|Upload videos in case of test failure|
-|qc.test.passed.upload.videos|false|Upload videos in case of test successful|
+| Property                 | Default  | Description|
+|--------------------------|----------|-----------------------------------------------------|
+| qc.sync.active           | true     | Enables synchronization fo test results|
+| qc.connection.server     |          | URI of ALM / QC server|
+| qc.connection.user       |          | User to use for synchronization|
+| qc.connection.password   |          | Password of user used for synchronization|
+| qc.connection.domain}    |          | Domain of user to log in|
+| qc.connection.project    |          | Project of user to log in|
+| qc.version               | 12       | Version of Quality Center or ALM 11, 12 or higher|
+| qc.field.mapping.testrun |          | Customize field-value mapping for synchronize properties to the quality center testrun. Use the format key:value&#124;key2:value2 for multiple values. |
+| qc.upload.screenshots    | false    | Enable the upload of screenshots|
+| qc.upload.videos         | false    | Enable the upload of vides|
 
 ---
 

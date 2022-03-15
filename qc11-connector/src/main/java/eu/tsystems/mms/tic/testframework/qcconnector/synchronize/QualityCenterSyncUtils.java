@@ -38,8 +38,9 @@ import eu.tsystems.mms.tic.testframework.qcrest.wrapper.QcTest;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSet;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
+import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
+import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.report.model.context.Video;
-import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestname;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -491,52 +492,40 @@ public final class QualityCenterSyncUtils {
     }
 
     /**
-     * @param result TestResult
+     * @param methodContext The current method context
      * @return List of screenshots and screencasts to upload.
      */
-    public static List<File> getTestAttachments(ITestResult result) {
-
+    public static List<File> getTestAttachments(MethodContext methodContext) {
         List<File> attachments = new LinkedList<File>();
-        boolean testSuccess;
-        String testName;
-        testName = result.getName();
-        testSuccess = result.isSuccess();
 
-        final QualityCenterSyncUtils.UploadType uploadTypeScreenshot = uploadScreenshotDesired(testSuccess);
-        final boolean isVideoUpload = uploadVideosDesired(testSuccess);
+        if (methodContext == null) {
+            return attachments;
+        }
 
-        if (uploadTypeScreenshot != QualityCenterSyncUtils.UploadType.NONE) {
+        final boolean isUploadScreenshots = PropertyManager.getBooleanProperty(QCProperties.UPLOAD_SCREENSHOTS, false);
+        final boolean isUploadVideos = PropertyManager.getBooleanProperty(QCProperties.UPLOAD_VIDEOS, false);
 
-            final List<File> screenshotList = SyncUtils.getScreenshotFiles();
-            if (uploadTypeScreenshot == QualityCenterSyncUtils.UploadType.AUTOMATIC) {
-                List<File> tempAttachments = new LinkedList<File>();
-                for (File file : attachments) {
-                    if (file.getName().contains(testName)) {
-                        tempAttachments.add(file);
-                    }
-                }
-                attachments.addAll(tempAttachments);
-            } else {
-                attachments.addAll(screenshotList);
-            }
+        if (isUploadScreenshots) {
+            methodContext.readTestSteps().forEach(testStep -> {
+                testStep.readActions().forEach(testStepAction -> {
+                    testStepAction.readEntries(Screenshot.class).forEach(screenshot -> {
+                        attachments.add(screenshot.getScreenshotFile());
+                    });
+                });
+            });
         }
 
         // Upload videos...
-        if (isVideoUpload) {
-            ExecutionContextController.getMethodContextForThread().get().readSessionContexts().forEach(sessionContext -> {
+        if (isUploadVideos) {
+            methodContext.readSessionContexts().forEach(sessionContext -> {
                 Optional<Video> video = sessionContext.getVideo();
                 video.ifPresent(value -> attachments.add(value.getVideoFile()));
             });
         }
 
-        List<File> additionalAttachments = getAdditionalRunAttachments();
-        if (additionalAttachments != null) {
-            attachments.addAll(additionalAttachments);
-        }
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Following attachments added to testrun for {}: {}", testName,
-                    attachments.stream().map(File::getName).collect(Collectors.joining(",")));
-        }
+        LOGGER.debug("Following attachments added to testrun for {}: {}", methodContext.getName(),
+                attachments.stream().map(File::getName).collect(Collectors.joining(",")));
+
         return attachments;
     }
 
@@ -565,61 +554,6 @@ public final class QualityCenterSyncUtils {
         } catch (IOException e) {
             LOGGER.error("Could not save inputstream as attachment " + fileName);
         }
-    }
-
-    /**
-     * Check upload properties to get to know, if Screenshots should be uploaded.
-     *
-     * @param testPassed Is the test passed?
-     * @return True if screenshot upload is desired.
-     */
-    private static QualityCenterSyncUtils.UploadType uploadScreenshotDesired(final boolean testPassed) {
-
-        if (PropertyManager.getBooleanProperty(QCProperties.UPLOAD_SCREENSHOTS_OFF, false)) {
-            return QualityCenterSyncUtils.UploadType.NONE;
-        } else {
-            if (testPassed) {
-                if (PropertyManager.getBooleanProperty(QCProperties.UPLOAD_SCREENSHOTS_PASSED, false)) {
-                    return QualityCenterSyncUtils.UploadType.ALL;
-                } else {
-                    return QualityCenterSyncUtils.UploadType.NONE;
-                }
-            } else {
-                if (PropertyManager.getBooleanProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED, false)) {
-                    return QualityCenterSyncUtils.UploadType.ALL;
-                } else {
-                    return QualityCenterSyncUtils.UploadType.NONE;
-                }
-            }
-        }
-    }
-
-    private static boolean uploadVideosDesired(final boolean testPassed) {
-
-        boolean videoSyncActive = PropertyManager.getBooleanProperty(QCProperties.UPLOAD_VIDEOS, false);
-        if (!videoSyncActive) {
-            return false;
-        }
-
-        if (testPassed && PropertyManager.getBooleanProperty(QCProperties.UPLOAD_VIDEOS_SUCCESS, true)) {
-            return true;
-        }
-
-        if (!testPassed && PropertyManager.getBooleanProperty(QCProperties.UPLOAD_VIDEOS_FAILED, true)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @return the additional RunAttachments
-     */
-    private static List<File> getAdditionalRunAttachments() {
-
-        List<File> out = QualityCenterSyncUtils.additionalRunAttachments.get();
-        additionalRunAttachments.remove();
-        return out;
     }
 
     /**
@@ -711,18 +645,5 @@ public final class QualityCenterSyncUtils {
             }
         }
         return testRun;
-    }
-
-    /**
-     * enum indicating which screenshots to upload.
-     */
-    private enum UploadType {
-        /**
-         * Different types
-         */
-        NONE,
-        ALL,
-        @Deprecated
-        AUTOMATIC;
     }
 }

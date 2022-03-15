@@ -137,7 +137,7 @@ public class QualityCenterResultSynchronizer2 implements TestStatusUpdateEvent.L
         QualityCenterSyncUtils.addQCUserFields(testRun);
 
         // Add Attachments
-        final List<File> attachments = QualityCenterSyncUtils.getTestAttachments(methodContext.getTestNgResult().get());
+        final List<File> attachments = QualityCenterSyncUtils.getTestAttachments(methodContext);
         if (!attachments.isEmpty()) {
             for (final File attachment : attachments) {
                 Attachment att;

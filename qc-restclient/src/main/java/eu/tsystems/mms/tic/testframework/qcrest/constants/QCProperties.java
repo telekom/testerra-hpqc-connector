@@ -73,17 +73,19 @@ public final class QCProperties {
     /**
      * QC upload screenshots global off.
      */
-    public static final String UPLOAD_SCREENSHOTS_OFF = "qc.upload.screenshots.off";
+
+//    public static final String UPLOAD_SCREENSHOTS_OFF = "qc.upload.screenshots.off";
+    public static final String UPLOAD_SCREENSHOTS = "qc.upload.screenshots";
 
     /**
      * Upload all screenshots on test failure
      */
-    public static final String UPLOAD_SCREENSHOTS_FAILED = "qc.test.failed.upload.screenshots";
+//    public static final String UPLOAD_SCREENSHOTS_FAILED = "qc.test.failed.upload.screenshots";
 
     /**
      * Upload all screenshots on test success
      */
-    public static final String UPLOAD_SCREENSHOTS_PASSED = "qc.test.passed.upload.screenshots";
+//    public static final String UPLOAD_SCREENSHOTS_PASSED = "qc.test.passed.upload.screenshots";
 
     /**
      * Property indicating to upload screencast video to qc

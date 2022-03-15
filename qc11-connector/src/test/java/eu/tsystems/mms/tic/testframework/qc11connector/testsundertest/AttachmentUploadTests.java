@@ -21,7 +21,6 @@
  */
 package eu.tsystems.mms.tic.testframework.qc11connector.testsundertest;
 
-import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
@@ -50,9 +49,9 @@ public class AttachmentUploadTests {
      */
     @BeforeMethod
     public void before(final Method method) {
-        System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_PASSED);
-        System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED);
-        System.clearProperty(TesterraProperties.SCREENCASTER_ACTIVE);
+//        System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_PASSED);
+//        System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED);
+//        System.clearProperty(TesterraProperties.SCREENCASTER_ACTIVE);
 //        if (!method.getName().contains("Screenshot")) {
 //            final FirefoxProfile profile = new FirefoxProfile();
 //            WebDriverManager.setGlobalExtraCapability(FirefoxDriver.PROFILE, profile);
@@ -65,8 +64,8 @@ public class AttachmentUploadTests {
      */
     @AfterTest
     public void afterTest() {
-        System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_PASSED);
-        System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED);
+//        System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_PASSED);
+//        System.clearProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED);
     }
 
     /**
@@ -74,7 +73,7 @@ public class AttachmentUploadTests {
      */
     @Test
     public void testScreenshotUploadAllPassed() {
-        System.setProperty(QCProperties.UPLOAD_SCREENSHOTS_PASSED, "true");
+//        System.setProperty(QCProperties.UPLOAD_SCREENSHOTS_PASSED, "true");
         final WebDriver driver = WebDriverManager.getWebDriver();
         UITestUtils.takeScreenshot(driver, false);
         UITestUtils.takeScreenshot(driver, false);
@@ -86,7 +85,7 @@ public class AttachmentUploadTests {
      */
     @Test
     public void testScreenshotUploadAllFailed() {
-        System.setProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED, "true");
+//        System.setProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED, "true");
         final WebDriver driver = WebDriverManager.getWebDriver();
         UITestUtils.takeScreenshot(driver, false);
         Assert.fail("Test fails for reasons.");

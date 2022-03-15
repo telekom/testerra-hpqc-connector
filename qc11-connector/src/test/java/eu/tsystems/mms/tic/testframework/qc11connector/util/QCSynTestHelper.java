@@ -31,12 +31,15 @@ import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterSy
 import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterTestResultSynchronizer;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.QcTest;
+import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
 import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.TestNG;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -144,7 +147,7 @@ public class QCSynTestHelper implements Loggable {
             case TESTNG:
                 ITestResult result = getITestResult(test);
                 addTestMapping(result, test);
-                synchronizer.syncTestRun(result, synchronizer.helpCreateTestRun(result));
+                synchronizer.syncTestRun(result, this.createTestRun(result.isSuccess(), test.getMethodName()));
                 break;
         }
     }
@@ -206,5 +209,23 @@ public class QCSynTestHelper implements Loggable {
 
         Assert.fail(AssertionMessages.testUnderTestNotRunOrHeardTestNG(test.getMethodName()));
         return null;
+    }
+
+    public TestRun createTestRun(boolean result, String methodName) {
+        final TestRun testRun = new TestRun();
+
+        testRun.setName(methodName);
+        // final Date date = new Date(result.getStartMillis());
+        final Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        testRun.setExecutionTime(sdf.format(date));
+        sdf = new SimpleDateFormat("yyyy-MM-dd");
+        testRun.setExecutionDate(sdf.format(date));
+        if (result) {
+            testRun.setStatus("Passed");
+        } else {
+            testRun.setStatus("Failed");
+        }
+        return testRun;
     }
 }
