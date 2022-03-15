@@ -41,7 +41,7 @@ Include the following dependency in your project.
 Gradle:
 
 ```groovy
-implementation 'io.testerra:qc11-connector:1.0'
+implementation 'io.testerra:qc11-connector:1.1'
 ```
 
 Maven:
