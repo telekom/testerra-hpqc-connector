@@ -1,15 +1,27 @@
 /*
- * Created on 11.04.2011
+ * Testerra
  *
- * Copyright(c) 2011 - 2011 T-Systems Multimedia Solutions GmbH
- * Riesaer Str. 5, 01129 Dresden
- * All rights reserved.
+ * (C) 2013, Peter Lehmann, T-Systems Multimedia Solutions GmbH, Deutsche Telekom AG
+ *
+ * Deutsche Telekom AG and all other contributors /
+ * copyright owners license this file to you under the Apache
+ * License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
  */
-
 package eu.tsystems.mms.tic.testframework.qcconnector.synchronize;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.connectors.util.SyncUtils;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCPathUtil;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.TMInfoContainer;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
@@ -25,10 +37,18 @@ import eu.tsystems.mms.tic.testframework.qcrest.wrapper.QcTest;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSet;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
+import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
+import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
+import eu.tsystems.mms.tic.testframework.report.model.context.Video;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestname;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.ITestResult;
+
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,17 +57,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.ITestResult;
 
 /**
  * A helper class containing methods for Synchronizer.
- *
- * @author mrgi
  */
 public final class QualityCenterSyncUtils {
 
@@ -93,11 +107,11 @@ public final class QualityCenterSyncUtils {
     /**
      * Synchronize to QC with syncType 3.
      *
-     * @param clazz      Class of test.
-     * @param method     of test.
+     * @param clazz Class of test.
+     * @param method of test.
      * @param methodName Name of testMethod.
-     * @param run        RunWrapper for TestRun.
-     * @param result     result containing testParameters
+     * @param run RunWrapper for TestRun.
+     * @param result result containing testParameters
      * @return Id of added run or 0 if it could not be added.
      * @throws TesterraQcResultSyncException sync error
      */
@@ -115,18 +129,18 @@ public final class QualityCenterSyncUtils {
      * Adds the Testrun to given Testset with RunClient.
      *
      * @param test The TestSetTest.
-     * @param run  The TestRun.
+     * @param run The TestRun.
      * @return Id of added run or 0 if it could not be added.
      */
     private static int addTestRunToTestSet(final TestSetTest test, final TestRun run) {
         int runId = 0;
         try {
-            runId = QcRestClient.addTestRun(test, run);
+            runId = QcRestClient.addTestRunToTestSet(test, run);
             if (runId != 0) {
                 LOGGER.info("Added TestRun to QC for TestSetTest " + test);
             } else {
                 LOGGER.error("TestRun was not added by RestClient. Try a second time");
-                runId = QcRestClient.addTestRun(test, run);
+                runId = QcRestClient.addTestRunToTestSet(test, run);
                 if (runId != 0) {
                     LOGGER.info("Added TestRun to QC for TestSetTest " + test);
                 } else {
@@ -137,7 +151,7 @@ public final class QualityCenterSyncUtils {
         } catch (final Exception io) {
             LOGGER.error("Error adding TestRun through webservice. Trying second time.", io);
             try {
-                runId = QcRestClient.addTestRun(test, run);
+                runId = QcRestClient.addTestRunToTestSet(test, run);
                 if (runId != 0) {
                     LOGGER.info("Added TestRun to QC for TestSetTest " + test);
                 } else {
@@ -160,11 +174,11 @@ public final class QualityCenterSyncUtils {
     /**
      * Reads the QCTestset path from Annotation and synchronize result to QC.
      *
-     * @param clazz      The class to search the annotation.
-     * @param method     The method to read the annotation.
+     * @param clazz The class to search the annotation.
+     * @param method The method to read the annotation.
      * @param methodName The name of the Testmethod.
-     * @param run        The TestRun.
-     * @param result     result containing testParameters
+     * @param run The TestRun.
+     * @param result result containing testParameters
      * @return Id of added run or 0 if it could not be added.
      */
     private static int readAnnotationAndSync(final Class<?> clazz, final Method method, final String methodName,
@@ -187,10 +201,10 @@ public final class QualityCenterSyncUtils {
     /**
      * Get the TestSetTest for the TestSet annotated on this test method.
      *
-     * @param clazz      Test class.
-     * @param method     Test method
+     * @param clazz Test class.
+     * @param method Test method
      * @param methodName Method name.
-     * @param result     TestResult.
+     * @param result TestResult.
      * @return QC TestSetTest
      */
     public static TestSetTest getTestSetTestForAnnotation(final Class<?> clazz, final Method method,
@@ -247,8 +261,8 @@ public final class QualityCenterSyncUtils {
                         String mName;
                         for (final TestSetTest test : testSetTests) {
                             String qcTestMethodName = test.getTest().getName();
-                            qcTestMethodName = SyncUtils.cutTestFromString(qcTestMethodName, methodName);
-                            mName = SyncUtils.cutTestFromString(methodName, qcTestMethodName);
+                            qcTestMethodName = cutTestFromString(qcTestMethodName, methodName);
+                            mName = cutTestFromString(methodName, qcTestMethodName);
                             if (qcTestMethodName.equalsIgnoreCase(mName)) {
                                 matchingTest = test;
                                 break;
@@ -360,7 +374,7 @@ public final class QualityCenterSyncUtils {
     /**
      * Add an entry to the TestMapping.
      *
-     * @param method      local TestMethod that matches QC TestSetTest.
+     * @param method local TestMethod that matches QC TestSetTest.
      * @param testSetTest QCTestSetTest that is executed.
      */
     public static void addTestMapping(final Method method, final TestSetTest testSetTest) {
@@ -370,7 +384,7 @@ public final class QualityCenterSyncUtils {
     /**
      * Add an entry to the TestMapping.
      *
-     * @param method      local TestMethod that matches QC TestSetTest.
+     * @param method local TestMethod that matches QC TestSetTest.
      * @param testSetTest QCTestSetTest that is executed.
      */
     private static void pAddTestMapping(final Method method, final TestSetTest testSetTest) {
@@ -475,157 +489,72 @@ public final class QualityCenterSyncUtils {
         }
     }
 
-
     /**
-     * gets test result
-     *
-     * @param result TestResult
+     * @param methodContext The current method context
      * @return List of screenshots and screencasts to upload.
      */
-    public static List<File> getTestAttachments(ITestResult result) {
-
-        return pGetTestAttachments(result);
-    }
-
-
-    /**
-     * Add an arbitary inputstream as attachment.
-     *
-     * @param inputStream the additionalRunAttachment to set
-     * @param fileName    Name of attachment to add (incl. file type)
-     */
-    public static void addRunAttachment(final InputStream inputStream, final String fileName) {
-
-        if (inputStream == null || eu.tsystems.mms.tic.testframework.utils.StringUtils.isStringEmpty(fileName)) {
-            LOGGER.error("No inputstream or filename given for attachment to add to run.");
-            return;
-        }
-        if (additionalRunAttachments.get() == null) {
-            additionalRunAttachments.set(new LinkedList<File>());
-        }
-        final File tempFolder = new File(System.getProperty("java.io.tmpdir"), Thread.currentThread().getName());
-        tempFolder.mkdirs();
-        final File destination = new File(tempFolder, fileName);
-        try {
-            FileUtils.copyInputStreamToFile(inputStream, destination);
-            additionalRunAttachments.get().add(destination);
-            LOGGER.info("Added attachment to current run:" + fileName);
-        } catch (IOException e) {
-            LOGGER.error("Could not save inputstream as attachment " + fileName);
-        }
-    }
-
-
-    /**
-     * @param result TestResult
-     * @return List of screenshots and screencasts.
-     */
-    private static List<File> pGetTestAttachments(ITestResult result) {
-
+    public static List<File> getTestAttachments(MethodContext methodContext) {
         List<File> attachments = new LinkedList<File>();
-        boolean testSuccess;
-        String testName;
-        testName = result.getName();
-        testSuccess = result.isSuccess();
 
-        final QualityCenterSyncUtils.UploadType uploadTypeScreenshot = uploadScreenshotDesired(testSuccess);
-        final boolean isVideoUpload = uploadVideosDesired(testSuccess);
+        if (methodContext == null) {
+            return attachments;
+        }
 
-        if (uploadTypeScreenshot != QualityCenterSyncUtils.UploadType.NONE) {
+        final boolean isUploadScreenshots = PropertyManager.getBooleanProperty(QCProperties.UPLOAD_SCREENSHOTS, false);
+        final boolean isUploadVideos = PropertyManager.getBooleanProperty(QCProperties.UPLOAD_VIDEOS, false);
 
-            final List<File> screenshotList = SyncUtils.getScreenshotFiles();
-            if (uploadTypeScreenshot == QualityCenterSyncUtils.UploadType.AUTOMATIC) {
-                List<File> tempAttachments = new LinkedList<File>();
-                for (File file : attachments) {
-                    if (file.getName().contains(testName)) {
-                        tempAttachments.add(file);
-                    }
-                }
-                attachments.addAll(tempAttachments);
-            } else {
-                attachments.addAll(screenshotList);
-            }
+        if (isUploadScreenshots) {
+            methodContext.readTestSteps().forEach(testStep -> {
+                testStep.readActions().forEach(testStepAction -> {
+                    testStepAction.readEntries(Screenshot.class).forEach(screenshot -> {
+                        attachments.add(screenshot.getScreenshotFile());
+                    });
+                });
+            });
         }
 
         // Upload videos...
-        if (isVideoUpload) {
-            final List<File> videoFiles = SyncUtils.getVideoFiles();
-            attachments.addAll(videoFiles);
+        if (isUploadVideos) {
+            methodContext.readSessionContexts().forEach(sessionContext -> {
+                Optional<Video> video = sessionContext.getVideo();
+                video.ifPresent(value -> attachments.add(value.getVideoFile()));
+            });
         }
 
-        List<File> additionalAttachments = getAdditionalRunAttachments();
-        if (additionalAttachments != null) {
-            attachments.addAll(additionalAttachments);
-        }
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Following attachments added to testrun for {}: {}", testName,
-                    attachments.stream().map(File::getName).collect(Collectors.joining(",")));
-        }
+        LOGGER.debug("Following attachments added to testrun for {}: {}", methodContext.getName(),
+                attachments.stream().map(File::getName).collect(Collectors.joining(",")));
+
         return attachments;
     }
 
-    /**
-     * Check upload properties to get to know, if Screenshots should be uploaded.
-     *
-     * @param testPassed Is the test passed?
-     * @return True if screenshot upload is desired.
-     */
-    private static QualityCenterSyncUtils.UploadType uploadScreenshotDesired(final boolean testPassed) {
+    private static String cutTestFromString(final String stringToCut, final String stringToCompare) {
+        final String TEST = "test";
+        final String TEST2 = "test_";
+        if (!stringToCut.equalsIgnoreCase(stringToCompare)) {
 
-        if (PropertyManager.getBooleanProperty(QCProperties.UPLOAD_SCREENSHOTS_OFF, false)) {
-            return QualityCenterSyncUtils.UploadType.NONE;
-        } else {
-            if (testPassed) {
-                if (PropertyManager.getBooleanProperty(QCProperties.UPLOAD_SCREENSHOTS_PASSED, false)) {
-                    return QualityCenterSyncUtils.UploadType.ALL;
-                } else {
-                    return QualityCenterSyncUtils.UploadType.NONE;
-                }
-            } else {
-                if (PropertyManager.getBooleanProperty(QCProperties.UPLOAD_SCREENSHOTS_FAILED, false)) {
-                    return QualityCenterSyncUtils.UploadType.ALL;
-                } else {
-                    return QualityCenterSyncUtils.UploadType.NONE;
-                }
+            if (stringToCut.length() > TEST2.length() && stringToCut.matches("[Tt]est_.*")
+                    && stringToCut.substring(TEST2.length()).equalsIgnoreCase(stringToCompare)) {
+
+                return stringToCut.substring(TEST2.length());
+            }
+            if (stringToCut.length() > TEST.length() && stringToCut.matches("[Tt]est.*")
+                    && stringToCut.substring(TEST.length()).equalsIgnoreCase(stringToCompare)) {
+
+                return stringToCut.substring(TEST.length());
             }
         }
-    }
-
-    private static boolean uploadVideosDesired(final boolean testPassed) {
-
-        boolean videoSyncActive = PropertyManager.getBooleanProperty(QCProperties.UPLOAD_VIDEOS, false);
-        if (!videoSyncActive) {
-            return false;
-        }
-
-        if (testPassed && PropertyManager.getBooleanProperty(QCProperties.UPLOAD_VIDEOS_SUCCESS, true)) {
-            return true;
-        }
-
-        if (!testPassed && PropertyManager.getBooleanProperty(QCProperties.UPLOAD_VIDEOS_FAILED, true)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @return the additional RunAttachments
-     */
-    private static List<File> getAdditionalRunAttachments() {
-
-        List<File> out = QualityCenterSyncUtils.additionalRunAttachments.get();
-        additionalRunAttachments.remove();
-        return out;
+        return stringToCut;
     }
 
     /**
      * Creates a testrun for the given test in the specified TestSet.
+     * <p>
+     * // TODO: Check if can be removed, only used in tests
      *
-     * @param qcPath           path to TestSet
+     * @param qcPath path to TestSet
      * @param testInstanceName name of test to create run for
-     * @param status           Status of test
-     * @param attachments      List of possible attchments
+     * @param status Status of test
+     * @param attachments List of possible attchments
      * @return true if run could be synced.
      */
     public static boolean syncTestRun(final String qcPath, final String testInstanceName, final String status,
@@ -636,10 +565,10 @@ public final class QualityCenterSyncUtils {
     /**
      * Creates a testrun for the given test in the specified TestSet.
      *
-     * @param qcPath           path to TestSet
+     * @param qcPath path to TestSet
      * @param testInstanceName name of test to create run for
-     * @param status           Status of test
-     * @param attachments      List of possible attchments
+     * @param status Status of test
+     * @param attachments List of possible attchments
      * @return true if run could be synced.
      */
     private static boolean pSyncTestRun(final String qcPath, final String testInstanceName, final String status, List<File> attachments) {
@@ -655,7 +584,7 @@ public final class QualityCenterSyncUtils {
         TestSetTest testSetTest;
         try {
             testSetTest = QcRestClient.getTestSetTest(testInstanceName, qcPath.substring(splitIndex + 1), qcPath.substring(0, splitIndex));
-            int id = QcRestClient.addTestRun(testSetTest, testRun);
+            int id = QcRestClient.addTestRunToTestSet(testSetTest, testRun);
             LOGGER.info("Synced testRun with id: " + id);
             return id > 0;
         } catch (Exception e) {
@@ -671,8 +600,8 @@ public final class QualityCenterSyncUtils {
      * Creates a TestRun.
      *
      * @param testInstanceName name of test to create run for
-     * @param status           Status of test
-     * @param attachments      List of possible attchments
+     * @param status Status of test
+     * @param attachments List of possible attchments
      * @return A TestRun instance.
      */
     private static TestRun createTestRun(final String testInstanceName, final String status, List<File> attachments) {
@@ -708,18 +637,5 @@ public final class QualityCenterSyncUtils {
             }
         }
         return testRun;
-    }
-
-    /**
-     * enum indicating which screenshots to upload.
-     */
-    private enum UploadType {
-        /**
-         * Different types
-         */
-        NONE,
-        ALL,
-        @Deprecated
-        AUTOMATIC;
     }
 }

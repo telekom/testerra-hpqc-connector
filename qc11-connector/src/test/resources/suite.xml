@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<!-- Suite to run for QCSync3 integration tests. -->
 <suite name="Suite1" verbose="1" parallel="false"><!--parallel="methods">   -->
     <test name="test">
         <classes>
-            <!--<class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QCSync1ProviderTest" />-->
-            <!--<class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QCSync2ProviderTest" />-->
-            <!--<class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QCSync1SynchronizerTest" />-->
-            <!--<class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QCSync2SynchronizerTest" />-->
-            <!--<class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QCSync3SynchronizerTest" />-->
-            <class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QcProgSyncTest"/>
-            <class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QcExecutionFilterTest"/>
+            <class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QCynchronizerTest" />
+<!--            <class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QCSyncUtilsTest"/>-->
+<!--            <class name="eu.tsystems.mms.tic.testframework.qc11connector.test.QcExecutionFilterTest"/>-->
         </classes>
     </test>
 </suite>

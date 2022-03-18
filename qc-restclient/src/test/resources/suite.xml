@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Suite1" verbose="1" thread-count="3" configfailurepolicy="continue" parallel="methods">
+    <test name="Test1" parallel="methods">
+        <packages>
+            <package name="eu.tsystems.mms.tic.testframework.qcrest.test.client"></package>
+        </packages>
+    </test>
+</suite>

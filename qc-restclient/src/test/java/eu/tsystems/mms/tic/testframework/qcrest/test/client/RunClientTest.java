@@ -1,9 +1,23 @@
 /*
- * Created on 26.11.2010
+ * Testerra
  *
- * Copyright(c) 2010 - 2099 T-Systems Multimedia Solutions GmbH
- * Riesaer Str. 5, 01129 Dresden
- * All rights reserved.
+ * (C) 2013, Stefan Prasse, T-Systems Multimedia Solutions GmbH, Deutsche Telekom AG
+ *
+ * Deutsche Telekom AG and all other contributors /
+ * copyright owners license this file to you under the Apache
+ * License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
  */
 package eu.tsystems.mms.tic.testframework.qcrest.test.client;
 
@@ -19,7 +33,7 @@ import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSet;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetFolder;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
-import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +58,7 @@ import org.testng.annotations.Test;
  *
  * @author sepr, mibu
  */
-@QCTestset("Root\\Xeta\\QC WebServiceClient\\RestClientTests")
+//@QCTestset("Root\\Testerra\\QCRestClient\\RestClientTests")
 public class RunClientTest extends AbstractTest {
 
     /**
@@ -55,14 +70,10 @@ public class RunClientTest extends AbstractTest {
      */
     private static final String TRASH = "TrashCan";
 
-    /** Path to test in testlab. */
-    // private static final String TEST_PATH = "Subject\\Xeta\\QCWebServiceClient";
-
     /**
      * Creates a TestRunWr object.
      *
      * @param passed Create Run that is passed (true) or failed (false).
-     *
      * @return A newly created TestRunWr.
      */
     private TestRun createTestRun(boolean passed) {
@@ -80,9 +91,9 @@ public class RunClientTest extends AbstractTest {
     /**
      * Prints a QC folder hierarchy (recursively) to the given StringBuilder.
      *
-     * @param pStr    A StringBuilder.
+     * @param pStr A StringBuilder.
      * @param pFolder A TestSetFolderWr. instance
-     * @param pDeep   An integer indicating hierarchical deepness of pFolder.
+     * @param pDeep An integer indicating hierarchical deepness of pFolder.
      */
     private void printFolder(final StringBuilder pStr,
                              final TestSetFolder pFolder, final int pDeep) throws Exception {
@@ -140,7 +151,6 @@ public class RunClientTest extends AbstractTest {
 
         final TestSetTest tsTest = QcRestClient.getTestSetTest(TEST, TESTSET, TESTSET_PATH);
         final TestRun testRun = createTestRun(false);
-
         final List<Attachment> lAttachmentsList = new ArrayList<Attachment>();
 
         final Attachment attach1 = new Attachment();
@@ -157,7 +167,7 @@ public class RunClientTest extends AbstractTest {
 
         testRun.addAttachments(lAttachmentsList);
         int runId = 0;
-        runId = QcRestClient.addTestRun(tsTest, testRun);
+        runId = QcRestClient.addTestRunToTestSet(tsTest, testRun);
         Assert.assertNotEquals(runId, 0);
         LOG.debug(testRun.getName() + " with "
                 + lAttachmentsList.size() + " attachments added to TestSetTest "
@@ -197,8 +207,8 @@ public class RunClientTest extends AbstractTest {
                     if (attachment.getRefType().equalsIgnoreCase(Attachment.Type.FILE.getValue())) {
                         LOG.debug("\tAttachment path       : "
                                 + FileByteConverter.getFileFromBytes(
-                                attachment.getName(),
-                                attachment.getContent())
+                                        attachment.getName(),
+                                        attachment.getContent())
                                 .getAbsolutePath());
                     } else {
                         LOG.debug("\tAttachment entry       : "
@@ -408,7 +418,6 @@ public class RunClientTest extends AbstractTest {
      * Save a resource to the filesystem.
      *
      * @param resourceName Name of resource to save.
-     *
      * @return Filename.
      */
     protected static File getResourceAsFile(String resourceName) {
@@ -495,7 +504,7 @@ public class RunClientTest extends AbstractTest {
             requestHeaders.put("Accept", "application/xml");
             if (parent != null) {
                 RestConnector.getInstance().httpDelete(
-                        RestConnector.getInstance().buildEntityCollectionUrl("test-set") + "/" + parent.getId())
+                                RestConnector.getInstance().buildEntityCollectionUrl("test-set") + "/" + parent.getId())
                         .toString();
                 RestConnector
                         .getInstance()

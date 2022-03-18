@@ -1,15 +1,29 @@
 /*
- * Created on 26.02.2013
+ * Testerra
  *
- * Copyright(c) 2010 - 2013 T-Systems Multimedia Solutions GmbH
- * Riesaer Str. 5, 01129 Dresden
- * All rights reserved.
+ * (C) 2013, Stefan Prasse, T-Systems Multimedia Solutions GmbH, Deutsche Telekom AG
+ *
+ * Deutsche Telekom AG and all other contributors /
+ * copyright owners license this file to you under the Apache
+ * License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
  */
 package eu.tsystems.mms.tic.testframework.qcrest.utils;
 
 /**
  * Class holding all necessary data for a connection to QC.
- * 
+ *
  * @author sepr
  */
 public class LoginData {
@@ -27,7 +41,7 @@ public class LoginData {
 
     /**
      * Constructor filling all fields.
-     * 
+     *
      * @param domain QC Domain.
      * @param password QC Password.
      * @param project QC project.
@@ -45,9 +59,9 @@ public class LoginData {
 
     /**
      * Gets the value of the domain property.
-     * 
+     *
      * @return possible object is {@link String }
-     * 
+     *
      */
     public String getDomain() {
         return domain;
@@ -55,9 +69,9 @@ public class LoginData {
 
     /**
      * Sets the value of the domain property.
-     * 
+     *
      * @param value allowed object is {@link String }
-     * 
+     *
      */
     public void setDomain(final String value) {
         this.domain = value;
@@ -65,9 +79,9 @@ public class LoginData {
 
     /**
      * Gets the value of the password property.
-     * 
+     *
      * @return possible object is {@link String }
-     * 
+     *
      */
     public String getPassword() {
         return password;
@@ -75,9 +89,9 @@ public class LoginData {
 
     /**
      * Sets the value of the password property.
-     * 
+     *
      * @param value allowed object is {@link String }
-     * 
+     *
      */
     public void setPassword(final String value) {
         this.password = value;
@@ -85,9 +99,9 @@ public class LoginData {
 
     /**
      * Gets the value of the project property.
-     * 
+     *
      * @return possible object is {@link String }
-     * 
+     *
      */
     public String getProject() {
         return project;
@@ -95,9 +109,9 @@ public class LoginData {
 
     /**
      * Sets the value of the project property.
-     * 
+     *
      * @param value allowed object is {@link String }
-     * 
+     *
      */
     public void setProject(final String value) {
         this.project = value;
@@ -105,9 +119,9 @@ public class LoginData {
 
     /**
      * Gets the value of the server property.
-     * 
+     *
      * @return possible object is {@link String }
-     * 
+     *
      */
     public String getServer() {
         return server;
@@ -115,9 +129,9 @@ public class LoginData {
 
     /**
      * Sets the value of the server property.
-     * 
+     *
      * @param value allowed object is {@link String }
-     * 
+     *
      */
     public void setServer(final String value) {
         this.server = value;
@@ -125,9 +139,9 @@ public class LoginData {
 
     /**
      * Gets the value of the user property.
-     * 
+     *
      * @return possible object is {@link String }
-     * 
+     *
      */
     public String getUser() {
         return user;
@@ -135,9 +149,9 @@ public class LoginData {
 
     /**
      * Sets the value of the user property.
-     * 
+     *
      * @param value allowed object is {@link String }
-     * 
+     *
      */
     public void setUser(final String value) {
         this.user = value;

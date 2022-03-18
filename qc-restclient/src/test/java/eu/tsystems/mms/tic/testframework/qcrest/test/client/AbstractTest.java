@@ -1,18 +1,35 @@
 /*
- * Created on 11.08.2014
+ * Testerra
  *
- * Copyright(c) 2011 - 2013 T-Systems Multimedia Solutions GmbH
- * Riesaer Str. 5, 01129 Dresden
- * All rights reserved.
+ * (C) 2013, Stefan Prasse, T-Systems Multimedia Solutions GmbH, Deutsche Telekom AG
+ *
+ * Deutsche Telekom AG and all other contributors /
+ * copyright owners license this file to you under the Apache
+ * License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
  */
 package eu.tsystems.mms.tic.testframework.qcrest.test.client;
 
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
 import java.io.IOException;
 import java.util.List;
+
+import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import org.testng.annotations.AfterSuite;
 
 /**
@@ -20,9 +37,10 @@ import org.testng.annotations.AfterSuite;
  *
  * @author sepr
  */
-public abstract class AbstractTest {
+public abstract class AbstractTest extends TesterraTest implements Loggable {
     /** The test folders path. **/
-    protected static final String TESTSET_PATH = "Root\\Xeta\\QC WebServiceClient";
+//    protected static final String TESTSET_PATH = "Root\\Xeta\\QC WebServiceClient";
+    protected static final String TESTSET_PATH = "Root\\Testerra\\QCRestClient";
     /** Name of TestSet. */
     protected static final String TESTSET = "TestSetUnderTest";
     /** Name of tests in testlab */

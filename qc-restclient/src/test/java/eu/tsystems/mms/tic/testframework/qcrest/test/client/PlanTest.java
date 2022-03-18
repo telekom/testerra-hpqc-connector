@@ -1,9 +1,23 @@
 /*
- * Created on 09.08.2013
+ * Testerra
  *
- * Copyright(c) 2011 - 2013 T-Systems Multimedia Solutions GmbH
- * Riesaer Str. 5, 01129 Dresden
- * All rights reserved.
+ * (C) 2013, Stefan Prasse, T-Systems Multimedia Solutions GmbH, Deutsche Telekom AG
+ *
+ * Deutsche Telekom AG and all other contributors /
+ * copyright owners license this file to you under the Apache
+ * License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
  */
 package eu.tsystems.mms.tic.testframework.qcrest.test.client;
 
@@ -11,29 +25,32 @@ import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestPlanFolder;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestPlanTest;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 /**
  * Tests for QC Test Plan.
  *
  * @author sepr
- *
  */
 public class PlanTest extends AbstractTest {
 
-    /** Logger */
-    private static final Logger LOG = LoggerFactory.getLogger(PlanTest.class);
-    /** Path to test in testlab. */
-    private static final String TEST_PATH = "Subject\\Xeta\\QCWebServiceClient";
-    /** Trash Folder. */
+    /**
+     * Path to test in testlab.
+     */
+//    private static final String TEST_PATH = "Subject\\Xeta\\QCWebServiceClient";
+    private static final String TEST_PATH = "Subject\\Testerra\\QCRestClient";
+    /**
+     * Trash Folder.
+     */
     private static final String TRASH = "TrashCan";
-    /** Name of tests in testlab */
+    /**
+     * Name of tests in testlab
+     */
     private static final String TEST = "testUnderTest";
 
     /**
@@ -44,21 +61,21 @@ public class PlanTest extends AbstractTest {
     @Test
     public void testEditTest() throws Exception {
 
-        LOG.info("Test editTest");
+        log().info("Test editTest");
         final TestPlanTest test = QcRestClient.getTestPlanTest(TEST, TEST_PATH);
-        LOG.debug("Test description before: " + test.getDescription());
+        log().debug("Test description before: " + test.getDescription());
 
         // To edit a test, create an empty entity and set its id and the changed values.
         // Real objects from the service contain too much information.
         final TestPlanTest changer = new TestPlanTest();
         final Long timestamp = System.currentTimeMillis();
         changer.setDescription(timestamp + "");
-        LOG.debug("Set Test description to: " + changer.getDescription());
+        log().debug("Set Test description to: " + changer.getDescription());
         QcRestClient.editTest(changer, test.getId());
 
-        LOG.debug("Getting updated test.");
+        log().debug("Getting updated test.");
         final TestPlanTest validate = QcRestClient.getTestPlanTest(TEST, TEST_PATH);
-        LOG.debug("Updated Test description: " + validate.getDescription());
+        log().debug("Updated Test description: " + validate.getDescription());
         Assert.assertTrue(validate.getDescription().contains(timestamp + ""), "Test doesn't seem to be changed");
     }
 
@@ -69,13 +86,13 @@ public class PlanTest extends AbstractTest {
      */
     @Test(enabled = true)
     public void testGetTest() throws Exception {
-        LOG.info("Get test from Plan");
+        log().info("Get test from Plan");
         final TestPlanTest test = QcRestClient.getTestPlanTest(TEST, TEST_PATH);
-        LOG.debug("Test name       : " + test.getName());
-        LOG.debug("Test description: " + test.getDescription());
-        LOG.debug("Test path       : " + test.getPath());
-        LOG.debug("Test id         : " + test.getId());
-        LOG.debug("Test type       : " + test.getType());
+        log().debug("Test name       : " + test.getName());
+        log().debug("Test description: " + test.getDescription());
+        log().debug("Test path       : " + test.getPath());
+        log().debug("Test id         : " + test.getId());
+        log().debug("Test type       : " + test.getType());
 
         Assert.assertEquals(TEST, test.getName());
     }
@@ -91,7 +108,7 @@ public class PlanTest extends AbstractTest {
         int idReturned = 0;
         try {
             testCreateTestPlanFolder();
-            LOG.info("Test addTest");
+            log().info("Test addTest");
             final String time = System.currentTimeMillis() + "";
             parent = QcRestClient.getTestPlanFolder(TEST_PATH + "\\" + TRASH);
             final TestPlanTest test = new TestPlanTest();
@@ -102,26 +119,26 @@ public class PlanTest extends AbstractTest {
             idReturned = QcRestClient.addTest(test);
             Assert.assertNotEquals(idReturned, 0, "Returned id is 0, so something went wrong.");
 
-            LOG.debug("Getting created test.");
+            log().debug("Getting created test.");
             final TestPlanTest validate = QcRestClient.getTestPlanTestById(idReturned);
-            LOG.debug("Added Test: " + validate.toString());
+            log().debug("Added Test: " + validate.toString());
         } finally {
             // delete
             if (idReturned != 0) {
-                LOG.debug("Remove created test");
+                log().debug("Remove created test");
                 Map<String, String> requestHeaders = new HashMap<String, String>();
                 requestHeaders.put("Accept", "application/xml");
                 RestConnector.getInstance().httpDelete(
-                        RestConnector.getInstance().buildEntityCollectionUrl("test") + "/" + idReturned)
+                                RestConnector.getInstance().buildEntityCollectionUrl("test") + "/" + idReturned)
                         .toString();
             }
             parent = QcRestClient.getTestPlanFolder(TEST_PATH + "\\" + TRASH);
             if (parent != null) {
-                LOG.debug("Remove created Folder");
+                log().debug("Remove created Folder");
                 Map<String, String> requestHeaders = new HashMap<String, String>();
                 requestHeaders.put("Accept", "application/xml");
                 RestConnector.getInstance().httpDelete(
-                        RestConnector.getInstance().buildEntityCollectionUrl("test-folder") + "/" + parent.getId())
+                                RestConnector.getInstance().buildEntityCollectionUrl("test-folder") + "/" + parent.getId())
                         .toString();
             }
         }
@@ -133,7 +150,7 @@ public class PlanTest extends AbstractTest {
      * @throws IOException .
      */
     private void testCreateTestPlanFolder() throws Exception {
-        LOG.info("Test createTestPlanFolder");
+        log().info("Test createTestPlanFolder");
         final TestPlanFolder parent = QcRestClient.getTestPlanFolder(TEST_PATH);
         final TestPlanFolder toCreate = new TestPlanFolder();
         toCreate.setName(TRASH);
@@ -142,8 +159,8 @@ public class PlanTest extends AbstractTest {
         int idReturned = QcRestClient.createTestFolder(toCreate);
         Assert.assertNotEquals(idReturned, 0, "Returned id is 0, so something went wrong.");
 
-        LOG.debug("Getting created Folder.");
+        log().debug("Getting created Folder.");
         final TestPlanFolder validate = QcRestClient.getTestPlanFolderById(idReturned);
-        LOG.debug("Added Test-Folder: " + validate.toString());
+        log().debug("Added Test-Folder: " + validate.toString());
     }
 }

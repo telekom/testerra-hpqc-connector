@@ -20,16 +20,19 @@
 
 This module provides additional features for [Testerra Framework](https://github.com/telekom/testerra) for automated tests.
 
-This module provides an automatic test result synchronization to HP Application Lifecycle Management, former called HP
+This module provides an automatic test result synchronization to MicroFocus Application Lifecycle Management, former called HP
 QualityCenter. The module will register automatically by using `ModuleHook`.
+
+See more details about the MicroFocus ALM REST API here: https://admhelp.microfocus.com/alm/en/12.55/api_refs/REST_TECH_PREVIEW/ALM_REST_API_TP.html
 
 ## Setup
 
 ### Requirements
 
-| HPQC connector | Testerra     |
-| -------------- | -------------|
-| `1.0`          | ` >= 1.0.0`  |
+| HPQC connector | Testerra         |
+|----------------|------------------|
+| `1.0`          | ` 1.0.0 .. 1.11` |
+| `1.1`          | `>= 1.12`        |
 
 ### Usage
 
@@ -38,9 +41,7 @@ Include the following dependency in your project.
 Gradle:
 
 ```groovy
-implementation 'io.testerra:qc11-connector:1.0'
-// From Testerra framework
-implementation 'io.testerra:surefire-connector:1.0.0'
+implementation 'io.testerra:qc11-connector:1.1'
 ```
 
 Maven:
@@ -49,13 +50,7 @@ Maven:
 <dependency>
   <groupId>io.testerra</groupId>
   <artifactId>qc11-connector</artifactId>
-  <version>1.0</version>
-</dependency>
-<!-- From Testerra framework -->
-<dependency>
-  <groupId>io.testerra</groupId>
-  <artifactId>surefire-connector</artifactId>
-  <version>1.0.0</version>
+  <version>1.1</version>
 </dependency>
 ```
 
@@ -73,9 +68,8 @@ qc.connection.project=
 qc.connection.user=
 qc.connection.password=
 qc.sync.active=true
-qc.test.failed.upload.screenshots=true
+qc.upload.screenshots=true
 qc.upload.videos=true
-qc.test.failed.upload.videos=true
 ````
 
 Basically the synchronization will work by two explicit annotations that can be set.
@@ -90,7 +84,7 @@ below:
 @QCTestset("\\Root\\My\\Full\\Path\\TestSet")
 public class CorrectClassAnnotationTest extends TesterraTest {
 
-    @org.testng.annotations.Test
+    @Test
     public void testMethodPass() {
       Assert.assertTrue(true);
     }
@@ -110,7 +104,7 @@ name itself.
 @QCTestset("\\Root\\My\\Full\\Path\\TestSet")
 public class CorrectClassAnnotationTest extends TesterraTest {
 
-    @org.testng.annotations.Test
+    @Test
     @QCTestname("Pass_Test_01")
     public void testMethodPass() {
         Assert.assertTrue(true);
@@ -120,25 +114,39 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 
 ### Properties
 
-|Property|Default|Description|
-|---|---|---|
-|qc.sync.active|true|Enables synchronization fo test results|
-|qc.connection.server| |URI of ALM / QC server|
-|qc.connection.user| |User to use for synchronization|
-|qc.connection.password| |Password of user used for synchronization|
-|qc.connection.domain}| |Domain of user to log in|
-|qc.connection.project| |Project of user to log in|
-|qc.version|12|Version of Quality Center or ALM 11, 12 or higher|
-|qc.field.mapping.testrun| |Customize field-value mapping for synchronize properties to the quality center testrun. Use the format key:value&#124;key2:value2 for multiple values.|
-|qc.upload.screenshots.off|false|Disabled the upload of screenshots globally|
-|qc.test.failed.upload.screenshots|false|Upload screenshots in case of test failure|
-|qc.test.passed.upload.screenshots|false|Upload screenshots in case of test successful|
-|qc.upload.videos|false|Enable video upload|
-|qc.test.failed.upload.videos|false|Upload videos in case of test failure|
-|qc.test.passed.upload.videos|false|Upload videos in case of test successful|
-|qc.test.execution.filter|false|Filter test cases in QC/ALM test set by status to determine it should be executed. <br> Value can be <br>- exclude:status:passed <br> - include:status:failed <br>- or other in format "include/exclude" + "status" + <explicit name of status>|
+| Property                 | Default  | Description|
+|--------------------------|----------|-----------------------------------------------------|
+| qc.sync.active           | true     | Enables synchronization fo test results|
+| qc.connection.server     |          | URI of ALM / QC server|
+| qc.connection.user       |          | User to use for synchronization|
+| qc.connection.password   |          | Password of user used for synchronization|
+| qc.connection.domain}    |          | Domain of user to log in|
+| qc.connection.project    |          | Project of user to log in|
+| qc.version               | 12       | Version of Quality Center or ALM 11, 12 or higher|
+| qc.field.mapping.testrun |          | Customize field-value mapping for synchronize properties to the quality center testrun. Use the format key:value&#124;key2:value2 for multiple values. |
+| qc.upload.screenshots    | false    | Enable the upload of screenshots|
+| qc.upload.videos         | false    | Enable the upload of vides|
 
 ---
+
+## Unit test
+
+### qc-restclient
+
+* Add a ``qcconnection.properties`` to `qc-restclient/src/test/resources`
+* Run ``gradle testRestClient``
+
+### qc11-connector
+
+The test includes two single test runs:
+
+* The ``testundertest`` creates different scenarios for result synchronization. The result has failed tests.
+* The ``suite`` verifies the result of synchronization by connecting to HP QC via REST API to check the `Run` items.   
+
+* Add a ``qcconnection.properties`` to `qc11-connector/src/test/resources`
+* You need a Selenium server for ``testundertest`` suite
+* Run ``gradle testQCConn -Ptestundertest``
+* Run ``gradle testQCConn -Psuite``
 
 ## Publication
 
