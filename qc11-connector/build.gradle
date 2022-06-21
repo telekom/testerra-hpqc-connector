@@ -1,9 +1,9 @@
 dependencies {
     implementation project(':qc-restclient')
 
-
     compileOnly 'io.testerra:core:' + testerraCompileVersion
-
+    // Needed for sync of cucumber scenarios
+    implementation 'io.cucumber:cucumber-testng:' + cucumberVersion
 
     testImplementation 'io.testerra:driver-ui-desktop:' + testerraTestVersion
     testImplementation 'io.testerra:report-ng:' + testerraTestVersion

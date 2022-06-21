@@ -101,7 +101,8 @@ public class QualityCenterResultSynchronizer implements TestStatusUpdateEvent.Li
                 return;
             }
 
-            final String methodName = result.getMethod().getMethodName();
+//            final String methodName = result.getMethod().getMethodName();
+            final String methodName = methodContext.getName();
             runId = QualityCenterSyncUtils.syncWithSyncType3(clazz, method, methodName, run, result);
 
             if (runId > 0) {

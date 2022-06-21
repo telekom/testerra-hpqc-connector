@@ -41,6 +41,7 @@ import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.report.model.context.Video;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestname;
+import io.cucumber.testng.PickleWrapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -51,6 +52,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -58,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -221,13 +224,17 @@ public final class QualityCenterSyncUtils {
 
             try {
 
-                String qcTestName = methodName;
+//                String qcTestName = methodName;
                 final String qcTestNameAnnotation = getTestnameFromAnnotation(method);
                 final boolean isInstanceCountAnnotation = isInstanceCountAnnotationPresent(method);
+                final String qcTestNameFromSzenario = getTestnameFromScenario(result);
 
-                if (qcTestNameAnnotation != null) {
-                    qcTestName = qcTestNameAnnotation;
-                }
+//                if (qcTestNameAnnotation != null) {
+//                    qcTestName = qcTestNameAnnotation;
+//                }
+
+                String qcTestName = qcTestNameAnnotation != null ? qcTestNameAnnotation
+                        : (qcTestNameFromSzenario != null ? qcTestNameFromSzenario : methodName);
 
                 LOGGER.info("Looking up TestSetTest " + testSetPath + " - " + qcTestName + "\nfor Test: " +
                         result.getTestClass().getRealClass().getSimpleName() + "#" + result.getName());
@@ -358,6 +365,31 @@ public final class QualityCenterSyncUtils {
         }
 
         return annotation;
+    }
+
+    /**
+     * Try to find out the name from @QCTestname marker of a Cucumber annotation
+     *
+     * @param result
+     * @return
+     */
+    private static String getTestnameFromScenario(ITestResult result) {
+        Optional<PickleWrapper> first = Arrays.stream(result.getParameters())
+                .filter(o -> o instanceof PickleWrapper)
+                .map(e -> (PickleWrapper) e)
+                .findFirst();
+        if (first.isPresent()) {
+            List<String> tags = first.get().getPickle().getTags();
+            AtomicReference<String> value = new AtomicReference<>();
+            tags.stream()
+                    .filter(e -> e.toLowerCase().contains("qctestname"))
+                    .findFirst()
+                    .ifPresent(tag -> {
+                        value.set(StringUtils.substringBetween(tag, "\""));
+                    });
+            return StringUtils.isNotBlank(value.get()) ? value.get() : null;
+        }
+        return null;
     }
 
     /**

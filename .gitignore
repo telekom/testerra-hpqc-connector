@@ -14,3 +14,4 @@ gradle.properties
 /qc11-connector/test-report/
 /test-output/
 /qc11-connector/test-output/
+/cucumber-test/src/test/resources/qcconnection.properties

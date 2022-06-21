@@ -1,5 +1,4 @@
 ext {
-    cucumberVersion = '5.6.0'
     testerraTestVersion = '1.12'
 }
 
@@ -8,6 +7,9 @@ dependencies {
     implementation 'io.testerra:driver-ui-desktop:' + testerraTestVersion
     implementation 'io.testerra:report-ng:' + testerraTestVersion
     implementation 'io.testerra:cucumber-connector:1.1'
+
+    implementation project(':qc-restclient')
+    implementation project(':qc11-connector:')
 
     implementation 'io.cucumber:cucumber-java:' + cucumberVersion
     implementation('io.cucumber:cucumber-testng:' + cucumberVersion) {
