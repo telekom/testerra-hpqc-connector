@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 @QCTestset("Root\\Testerra\\QCSyncResultTests\\QcSyncResultTests")
 public class QcStatusSyncTest extends TesterraTest {
 
+    // It results in 2 screenshots are synced to QC
     @Test
     public void testT01_QcSyncResultFailed() {
         WebDriverManager.getWebDriver();
