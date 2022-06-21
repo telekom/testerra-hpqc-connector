@@ -227,14 +227,14 @@ public final class QualityCenterSyncUtils {
 //                String qcTestName = methodName;
                 final String qcTestNameAnnotation = getTestnameFromAnnotation(method);
                 final boolean isInstanceCountAnnotation = isInstanceCountAnnotationPresent(method);
-                final String qcTestNameFromSzenario = getTestnameFromScenario(result);
+                final String qcTestNameFromScenario = getTestnameFromScenario(result);
 
 //                if (qcTestNameAnnotation != null) {
 //                    qcTestName = qcTestNameAnnotation;
 //                }
 
                 String qcTestName = qcTestNameAnnotation != null ? qcTestNameAnnotation
-                        : (qcTestNameFromSzenario != null ? qcTestNameFromSzenario : methodName);
+                        : (qcTestNameFromScenario != null ? qcTestNameFromScenario : methodName);
 
                 LOGGER.info("Looking up TestSetTest " + testSetPath + " - " + qcTestName + "\nfor Test: " +
                         result.getTestClass().getRealClass().getSimpleName() + "#" + result.getName());
