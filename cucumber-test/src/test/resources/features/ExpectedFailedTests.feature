@@ -1,3 +1,4 @@
+@QCTestset("Root\Testerra\QCSyncResultTests\QcSyncResultTests")
 Feature: tests related to @Fails tag
 
   @QCTestname("T01_QcSyncResultFailed")
@@ -5,9 +6,10 @@ Feature: tests related to @Fails tag
     When the user does a step
     Then it fails
 
-#  Scenario: T02_QcSyncResultPassed
-#    When the user does a step
-#    Then it fails
+  @QCTestname("T02_QcSyncResultPassed")
+  Scenario: T02_QcSyncResultPassed
+    When the user does a step
+    Then it fails
 
 #  @Fails
 #  Scenario: failing scenario with fails tag and no fails on step

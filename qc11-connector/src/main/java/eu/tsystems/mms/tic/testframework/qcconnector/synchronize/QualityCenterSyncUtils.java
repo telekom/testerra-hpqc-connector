@@ -110,21 +110,31 @@ public final class QualityCenterSyncUtils {
     /**
      * Synchronize to QC with syncType 3.
      *
-     * @param clazz Class of test.
-     * @param method of test.
-     * @param methodName Name of testMethod.
      * @param run RunWrapper for TestRun.
-     * @param result result containing testParameters
      * @return Id of added run or 0 if it could not be added.
      * @throws TesterraQcResultSyncException sync error
      */
-    public static int syncWithSyncType3(final Class<?> clazz, final Method method, final String methodName,
-                                        final TestRun run, final ITestResult result) throws TesterraQcResultSyncException {
-        int id = readAnnotationAndSync(clazz, method, methodName, run, result);
-        if (id == 0) {
+    public static int syncResult(MethodContext methodContext, final TestRun run) throws TesterraQcResultSyncException {
+
+        int runId = 0;
+        final TestSetTest testSetTest = getTestSetTestForAnnotation(methodContext);
+        if (testSetTest != null) {
+            try {
+                // Create a run and add it to testset
+                runId = addTestRunToTestSet(testSetTest, run);
+            } catch (final Exception e) {
+                final StringBuilder error = new StringBuilder();
+                error.append("An error occurred while communicating with Quality Center: ");
+                error.append(e.getMessage());
+                LOGGER.error(error.toString(), e);
+            }
+        }
+
+
+        if (runId == 0) {
             throw new TesterraQcResultSyncException("No id returned. See previous logs.");
         } else {
-            return id;
+            return runId;
         }
     }
 
@@ -174,47 +184,49 @@ public final class QualityCenterSyncUtils {
         return runId;
     }
 
-    /**
-     * Reads the QCTestset path from Annotation and synchronize result to QC.
-     *
-     * @param clazz The class to search the annotation.
-     * @param method The method to read the annotation.
-     * @param methodName The name of the Testmethod.
-     * @param run The TestRun.
-     * @param result result containing testParameters
-     * @return Id of added run or 0 if it could not be added.
-     */
-    private static int readAnnotationAndSync(final Class<?> clazz, final Method method, final String methodName,
-                                             final TestRun run, final ITestResult result) {
-        int runId = 0;
-        final TestSetTest test = getTestSetTestForAnnotation(clazz, method, methodName, result);
-        if (test != null) {
-            try {
-                runId = addTestRunToTestSet(test, run);
-            } catch (final Exception e) {
-                final StringBuilder error = new StringBuilder();
-                error.append("An error occurred while communicating with Quality Center: ");
-                error.append(e.getMessage());
-                LOGGER.error(error.toString(), e);
-            }
-        }
-        return runId;
-    }
+//    /**
+//     * Reads the QCTestset path from Annotation and synchronize result to QC.
+//     *
+//     * @param clazz The class to search the annotation.
+//     * @param method The method to read the annotation.
+//     * @param methodName The name of the Testmethod.
+//     * @param run The TestRun.
+//     * @param result result containing testParameters
+//     * @return Id of added run or 0 if it could not be added.
+//     */
+//    private static int readAnnotationAndSync(final Class<?> clazz, final Method method, final String methodName,
+//                                             final TestRun run, final ITestResult result) {
+//        int runId = 0;
+//        final TestSetTest test = getTestSetTestForAnnotation(clazz, method, methodName, result);
+//        if (test != null) {
+//            try {
+//                runId = addTestRunToTestSet(test, run);
+//            } catch (final Exception e) {
+//                final StringBuilder error = new StringBuilder();
+//                error.append("An error occurred while communicating with Quality Center: ");
+//                error.append(e.getMessage());
+//                LOGGER.error(error.toString(), e);
+//            }
+//        }
+//        return runId;
+//    }
 
     /**
      * Get the TestSetTest for the TestSet annotated on this test method.
      *
-     * @param clazz Test class.
-     * @param method Test method
-     * @param methodName Method name.
-     * @param result TestResult.
      * @return QC TestSetTest
      */
-    public static TestSetTest getTestSetTestForAnnotation(final Class<?> clazz, final Method method,
-                                                          final String methodName,
-                                                          final ITestResult result) {
+    private static TestSetTest getTestSetTestForAnnotation(MethodContext methodContext) {
+
+        ITestResult result = methodContext.getTestNgResult().get();
+        final Class<?> clazz = result.getTestClass().getRealClass();
+        final Method method = result.getMethod().getConstructorOrMethod().getMethod();
+        final String methodName = methodContext.getName();
+
         TestSetTest matchingTest = null;
-        final String testSetPath = QCPathUtil.getQCTestsetPath(clazz, method, result);
+        final String testSetFromFeature = getCucumberTagFromResult(result, "qctestset");
+        final String testSetPath = StringUtils.isNotBlank(testSetFromFeature) ? testSetFromFeature : QCPathUtil.getQCTestsetPath(clazz, method, result);
+
 
         if (testSetPath != null) {
 
@@ -227,7 +239,7 @@ public final class QualityCenterSyncUtils {
 //                String qcTestName = methodName;
                 final String qcTestNameAnnotation = getTestnameFromAnnotation(method);
                 final boolean isInstanceCountAnnotation = isInstanceCountAnnotationPresent(method);
-                final String qcTestNameFromScenario = getTestnameFromScenario(result);
+                final String qcTestNameFromScenario = getCucumberTagFromResult(result, "qctestname");
 
 //                if (qcTestNameAnnotation != null) {
 //                    qcTestName = qcTestNameAnnotation;
@@ -368,12 +380,12 @@ public final class QualityCenterSyncUtils {
     }
 
     /**
-     * Try to find out the name from @QCTestname marker of a Cucumber annotation
+     * Try to find out the CucumberTag from a scenario
      *
      * @param result
      * @return
      */
-    private static String getTestnameFromScenario(ITestResult result) {
+    private static String getCucumberTagFromResult(ITestResult result, final String tagName) {
         Optional<PickleWrapper> first = Arrays.stream(result.getParameters())
                 .filter(o -> o instanceof PickleWrapper)
                 .map(e -> (PickleWrapper) e)
@@ -382,7 +394,7 @@ public final class QualityCenterSyncUtils {
             List<String> tags = first.get().getPickle().getTags();
             AtomicReference<String> value = new AtomicReference<>();
             tags.stream()
-                    .filter(e -> e.toLowerCase().contains("qctestname"))
+                    .filter(e -> e.toLowerCase().contains(tagName))
                     .findFirst()
                     .ifPresent(tag -> {
                         value.set(StringUtils.substringBetween(tag, "\""));

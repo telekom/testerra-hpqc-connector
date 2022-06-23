@@ -8,7 +8,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
 
 @Listeners(TesterraListener.class)
-@QCTestset("Root\\Testerra\\QCSyncResultTests\\QcSyncResultTests")
+//@QCTestset("Root\\Testerra\\QCSyncResultTests\\QcSyncResultTests")
 @CucumberOptions(
         plugin = {"eu.tsystems.mms.tic.testerra.plugins.cucumber.TesterraReportPlugin"},
         features = "src/test/resources/features/",

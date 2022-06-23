@@ -18,7 +18,6 @@ import org.testng.ITestResult;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -93,17 +92,13 @@ public class QualityCenterResultSynchronizer implements TestStatusUpdateEvent.Li
         try {
             int runId = 0;
             ITestResult result = methodContext.getTestNgResult().get();
-            final Class<?> clazz = result.getTestClass().getRealClass();
-            final Method method = result.getMethod().getConstructorOrMethod().getMethod();
 
             // do not synchronize non-test methods
             if (!result.getMethod().isTest()) {
                 return;
             }
 
-//            final String methodName = result.getMethod().getMethodName();
-            final String methodName = methodContext.getName();
-            runId = QualityCenterSyncUtils.syncWithSyncType3(clazz, method, methodName, run, result);
+            runId = QualityCenterSyncUtils.syncResult(methodContext, run);
 
             if (runId > 0) {
                 // Save the runId as a result Attribute.

@@ -1,6 +1,7 @@
 package eu.tsystems.mms.tic.testframework.qc11connector.test;
 
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
+import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestname;
 import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
@@ -23,6 +24,7 @@ public class QcStatusSyncTest extends TesterraTest {
         Assert.assertEquals(1,2);
     }
 
+    @QCTestname("T02_QcSyncResultPassed")
     @Test
     public void testT02_QcSyncResultPassed() {
         Assert.assertEquals(1,1);
