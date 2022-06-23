@@ -1,6 +1,7 @@
 package eu.tsystems.mms.tic.testframework.qcconnector.synchronize;
 
 import com.google.common.eventbus.Subscribe;
+import eu.tsystems.mms.tic.testframework.annotations.Fails;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.events.TestStatusUpdateEvent;
 import eu.tsystems.mms.tic.testframework.exceptions.SystemException;
@@ -14,6 +15,8 @@ import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.report.Status;
 import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
 import eu.tsystems.mms.tic.testframework.utils.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.testng.ITestResult;
 
 import java.io.File;
@@ -21,6 +24,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created on 09.03.2022
@@ -151,6 +156,24 @@ public class QualityCenterResultSynchronizer implements TestStatusUpdateEvent.Li
                 }
             }
         }
+
+        // Add Error messages to comment
+        AtomicInteger i = new AtomicInteger(0);
+        methodContext.readErrors()
+//                .filter(ErrorContext::isNotOptional)
+                .forEach(errorContext -> {
+                    Throwable throwable = errorContext.getThrowable();
+                    StringBuffer comment = new StringBuffer();
+                    comment.append("Error " + i.incrementAndGet() + ")\n");
+//                    comment.append(throwable.toString());
+                    Optional<Fails> fails = methodContext.getFailsAnnotation();
+                    if (fails.isPresent() && StringUtils.isNotBlank(fails.get().description())) {
+                        comment.append("Known issue: " + fails.get().description());
+                    }
+                    final String stackTrace = ExceptionUtils.getStackTrace(throwable);
+                    comment.append(stackTrace);
+                    testRun.setComment(comment.toString());
+                });
 
         return testRun;
     }
