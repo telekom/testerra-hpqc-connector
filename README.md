@@ -112,20 +112,36 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 }
 ````
 
+#### Cucumber tests
+
+You can use tags at your feature files to synchronize scenarios to QC.
+
+````gherkin
+@QCTestset("Root\Testerra\QCSyncResultTests\QcSyncResultTests")
+Feature: tests related to @Fails tag
+
+  @QCTestname("T01_QcSyncResultFailed")
+  Scenario: basic failing scenario
+    When the user does a step
+    Then it fails
+````
+
+The format is the same as the Java annotations but keep in mind that Cucumber tags are only strings. 
+
 ### Properties
 
-| Property                 | Default  | Description|
-|--------------------------|----------|-----------------------------------------------------|
-| qc.sync.active           | true     | Enables synchronization fo test results|
-| qc.connection.server     |          | URI of ALM / QC server|
-| qc.connection.user       |          | User to use for synchronization|
-| qc.connection.password   |          | Password of user used for synchronization|
-| qc.connection.domain}    |          | Domain of user to log in|
-| qc.connection.project    |          | Project of user to log in|
-| qc.version               | 12       | Version of Quality Center or ALM 11, 12 or higher|
-| qc.field.mapping.testrun |          | Customize field-value mapping for synchronize properties to the quality center testrun. Use the format key:value&#124;key2:value2 for multiple values. |
-| qc.upload.screenshots    | false    | Enable the upload of screenshots|
-| qc.upload.videos         | false    | Enable the upload of vides|
+| Property                 | Default | Description                                                                                                                                            |
+|--------------------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| qc.sync.active           | true    | Enables synchronization fo test results                                                                                                                |
+| qc.connection.server     |         | URI of ALM / QC server                                                                                                                                 |
+| qc.connection.user       |         | User to use for synchronization                                                                                                                        |
+| qc.connection.password   |         | Password of user used for synchronization                                                                                                              |
+| qc.connection.domain     |         | Domain of user to log in                                                                                                                               |
+| qc.connection.project    |         | Project of user to log in                                                                                                                              |
+| qc.version               | 12      | Version of Quality Center or ALM 11, 12 or higher                                                                                                      |
+| qc.field.mapping.testrun |         | Customize field-value mapping for synchronize properties to the quality center testrun. Use the format key:value&#124;key2:value2 for multiple values. |
+| qc.upload.screenshots    | false   | Enable the upload of screenshots                                                                                                                       |
+| qc.upload.videos         | false   | Enable the upload of vides                                                                                                                             |
 
 ---
 
