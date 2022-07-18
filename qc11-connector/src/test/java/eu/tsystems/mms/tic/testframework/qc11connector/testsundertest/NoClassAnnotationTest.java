@@ -22,9 +22,9 @@
 package eu.tsystems.mms.tic.testframework.qc11connector.testsundertest;
 
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
+import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCTestname;
+import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCTestset;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
-import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestname;
-import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

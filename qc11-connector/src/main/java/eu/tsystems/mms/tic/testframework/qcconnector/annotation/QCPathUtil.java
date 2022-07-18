@@ -22,7 +22,6 @@
 package eu.tsystems.mms.tic.testframework.qcconnector.annotation;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
@@ -53,7 +52,6 @@ public final class QCPathUtil {
      * Liefert den QCTestsetPath zum Testng Result.
      *
      * @param result Testng result.
-     *
      * @return TestsetPath.
      */
     public static String getQCTestsetForTestNGResult(final ITestResult result) {
@@ -68,10 +66,9 @@ public final class QCPathUtil {
      * it is stored into the info container and returned. If information is already stored in the container, this value
      * is returned (also null).
      *
-     * @param clazz  Class to check.
+     * @param clazz Class to check.
      * @param method Method to check.
      * @param result result containing testParameters
-     *
      * @return any value, also null
      */
     public static String getQCTestsetPath(final Class<?> clazz, final Method method, final ITestResult result) {
@@ -98,10 +95,9 @@ public final class QCPathUtil {
     /**
      * Checks a method for a QCTestset annotation. Returns the test path. Stores the test path into the container.
      *
-     * @param clazz  .
+     * @param clazz .
      * @param method .
      * @param result .
-     *
      * @return .
      */
     private static String checkForQCTestsetInfo(Class<?> clazz, Method method, ITestResult result) {

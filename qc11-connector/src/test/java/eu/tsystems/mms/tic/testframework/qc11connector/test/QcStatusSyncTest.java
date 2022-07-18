@@ -1,8 +1,8 @@
 package eu.tsystems.mms.tic.testframework.qc11connector.test;
 
+import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCTestname;
+import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCTestset;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
-import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestname;
-import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import org.testng.Assert;
@@ -24,9 +24,15 @@ public class QcStatusSyncTest extends TesterraTest {
         Assert.assertEquals(1,2);
     }
 
-    @QCTestname("T02_QcSyncResultPassed")
+    @QCTestname(value = "T02_QcSyncResultPassed")
     @Test
     public void testT02_QcSyncResultPassed() {
+        Assert.assertEquals(1,1);
+    }
+
+    @QCTestname(value = "T02_QcSyncResultPassed", instanceCount = 2)
+    @Test
+    public void testT02a_QcSyncResultPassed() {
         Assert.assertEquals(1,1);
     }
 
@@ -42,6 +48,11 @@ public class QcStatusSyncTest extends TesterraTest {
     @QCTestname("T04 QcSyncResult Passed Spaces")
     @Test
     public void testT04_QcSyncResultPassedSpaces() {
+    }
+
+    @QCTestname(testId = 2264, instanceCount = 2)
+    @Test
+    public void testT04a_QcSyncResultPassedSpacesPerId() {
     }
 
 
