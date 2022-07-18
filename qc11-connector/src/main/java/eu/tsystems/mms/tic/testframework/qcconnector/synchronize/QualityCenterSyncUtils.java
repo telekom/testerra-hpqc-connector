@@ -261,17 +261,20 @@ public final class QualityCenterSyncUtils {
 
                     for (final TestSetTest test : testSetTests) {
 
-                        // Determine valid name. Use instance name instead of test method name whne instance count is present on annotation.
+                        // Determine valid name. Use instance name instead of test method name when instance count is present on annotation.
                         String qcTestMethodName;
+                        int qcTestMethodId;
 
                         if (isInstanceCountAnnotation) {
                             qcTestMethodName = test.getTestInstanceName();
+                            qcTestMethodId = test.getTestId();
                         } else {
                             QcTest qcTest = test.getTest();
                             qcTestMethodName = qcTest.getName();
+                            qcTestMethodId = test.getTestId();
                         }
 
-                        if (qcTestMethodName.equalsIgnoreCase(qcTestName)) {
+                        if (qcTestMethodName.equalsIgnoreCase(qcTestName) ) {
                             matchingTest = test;
                             break;
                         }

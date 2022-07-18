@@ -9,7 +9,12 @@ Feature: tests related to @Fails tag
   @QCTestname("T02_QcSyncResultPassed")
   Scenario: T02_QcSyncResultPassed
     When the user does a step
-    Then it fails
+    Then it doesn't fails unexpectedly
+
+  @QCTestname("T04QcSyncResultPassedSpaces")
+  Scenario: T04_QcSyncResultPassedSpaces
+    When the user does a step
+    Then it doesn't fails unexpectedly
 
 #  @Fails
 #  Scenario: failing scenario with fails tag and no fails on step
