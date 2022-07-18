@@ -100,12 +100,41 @@ set the `QCTestname` at each test method. The hpqc-connector will then lookup th
 name itself.
 
 ````java
-
 @QCTestset("\\Root\\My\\Full\\Path\\TestSet")
 public class CorrectClassAnnotationTest extends TesterraTest {
 
     @Test
     @QCTestname("Pass_Test_01")
+    public void testMethodPass() {
+        Assert.assertTrue(true);
+    }
+}
+````
+
+Instead of QC testname you can use the QC test id:
+
+````java
+@QCTestset("\\Root\\My\\Full\\Path\\TestSet")
+public class CorrectClassAnnotationTest extends TesterraTest {
+
+    @Test
+    @QCTestname(testId = 123)
+    public void testMethodPass() {
+        Assert.assertTrue(true);
+    }
+}
+````
+
+If you have added a QC testcase more than one to your testset, QC created a new test instance of the same testcase. Only the instance number is ascending by 1.
+
+````java
+@QCTestset("\\Root\\My\\Full\\Path\\TestSet")
+public class CorrectClassAnnotationTest extends TesterraTest {
+
+    // The second test instance of test 'Pass_Test_01' will sync.
+    // Default instanceCount is '1'
+    @Test
+    @QCTestname("Pass_Test_01", instanceCount = 2)
     public void testMethodPass() {
         Assert.assertTrue(true);
     }
