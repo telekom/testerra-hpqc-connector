@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -240,6 +241,7 @@ public final class QualityCenterSyncUtils {
 
                 Optional<QCTestname> qcTestnameAnnotation = getQcTestnameAnnotation(method);
                 final String qcTestNameFromScenario = getCucumberTagFromResult(result, "qctestname");
+                String qcTestIdFromScenario = getCucumberTagFromResult(result, "qctestid");
 
 //                String qcTestName = qcTestNameAnnotation != null ? qcTestNameAnnotation
 //                        : (qcTestNameFromScenario != null ? qcTestNameFromScenario : methodName);
@@ -270,6 +272,7 @@ public final class QualityCenterSyncUtils {
                             qcTestSetTestName = String.format("%s [%s]", qcTestnameAnnotation.get().value(), qcTestInstance);
                         } else {
                             qcTestSetTestName = String.format("%s [%s]", qcTestNameFromScenario != null ? qcTestNameFromScenario : methodName, qcTestInstance);
+                            qcTestId = qcTestIdFromScenario != null ? new Scanner(qcTestIdFromScenario).useDelimiter("\\D").nextInt() : 0;
                         }
 
                         if (
@@ -277,22 +280,8 @@ public final class QualityCenterSyncUtils {
                                         test.getTestInstanceName().equals(qcTestSetTestName)
                         ) {
                             matchingTest = test;
-//                            break;
+                            break;
                         }
-
-//                        if (isInstanceCountAnnotation) {
-//                            qcTestSetTestName = test.getTestInstanceName();
-//                            qcTestId = test.getTestId();
-//                        } else {
-//                            QcTest qcTest = test.getTest();
-//                            qcTestSetTestName = qcTest.getName();
-//                            qcTestId = test.getTestId();
-//                        }
-//
-//                        if (qcTestSetTestName.equalsIgnoreCase(qcTestSetTestName)) {
-//                            matchingTest = test;
-//                            break;
-//                        }
                     }
 
                     if (matchingTest == null) {
@@ -308,13 +297,7 @@ public final class QualityCenterSyncUtils {
                         }
                     }
                     if (matchingTest == null) {
-                        final StringBuilder error = new StringBuilder();
-                        error.append("No method ");
-                        error.append(methodName);
-                        error.append(" found in Testset ");
-                        error.append(testSetPath);
-                        error.append(". Could not synchronize with QC! ");
-                        LOGGER.error(error.toString());
+                        LOGGER.error("No method {} found in Testset {}. Could not synchronize with QC!", methodName, testSetPath);
                     }
                 } else {
                     String errorMsg = ErrorMessages.wrongQCTestSetAnnotation(testSetPath, clazz.getName());
@@ -342,61 +325,6 @@ public final class QualityCenterSyncUtils {
         }
         return matchingTest;
     }
-
-    // TODO: remove
-//    /**
-//     * Read QCTestname annotation from test method.
-//     *
-//     * @return Found value or null.
-//     */
-//    private static String getTestnameFromAnnotation(Method method) {
-//
-//        String methodName = method.getName();
-//        String testname = null;
-//        int instanceCount;
-//
-//        // Get the annotation.
-//        final QCTestname qcTestname = getQcTestnameAnnotation(method);
-//
-//        // Get the test path info.
-//        if (qcTestname != null) {
-//            if (StringUtils.isNotEmpty(qcTestname.value())) {
-//
-//                testname = qcTestname.value().trim();
-//                instanceCount = qcTestname.instanceCount(); // default = 0 --> No instance count necessary
-//
-//                if (instanceCount > 0) {
-//                    LOGGER.debug("Instance count set on QCTestname annotation.");
-//                    testname = String.format("%s [%s]", testname, instanceCount);
-//                }
-//
-//                LOGGER.debug(String.format("Found QCTestname annotation with value %s for method %s", testname, methodName));
-//            }
-//        }
-//        return testname;
-//    }
-
-//    private static boolean isInstanceCountAnnotationPresent(final Method method) {
-//
-//        final QCTestname qcTestnameAnnotation = getQcTestnameAnnotation(method);
-//
-//        if (qcTestnameAnnotation != null) {
-//            return qcTestnameAnnotation.instanceCount() > 0;
-//        }
-//
-//        return false;
-//    }
-
-//    private static QCTestname getQcTestnameAnnotation(final Method method) {
-//
-//        QCTestname annotation = null;
-//
-//        if (method.isAnnotationPresent(QCTestname.class)) {
-//            annotation = method.getAnnotation(QCTestname.class);
-//        }
-//
-//        return annotation;
-//    }
 
     private static Optional<QCTestname> getQcTestnameAnnotation(final Method method) {
 

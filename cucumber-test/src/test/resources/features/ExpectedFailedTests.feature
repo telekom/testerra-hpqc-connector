@@ -11,7 +11,7 @@ Feature: tests related to @Fails tag
     When the user does a step
     Then it doesn't fails unexpectedly
 
-  @QCTestname("T04QcSyncResultPassedSpaces")
+  @QCTestId("2264")
   Scenario: T04_QcSyncResultPassedSpaces
     When the user does a step
     Then it doesn't fails unexpectedly

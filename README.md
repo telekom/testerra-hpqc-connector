@@ -157,6 +157,18 @@ Feature: tests related to @Fails tag
 
 The format is the same as the Java annotations but keep in mind that Cucumber tags are only strings. 
 
+Instead of QC testname you can use the QC test id:
+
+````gherkin
+@QCTestset("Root\Testerra\QCSyncResultTests\QcSyncResultTests")
+Feature: tests related to @Fails tag
+
+  @QCTestId("123")
+  Scenario: basic failing scenario
+    When the user does a step
+    Then it fails
+````
+
 ### Properties
 
 | Property                 | Default | Description                                                                                                                                            |
