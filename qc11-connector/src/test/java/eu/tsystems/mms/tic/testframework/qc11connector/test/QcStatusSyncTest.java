@@ -36,5 +36,13 @@ public class QcStatusSyncTest extends TesterraTest {
 
     }
 
+    /**
+     * Test method names in Quality Center can contain spaces.
+     */
+    @QCTestname("T04 QcSyncResult Passed Spaces")
+    @Test
+    public void testT04_QcSyncResultPassedSpaces() {
+    }
+
 
 }

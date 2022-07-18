@@ -76,8 +76,8 @@ Basically the synchronization will work by two explicit annotations that can be 
 
 #### Annotated class mode
 
-To enable synchronization you should add the annotation `QCTestset` to your class containing the test methods. The given value
-should match the complete path of Quality Center or Application Lifecycle Management test set, for an example see code snipped
+To enable synchronization you must add the annotation `QCTestset` to your class containing the test methods. The given value
+must match the complete path of Quality Center or Application Lifecycle Management test set, for an example see code snipped
 below:
 
 ```java
@@ -91,7 +91,7 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 ```
 
 This little snippet will search for a test set called `\\Root\\My\\Full\\Path\\TestSet`. If found, the method name will be extracted
-and searched as test name in QC/ALM. If found, the result will be synchronized to this test case.
+and searched as test name in QC/ALM and the result will be synchronized to this test case.
 
 #### Annotated test method mode
 
