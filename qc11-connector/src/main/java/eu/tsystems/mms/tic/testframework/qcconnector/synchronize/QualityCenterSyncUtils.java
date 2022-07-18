@@ -236,18 +236,10 @@ public final class QualityCenterSyncUtils {
             try {
 
                 // Find out QC test
-//                final String qcTestNameAnnotation = getTestnameFromAnnotation(method);
-//                final boolean isInstanceCountAnnotation = isInstanceCountAnnotationPresent(method);
-
                 Optional<QCTestname> qcTestnameAnnotation = getQcTestnameAnnotation(method);
                 final String qcTestNameFromScenario = getCucumberTagFromResult(result, "qctestname");
                 String qcTestIdFromScenario = getCucumberTagFromResult(result, "qctestid");
 
-//                String qcTestName = qcTestNameAnnotation != null ? qcTestNameAnnotation
-//                        : (qcTestNameFromScenario != null ? qcTestNameFromScenario : methodName);
-
-//                LOGGER.info("Looking up TestSetTest " + testSetPath + " - " + qcTestName + "\nfor Test: " +
-//                        result.getTestClass().getRealClass().getSimpleName() + "#" + result.getName());
                 TestSet testSet = QcRestClient.getTestSet(testSetName, testSetFolder);
                 if (testSet != null) {
                     // Use a cache to prevent QC calls for tests of a testset
