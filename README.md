@@ -155,7 +155,9 @@ Feature: tests related to @Fails tag
     Then it fails
 ````
 
-The format is the same as the Java annotations but keep in mind that Cucumber tags are only strings. 
+The format is nearly the same as the Java annotations but keep in mind that Cucumber tags are only strings.
+
+Please use single `\`, not quoted `\\`!
 
 Instead of QC testname you can use the QC test id:
 
