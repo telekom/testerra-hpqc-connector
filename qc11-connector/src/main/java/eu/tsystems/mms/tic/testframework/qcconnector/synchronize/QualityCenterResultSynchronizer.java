@@ -134,6 +134,7 @@ public class QualityCenterResultSynchronizer implements TestStatusUpdateEvent.Li
         sdf = new SimpleDateFormat("yyyy-MM-dd");
         testRun.setExecutionDate(sdf.format(date));
         testRun.setStatus(qcTestStatus);
+        testRun.setDuration(QualityCenterSyncUtils.calculateTestDurationInSeconds(methodContext));
 
         QualityCenterSyncUtils.addQCUserFields(testRun);
 

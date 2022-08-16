@@ -51,6 +51,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -536,6 +537,11 @@ public final class QualityCenterSyncUtils {
             }
         }
         return stringToCut;
+    }
+
+    public static int calculateTestDurationInSeconds(MethodContext context) {
+        Duration between = Duration.between(context.getStartTime().toInstant(), context.getEndTime().toInstant());
+        return Double.valueOf(between.toMillis() / 1000.0).intValue();
     }
 
     /**

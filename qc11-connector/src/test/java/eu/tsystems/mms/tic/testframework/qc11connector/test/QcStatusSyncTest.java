@@ -3,6 +3,7 @@ package eu.tsystems.mms.tic.testframework.qc11connector.test;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCTestname;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCTestset;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
+import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import org.testng.Assert;
@@ -27,6 +28,7 @@ public class QcStatusSyncTest extends TesterraTest {
     @QCTestname(value = "T02_QcSyncResultPassed")
     @Test
     public void testT02_QcSyncResultPassed() {
+        TimerUtils.sleep(2_000, "Waiter to get test duration.");
         Assert.assertEquals(1,1);
     }
 
