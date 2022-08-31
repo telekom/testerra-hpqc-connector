@@ -91,7 +91,7 @@ public class RunClientTest extends AbstractTest {
         final Random r = new Random();
         testRun.setDuration(r.nextInt(100));
         testRun.setHost("somepc");
-//        testRun.setOsName("Windows 7");
+        testRun.setOsName("Windows 7");
         return testRun;
     }
 
