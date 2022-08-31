@@ -39,7 +39,6 @@ import org.testng.annotations.AfterSuite;
  */
 public abstract class AbstractTest extends TesterraTest implements Loggable {
     /** The test folders path. **/
-//    protected static final String TESTSET_PATH = "Root\\Xeta\\QC WebServiceClient";
     protected static final String TESTSET_PATH = "Root\\Testerra\\QCRestClient";
     /** Name of TestSet. */
     protected static final String TESTSET = "TestSetUnderTest";
@@ -55,7 +54,8 @@ public abstract class AbstractTest extends TesterraTest implements Loggable {
      */
     @AfterSuite
     public void cleanUp() throws Exception {
-        cleanUpRuns();
+        // Deactivated to keep test results in QC
+        // cleanUpRuns();
         RestConnector.getInstance().logout();
     }
 

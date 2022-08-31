@@ -2,6 +2,7 @@ package io.testerra.plugins.hpqcconn.cucumber.steps;
 
 import eu.tsystems.mms.tic.testframework.annotations.Fails;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
+import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.testng.Assert;
@@ -20,6 +21,7 @@ public class StepDefinitions implements Loggable {
 
     @Then("it fails")
     public void itFails() {
+        TimerUtils.sleep(2_000, "Waiter to get test duration.");
         Assert.fail("This step is supposed to fail");
     }
 
