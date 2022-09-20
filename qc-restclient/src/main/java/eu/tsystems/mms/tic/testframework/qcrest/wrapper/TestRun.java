@@ -468,6 +468,15 @@ public class TestRun extends AbstractEntity implements Loggable {
     }
 
     /**
+     * Sets the value of the comment property.
+     *
+     * @param value
+     */
+    public void setComment(final String value){
+        setFieldValue("comments", value);
+    }
+
+    /**
      * Sets the value of the user field.
      *
      * @param value allowed object is {@link String }

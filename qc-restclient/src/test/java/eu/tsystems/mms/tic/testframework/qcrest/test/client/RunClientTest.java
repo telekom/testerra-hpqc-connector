@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,15 +78,21 @@ public class RunClientTest extends AbstractTest {
      * @return A newly created TestRunWr.
      */
     private TestRun createTestRun(boolean passed) {
-        final TestRun testRunWr = new TestRun();
-        testRunWr.setName("QCRestClient TestRun");
-        testRunWr.setStatus(passed ? "Passed" : "Failed");
-        testRunWr.setExecutionTime(new SimpleDateFormat("HH:mm:ss").format(new Date(System.currentTimeMillis())));
+
+        final Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
+        final TestRun testRun = new TestRun();
+        testRun.setName("QCRestClient TestRun");
+        testRun.setStatus(passed ? "Passed" : "Failed");
+        testRun.setExecutionTime(sdf.format(date));
+        sdf = new SimpleDateFormat("yyyy-MM-dd");
+        testRun.setExecutionDate(sdf.format(date));
         final Random r = new Random();
-        testRunWr.setDuration(r.nextInt(100));
-        testRunWr.setHost("somepc");
-        testRunWr.setOsName("Windows 7");
-        return testRunWr;
+        testRun.setDuration(r.nextInt(100));
+        testRun.setHost("somepc");
+        testRun.setOsName("Windows 7");
+        return testRun;
     }
 
     /**
@@ -147,10 +154,9 @@ public class RunClientTest extends AbstractTest {
      */
     @Test
     public void testAddTestRun() throws Exception {
-        LOG.info("Test addTestRun");
-
+        TestStep.begin("Prepare run and testset");
         final TestSetTest tsTest = QcRestClient.getTestSetTest(TEST, TESTSET, TESTSET_PATH);
-        final TestRun testRun = createTestRun(false);
+        final TestRun testRun = createTestRun(true);
         final List<Attachment> lAttachmentsList = new ArrayList<Attachment>();
 
         final Attachment attach1 = new Attachment();
@@ -166,6 +172,8 @@ public class RunClientTest extends AbstractTest {
         lAttachmentsList.add(attach2);
 
         testRun.addAttachments(lAttachmentsList);
+
+        TestStep.begin("Create new run");
         int runId = 0;
         runId = QcRestClient.addTestRunToTestSet(tsTest, testRun);
         Assert.assertNotEquals(runId, 0);

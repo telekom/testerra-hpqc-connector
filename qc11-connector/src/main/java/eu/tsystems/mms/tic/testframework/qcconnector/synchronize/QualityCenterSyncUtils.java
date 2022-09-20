@@ -23,6 +23,7 @@ package eu.tsystems.mms.tic.testframework.qcconnector.synchronize;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCPathUtil;
+import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCTestname;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.TMInfoContainer;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.ErrorMessages;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCFieldValues;
@@ -33,14 +34,13 @@ import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.UtilClient;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.Attachment;
-import eu.tsystems.mms.tic.testframework.qcrest.wrapper.QcTest;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSet;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
 import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.report.model.context.Video;
-import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestname;
+import io.cucumber.testng.PickleWrapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -51,6 +51,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -58,6 +60,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -107,21 +111,30 @@ public final class QualityCenterSyncUtils {
     /**
      * Synchronize to QC with syncType 3.
      *
-     * @param clazz Class of test.
-     * @param method of test.
-     * @param methodName Name of testMethod.
      * @param run RunWrapper for TestRun.
-     * @param result result containing testParameters
      * @return Id of added run or 0 if it could not be added.
      * @throws TesterraQcResultSyncException sync error
      */
-    public static int syncWithSyncType3(final Class<?> clazz, final Method method, final String methodName,
-                                        final TestRun run, final ITestResult result) throws TesterraQcResultSyncException {
-        int id = readAnnotationAndSync(clazz, method, methodName, run, result);
-        if (id == 0) {
+    public static int syncResult(MethodContext methodContext, final TestRun run) throws TesterraQcResultSyncException {
+
+        int runId = 0;
+        final TestSetTest testSetTest = getTestSetTestForAnnotation(methodContext);
+        if (testSetTest != null) {
+            try {
+                // Create a run and add it to testset
+                runId = addTestRunToTestSet(testSetTest, run);
+            } catch (final Exception e) {
+                final StringBuilder error = new StringBuilder();
+                error.append("An error occurred while communicating with Quality Center: ");
+                error.append(e.getMessage());
+                LOGGER.error(error.toString(), e);
+            }
+        }
+
+        if (runId == 0) {
             throw new TesterraQcResultSyncException("No id returned. See previous logs.");
         } else {
-            return id;
+            return runId;
         }
     }
 
@@ -171,47 +184,49 @@ public final class QualityCenterSyncUtils {
         return runId;
     }
 
-    /**
-     * Reads the QCTestset path from Annotation and synchronize result to QC.
-     *
-     * @param clazz The class to search the annotation.
-     * @param method The method to read the annotation.
-     * @param methodName The name of the Testmethod.
-     * @param run The TestRun.
-     * @param result result containing testParameters
-     * @return Id of added run or 0 if it could not be added.
-     */
-    private static int readAnnotationAndSync(final Class<?> clazz, final Method method, final String methodName,
-                                             final TestRun run, final ITestResult result) {
-        int runId = 0;
-        final TestSetTest test = getTestSetTestForAnnotation(clazz, method, methodName, result);
-        if (test != null) {
-            try {
-                runId = addTestRunToTestSet(test, run);
-            } catch (final Exception e) {
-                final StringBuilder error = new StringBuilder();
-                error.append("An error occurred while communicating with Quality Center: ");
-                error.append(e.getMessage());
-                LOGGER.error(error.toString(), e);
-            }
-        }
-        return runId;
-    }
+//    /**
+//     * Reads the QCTestset path from Annotation and synchronize result to QC.
+//     *
+//     * @param clazz The class to search the annotation.
+//     * @param method The method to read the annotation.
+//     * @param methodName The name of the Testmethod.
+//     * @param run The TestRun.
+//     * @param result result containing testParameters
+//     * @return Id of added run or 0 if it could not be added.
+//     */
+//    private static int readAnnotationAndSync(final Class<?> clazz, final Method method, final String methodName,
+//                                             final TestRun run, final ITestResult result) {
+//        int runId = 0;
+//        final TestSetTest test = getTestSetTestForAnnotation(clazz, method, methodName, result);
+//        if (test != null) {
+//            try {
+//                runId = addTestRunToTestSet(test, run);
+//            } catch (final Exception e) {
+//                final StringBuilder error = new StringBuilder();
+//                error.append("An error occurred while communicating with Quality Center: ");
+//                error.append(e.getMessage());
+//                LOGGER.error(error.toString(), e);
+//            }
+//        }
+//        return runId;
+//    }
 
     /**
      * Get the TestSetTest for the TestSet annotated on this test method.
      *
-     * @param clazz Test class.
-     * @param method Test method
-     * @param methodName Method name.
-     * @param result TestResult.
      * @return QC TestSetTest
      */
-    public static TestSetTest getTestSetTestForAnnotation(final Class<?> clazz, final Method method,
-                                                          final String methodName,
-                                                          final ITestResult result) {
+    private static TestSetTest getTestSetTestForAnnotation(MethodContext methodContext) {
+
+        ITestResult result = methodContext.getTestNgResult().get();
+        final Class<?> clazz = result.getTestClass().getRealClass();
+        final Method method = result.getMethod().getConstructorOrMethod().getMethod();
+        final String methodName = methodContext.getName();
         TestSetTest matchingTest = null;
-        final String testSetPath = QCPathUtil.getQCTestsetPath(clazz, method, result);
+
+        // Read TestSet path from annotation or Cucumber tag
+        final String testSetFromFeature = getCucumberTagFromResult(result, "qctestset");
+        final String testSetPath = StringUtils.isNotBlank(testSetFromFeature) ? testSetFromFeature : QCPathUtil.getQCTestsetPath(clazz, method, result);
 
         if (testSetPath != null) {
 
@@ -221,18 +236,14 @@ public final class QualityCenterSyncUtils {
 
             try {
 
-                String qcTestName = methodName;
-                final String qcTestNameAnnotation = getTestnameFromAnnotation(method);
-                final boolean isInstanceCountAnnotation = isInstanceCountAnnotationPresent(method);
+                // Find out QC test
+                Optional<QCTestname> qcTestnameAnnotation = getQcTestnameAnnotation(method);
+                final String qcTestNameFromScenario = getCucumberTagFromResult(result, "qctestname");
+                String qcTestIdFromScenario = getCucumberTagFromResult(result, "qctestid");
 
-                if (qcTestNameAnnotation != null) {
-                    qcTestName = qcTestNameAnnotation;
-                }
-
-                LOGGER.info("Looking up TestSetTest " + testSetPath + " - " + qcTestName + "\nfor Test: " +
-                        result.getTestClass().getRealClass().getSimpleName() + "#" + result.getName());
                 TestSet testSet = QcRestClient.getTestSet(testSetName, testSetFolder);
                 if (testSet != null) {
+                    // Use a cache to prevent QC calls for tests of a testset
                     if (!testSetCache.containsKey(testSet)) {
                         testSetCache.put(testSet, QcRestClient.getTestSetTests(testSetName, testSetFolder));
                     } else {
@@ -240,23 +251,32 @@ public final class QualityCenterSyncUtils {
                     }
                     testSetTests = testSetCache.get(testSet);
 
+                    // Iterate over all tests of current test set to find the match to current annotation
                     for (final TestSetTest test : testSetTests) {
 
-                        // Determine valid name. Use instance name instead of test method name whne instance count is present on annotation.
-                        String qcTestMethodName;
+                        // Determine valid name. Use instance name instead of test method name when instance count is present on annotation.
+                        String qcTestSetTestName;
+                        int qcTestId = 0;
+                        int qcTestInstance = 1;
 
-                        if (isInstanceCountAnnotation) {
-                            qcTestMethodName = test.getTestInstanceName();
+                        if (qcTestnameAnnotation.isPresent()) {
+                            qcTestId = qcTestnameAnnotation.get().testId();
+                            qcTestInstance = qcTestnameAnnotation.get().instanceCount();
+                            qcTestSetTestName = String.format("%s [%s]", qcTestnameAnnotation.get().value(), qcTestInstance);
                         } else {
-                            QcTest qcTest = test.getTest();
-                            qcTestMethodName = qcTest.getName();
+                            qcTestSetTestName = String.format("%s [%s]", qcTestNameFromScenario != null ? qcTestNameFromScenario : methodName, qcTestInstance);
+                            qcTestId = qcTestIdFromScenario != null ? new Scanner(qcTestIdFromScenario).useDelimiter("\\D").nextInt() : 0;
                         }
 
-                        if (qcTestMethodName.equalsIgnoreCase(qcTestName)) {
+                        if (
+                                (test.getTestId() == qcTestId && test.getTestInstanceName().contains("[" + qcTestInstance + "]")) ||
+                                        test.getTestInstanceName().equals(qcTestSetTestName)
+                        ) {
                             matchingTest = test;
                             break;
                         }
                     }
+
                     if (matchingTest == null) {
                         String mName;
                         for (final TestSetTest test : testSetTests) {
@@ -270,13 +290,7 @@ public final class QualityCenterSyncUtils {
                         }
                     }
                     if (matchingTest == null) {
-                        final StringBuilder error = new StringBuilder();
-                        error.append("No method ");
-                        error.append(qcTestName);
-                        error.append(" found in Testset ");
-                        error.append(testSetPath);
-                        error.append(". Could not synchronize with QC! ");
-                        LOGGER.error(error.toString());
+                        LOGGER.error("No method {} found in Testset {}. Could not synchronize with QC!", methodName, testSetPath);
                     }
                 } else {
                     String errorMsg = ErrorMessages.wrongQCTestSetAnnotation(testSetPath, clazz.getName());
@@ -305,59 +319,38 @@ public final class QualityCenterSyncUtils {
         return matchingTest;
     }
 
-    /**
-     * Read QCTestname annotation from test method.
-     *
-     * @return Found value or null.
-     */
-    private static String getTestnameFromAnnotation(Method method) {
-
-        String methodName = method.getName();
-        String testname = null;
-        int instanceCount;
-
-        // Get the annotation.
-        final QCTestname qcTestname = getQcTestnameAnnotation(method);
-
-        // Get the test path info.
-        if (qcTestname != null) {
-            if (StringUtils.isNotEmpty(qcTestname.value())) {
-
-                testname = qcTestname.value().trim();
-                instanceCount = qcTestname.instanceCount(); // default = 0 --> No instance count necessary
-
-                if (instanceCount > 0) {
-                    LOGGER.debug("Instance count set on QCTestname annotation.");
-                    testname = String.format("%s [%s]", testname, instanceCount);
-                }
-
-                testname = PropertyManager.getPropertiesParser().parseLine(testname);
-                LOGGER.debug(String.format("Found QCTestname annotation with value %s for method %s", testname, methodName));
-            }
-        }
-        return testname;
-    }
-
-    private static boolean isInstanceCountAnnotationPresent(final Method method) {
-
-        final QCTestname qcTestnameAnnotation = getQcTestnameAnnotation(method);
-
-        if (qcTestnameAnnotation != null) {
-            return qcTestnameAnnotation.instanceCount() > 0;
-        }
-
-        return false;
-    }
-
-    private static QCTestname getQcTestnameAnnotation(final Method method) {
-
-        QCTestname annotation = null;
+    private static Optional<QCTestname> getQcTestnameAnnotation(final Method method) {
 
         if (method.isAnnotationPresent(QCTestname.class)) {
-            annotation = method.getAnnotation(QCTestname.class);
+            return Optional.of(method.getAnnotation(QCTestname.class));
         }
 
-        return annotation;
+        return Optional.empty();
+    }
+
+    /**
+     * Try to find out the CucumberTag from a scenario
+     *
+     * @param result
+     * @return
+     */
+    private static String getCucumberTagFromResult(ITestResult result, final String tagName) {
+        Optional<PickleWrapper> first = Arrays.stream(result.getParameters())
+                .filter(o -> o instanceof PickleWrapper)
+                .map(e -> (PickleWrapper) e)
+                .findFirst();
+        if (first.isPresent()) {
+            List<String> tags = first.get().getPickle().getTags();
+            AtomicReference<String> value = new AtomicReference<>();
+            tags.stream()
+                    .filter(e -> e.toLowerCase().contains(tagName))
+                    .findFirst()
+                    .ifPresent(tag -> {
+                        value.set(StringUtils.substringBetween(tag, "\""));
+                    });
+            return StringUtils.isNotBlank(value.get()) ? value.get() : null;
+        }
+        return null;
     }
 
     /**
@@ -544,6 +537,11 @@ public final class QualityCenterSyncUtils {
             }
         }
         return stringToCut;
+    }
+
+    public static int calculateTestDurationInSeconds(MethodContext context) {
+        Duration between = Duration.between(context.getStartTime().toInstant(), context.getEndTime().toInstant());
+        return Double.valueOf(between.toMillis() / 1000.0).intValue();
     }
 
     /**

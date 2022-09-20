@@ -1,0 +1,33 @@
+ext {
+    testerraTestVersion = '1.12'
+}
+
+dependencies {
+
+    implementation 'io.testerra:driver-ui-desktop:' + testerraTestVersion
+    implementation 'io.testerra:report-ng:' + testerraTestVersion
+    implementation 'io.testerra:cucumber-connector:1.1'
+
+    implementation project(':qc-restclient')
+    implementation project(':qc11-connector:')
+
+    implementation 'io.cucumber:cucumber-java:' + cucumberVersion
+    implementation('io.cucumber:cucumber-testng:' + cucumberVersion) {
+        exclude group: 'com.google.guava', module: 'guava'
+    }
+}
+
+test {
+    useTestNG() {}
+
+    testLogging {
+        outputs.upToDateWhen { false }
+        showStandardStreams = true
+    }
+
+    options {
+        systemProperties(System.getProperties())
+    }
+
+    ignoreFailures = true
+}

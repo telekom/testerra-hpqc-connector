@@ -22,8 +22,8 @@
 package eu.tsystems.mms.tic.testframework.qc11connector.testsundertest;
 
 import eu.tsystems.mms.tic.testframework.qc11connector.constants.QCConstants;
+import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCTestset;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
-import eu.tsystems.mms.tic.testframework.testmanagement.annotation.QCTestset;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import org.openqa.selenium.WebDriver;

@@ -2,11 +2,13 @@ dependencies {
     implementation project(':qc-restclient')
 
     compileOnly 'io.testerra:core:' + testerraCompileVersion
-//    compileOnly 'io.testerra:surefire-connector:' + testerraCompileVersion
+    // Needed for sync of cucumber scenarios
+    implementation 'io.cucumber:cucumber-testng:' + cucumberVersion
 
     testImplementation 'io.testerra:driver-ui-desktop:' + testerraTestVersion
-//    testImplementation 'io.testerra:surefire-connector:' + testerraTestVersion
     testImplementation 'io.testerra:report-ng:' + testerraTestVersion
+
+
 }
 
 task testQCConn(type: Test) {

@@ -76,8 +76,8 @@ Basically the synchronization will work by two explicit annotations that can be 
 
 #### Annotated class mode
 
-To enable synchronization you should add the annotation `QCTestset` to your class containing the test methods. The given value
-should match the complete path of Quality Center or Application Lifecycle Management test set, for an example see code snipped
+To enable synchronization you must add the annotation `QCTestset` to your class containing the test methods. The given value
+must match the complete path of Quality Center or Application Lifecycle Management test set, for an example see code snipped
 below:
 
 ```java
@@ -91,7 +91,7 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 ```
 
 This little snippet will search for a test set called `\\Root\\My\\Full\\Path\\TestSet`. If found, the method name will be extracted
-and searched as test name in QC/ALM. If found, the result will be synchronized to this test case.
+and searched as test name in QC/ALM and the result will be synchronized to this test case.
 
 #### Annotated test method mode
 
@@ -100,7 +100,6 @@ set the `QCTestname` at each test method. The hpqc-connector will then lookup th
 name itself.
 
 ````java
-
 @QCTestset("\\Root\\My\\Full\\Path\\TestSet")
 public class CorrectClassAnnotationTest extends TesterraTest {
 
@@ -112,20 +111,80 @@ public class CorrectClassAnnotationTest extends TesterraTest {
 }
 ````
 
+Instead of QC testname you can use the QC test id:
+
+````java
+@QCTestset("\\Root\\My\\Full\\Path\\TestSet")
+public class CorrectClassAnnotationTest extends TesterraTest {
+
+    @Test
+    @QCTestname(testId = 123)
+    public void testMethodPass() {
+        Assert.assertTrue(true);
+    }
+}
+````
+
+If you have added a QC testcase more than one to your testset, QC created a new test instance of the same testcase. Only the instance number is ascending by 1.
+
+````java
+@QCTestset("\\Root\\My\\Full\\Path\\TestSet")
+public class CorrectClassAnnotationTest extends TesterraTest {
+
+    // The second test instance of test 'Pass_Test_01' will sync.
+    // Default instanceCount is '1'
+    @Test
+    @QCTestname("Pass_Test_01", instanceCount = 2)
+    public void testMethodPass() {
+        Assert.assertTrue(true);
+    }
+}
+````
+
+#### Cucumber tests
+
+You can use tags at your feature files to synchronize scenarios to QC.
+
+````gherkin
+@QCTestset("Root\Testerra\QCSyncResultTests\QcSyncResultTests")
+Feature: tests related to @Fails tag
+
+  @QCTestname("T01_QcSyncResultFailed")
+  Scenario: basic failing scenario
+    When the user does a step
+    Then it fails
+````
+
+The format is nearly the same as the Java annotations but keep in mind that Cucumber tags are only strings.
+
+Please use single `\`, not quoted `\\`!
+
+Instead of QC testname you can use the QC test id:
+
+````gherkin
+@QCTestset("Root\Testerra\QCSyncResultTests\QcSyncResultTests")
+Feature: tests related to @Fails tag
+
+  @QCTestId("123")
+  Scenario: basic failing scenario
+    When the user does a step
+    Then it fails
+````
+
 ### Properties
 
-| Property                 | Default  | Description|
-|--------------------------|----------|-----------------------------------------------------|
-| qc.sync.active           | true     | Enables synchronization fo test results|
-| qc.connection.server     |          | URI of ALM / QC server|
-| qc.connection.user       |          | User to use for synchronization|
-| qc.connection.password   |          | Password of user used for synchronization|
-| qc.connection.domain}    |          | Domain of user to log in|
-| qc.connection.project    |          | Project of user to log in|
-| qc.version               | 12       | Version of Quality Center or ALM 11, 12 or higher|
-| qc.field.mapping.testrun |          | Customize field-value mapping for synchronize properties to the quality center testrun. Use the format key:value&#124;key2:value2 for multiple values. |
-| qc.upload.screenshots    | false    | Enable the upload of screenshots|
-| qc.upload.videos         | false    | Enable the upload of vides|
+| Property                 | Default | Description                                                                                                                                            |
+|--------------------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| qc.sync.active           | true    | Enables synchronization fo test results                                                                                                                |
+| qc.connection.server     |         | URI of ALM / QC server                                                                                                                                 |
+| qc.connection.user       |         | User to use for synchronization                                                                                                                        |
+| qc.connection.password   |         | Password of user used for synchronization                                                                                                              |
+| qc.connection.domain     |         | Domain of user to log in                                                                                                                               |
+| qc.connection.project    |         | Project of user to log in                                                                                                                              |
+| qc.version               | 12      | Version of Quality Center or ALM 11, 12 or higher                                                                                                      |
+| qc.field.mapping.testrun |         | Customize field-value mapping for synchronize properties to the quality center testrun. Use the format key:value&#124;key2:value2 for multiple values. |
+| qc.upload.screenshots    | false   | Enable the upload of screenshots                                                                                                                       |
+| qc.upload.videos         | false   | Enable the upload of vides                                                                                                                             |
 
 ---
 
