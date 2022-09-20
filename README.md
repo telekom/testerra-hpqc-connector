@@ -41,7 +41,7 @@ Include the following dependency in your project.
 Gradle:
 
 ```groovy
-implementation 'io.testerra:qc11-connector:1.1'
+implementation 'io.testerra:qc11-connector:1.2'
 ```
 
 Maven:
@@ -50,7 +50,7 @@ Maven:
 <dependency>
   <groupId>io.testerra</groupId>
   <artifactId>qc11-connector</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
 </dependency>
 ```
 
