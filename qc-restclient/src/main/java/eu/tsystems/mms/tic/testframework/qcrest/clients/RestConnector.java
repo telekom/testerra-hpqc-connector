@@ -22,13 +22,19 @@
 package eu.tsystems.mms.tic.testframework.qcrest.clients;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
+import eu.tsystems.mms.tic.testframework.common.PropertyManagerProvider;
+import eu.tsystems.mms.tic.testframework.qcrest.constants.QcConnProperties;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entities;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.Entity;
 import eu.tsystems.mms.tic.testframework.qcrest.generated.QCRestException;
 import eu.tsystems.mms.tic.testframework.qcrest.utils.LoginData;
 import eu.tsystems.mms.tic.testframework.qcrest.utils.MarshallingUtils;
 import eu.tsystems.mms.tic.testframework.utils.CertUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.SSLException;
+import javax.xml.bind.JAXBException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,10 +50,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import javax.net.ssl.SSLException;
-import javax.xml.bind.JAXBException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The RestConnector can be used to build Requests for the QC REST API and send them via http. Any project and user
@@ -56,7 +58,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author sepr
  */
-public final class RestConnector {
+public final class RestConnector implements PropertyManagerProvider {
 
     static {
         CertUtils.trustAllCerts();
@@ -76,61 +78,6 @@ public final class RestConnector {
      * lock object for synchronized instance access
      */
     private static Object instanceLock = new Object();
-
-    /**
-     * Returns the Quality Center connection properties. Initializes the connection properties using the file
-     * <code>qcconnection.properties</code> in the resources folder if not initialized already.
-     * <p>
-     * The file <code>qcconnection.properties</code> must include the worths for:
-     * <ul>
-     * <li>server</li>
-     * <li>user</li>
-     * <li>password</li>
-     * <li>domain</li>
-     * <li>project</li>
-     * </ul>
-     *
-     * @return The connection data as <code>LoginData</code> object.
-     */
-    public static LoginData getConnectionProperties() {
-        return pGetConnectionProperties();
-    }
-
-    /**
-     * Returns the Quality Center connection properties. Initializes the connection properties using the file
-     * <code>qcconnection.properties</code> in the resources folder if not initialized already.
-     * <p>
-     * The file <code>qcconnection.properties</code> must include the worths for:
-     * <ul>
-     * <li>server</li>
-     * <li>user</li>
-     * <li>password</li>
-     * <li>domain</li>
-     * <li>project</li>
-     * </ul>
-     *
-     * @return The connection data as <code>LoginData</code> object.
-     */
-    private static LoginData pGetConnectionProperties() {
-        LOGGER.trace("Reading properties from qcconnection.properties File");
-        PropertyManager.loadProperties("qcconnection.properties");
-        final LoginData loginData = new LoginData(
-                PropertyManager.getProperty(QCProperties.DOMAIN, PropertyManager.getProperty("domain")),
-                PropertyManager.getProperty(QCProperties.PASSWORD, PropertyManager.getProperty("password")),
-                PropertyManager.getProperty(QCProperties.PROJECT, PropertyManager.getProperty("project")),
-                PropertyManager.getProperty(QCProperties.SERVER, PropertyManager.getProperty("server")),
-                PropertyManager.getProperty(QCProperties.USER, PropertyManager.getProperty("user")));
-        LOGGER.trace("Server: "
-                + PropertyManager.getProperty(QCProperties.SERVER, PropertyManager.getProperty("server")));
-        LOGGER.trace("Domain: "
-                + PropertyManager.getProperty(QCProperties.DOMAIN, PropertyManager.getProperty("domain")));
-        LOGGER.trace("Project: " + PropertyManager.getProperty(QCProperties.PROJECT),
-                PropertyManager.getProperty("project"));
-        LOGGER.trace("User: " + PropertyManager.getProperty(QCProperties.USER), PropertyManager.getProperty("user"));
-        LOGGER.trace("Password: "
-                + PropertyManager.getProperty(QCProperties.PASSWORD, PropertyManager.getProperty("password")));
-        return loginData;
-    }
 
     /**
      * Get instance of RestConnector. logout() should be called when you are done.
@@ -174,9 +121,9 @@ public final class RestConnector {
      * Constructor.
      */
     private RestConnector() {
-        cookies = new HashMap<String, String>();
+        cookies = new HashMap<>();
         loginData = getConnectionProperties();
-        requestHeaders = new HashMap<String, String>();
+        requestHeaders = new HashMap<>();
         requestHeaders.put("Accept", "application/xml");
         server = loginData.getServer();
         loginTries = 0;
@@ -189,10 +136,28 @@ public final class RestConnector {
     }
 
     /**
+     * Returns the Quality Center connection properties. Initializes the connection properties using the file
+     * <code>qcconnection.properties</code> in the resources folder if not initialized already.
+     * *
+     *
+     * @return The connection data as <code>LoginData</code> object.
+     */
+    private LoginData getConnectionProperties() {
+
+        PROPERTY_MANAGER.loadProperties("qcconnection.properties");
+        final LoginData loginData = new LoginData(
+                QcConnProperties.DOMAIN.asString(),
+                QcConnProperties.PASSWORD.asString(),
+                QcConnProperties.PROJECT.asString(),
+                QcConnProperties.SERVER.asString(),
+                QcConnProperties.USER.asString());
+        return loginData;
+    }
+
+    /**
      * Build an Url to get collections of entities.
      *
      * @param entityType Type of entity (e.g. run, test-set).
-     *
      * @return Url as String.
      */
     public String buildEntityCollectionUrl(final String entityType) {
@@ -209,7 +174,6 @@ public final class RestConnector {
      * Appends the QC Server (from qcconnection.properties) at the front of the given path.
      *
      * @param path on the server to use
-     *
      * @return a url on the server for the path parameter
      */
     public String buildUrl(String path) {
@@ -219,14 +183,12 @@ public final class RestConnector {
     /**
      * Executes the http request and returns the answer wrapped in a {@link Response} object.
      *
-     * @param type        of the http operation: get post put delete
-     * @param url         to work on
+     * @param type of the http operation: get post put delete
+     * @param url to work on
      * @param queryString query argument to append to request.
-     * @param data        to write, if a writable operation
-     * @param headers     Headers to add.
-     *
+     * @param data to write, if a writable operation
+     * @param headers Headers to add.
      * @return http response
-     *
      * @throws IOException Exception while request transport.
      */
     private Response doHttp(final String type, String url, String queryString, final byte[] data,
@@ -294,7 +256,7 @@ public final class RestConnector {
                 if (loginTries < 5) {
                     loginTries++;
                     LOGGER.debug("Unauthorized Exception. Send login Request and retry request");
-                    String version = PropertyManager.getProperty(QCProperties.VERSION, "12");
+                    String version = QcConnProperties.VERSION.asString();
                     if ("11".equals(version)) {
                         login(server + "/qcbin/authentication-point/authenticate", loginData.getUser(),
                                 loginData.getPassword());
@@ -346,11 +308,9 @@ public final class RestConnector {
     /**
      * Get entities returned by the query or null at any exception.
      *
-     * @param restUrl  Target for request.
+     * @param restUrl Target for request.
      * @param queryUrl Query on result.
-     *
      * @return List of Entity objects.
-     *
      * @throws IOException Exception during communication with rest service.
      */
     public List<Entity> getEntities(final String restUrl, String queryUrl) throws Exception {
@@ -370,11 +330,9 @@ public final class RestConnector {
     /**
      * Get entities returned by the query or null at any exception.
      *
-     * @param restUrl  Target for request.
+     * @param restUrl Target for request.
      * @param queryUrl Query on result.
-     *
      * @return List of Entity objects.
-     *
      * @throws IOException Exception during communication with rest service.
      */
     public Entity getEntity(final String restUrl, final String queryUrl) throws Exception {
@@ -402,9 +360,7 @@ public final class RestConnector {
      * Do DELETE-Request at rest service.
      *
      * @param url Target of request.
-     *
      * @return Requests response.
-     *
      * @throws IOException Exception during Request.
      */
     public Response httpDelete(final String url) throws Exception {
@@ -415,11 +371,9 @@ public final class RestConnector {
     /**
      * Do GET-Request at rest service.
      *
-     * @param url         Target of request.
+     * @param url Target of request.
      * @param queryString Possible query to constrain output.
-     *
      * @return Requests response.
-     *
      * @throws IOException Exception during Request.
      */
     public Response httpGet(final String url, final String queryString)
@@ -433,12 +387,10 @@ public final class RestConnector {
     /**
      * Do POST-Request at rest service.
      *
-     * @param url     Target of request.
-     * @param data    Data to send.
+     * @param url Target of request.
+     * @param data Data to send.
      * @param headers Special headers for POST.
-     *
      * @return Requests response.
-     *
      * @throws IOException Exception during Request.
      */
     public Response httpPost(final String url, final byte[] data, final Map<String, String> headers)
@@ -460,12 +412,10 @@ public final class RestConnector {
     /**
      * Do PUT-Request at rest service.
      *
-     * @param url     Target of request.
-     * @param data    Data to send.
+     * @param url Target of request.
+     * @param data Data to send.
      * @param headers Special headers for POST.
-     *
      * @return Requests response.
-     *
      * @throws IOException Exception during Request.
      */
     public Response httpPut(final String url, final byte[] data, final Map<String, String> headers)
@@ -490,9 +440,7 @@ public final class RestConnector {
      * @param loginUrl to authenticate at
      * @param username username used for authentication.
      * @param password password used for authentication.
-     *
      * @return true on operation success, false otherwise
-     *
      * @throws IOException http exception.
      */
     private boolean login(final String loginUrl, final String username, final String password) throws Exception {
@@ -536,11 +484,10 @@ public final class RestConnector {
     /**
      * Prepare the request.
      *
-     * @param con          to set the headers and bytes in
-     * @param headers      to use in the request, such as content-type
-     * @param bytes        the actual data to post in the connection.
+     * @param con to set the headers and bytes in
+     * @param headers to use in the request, such as content-type
+     * @param bytes the actual data to post in the connection.
      * @param cookieString the cookies data from clientside, such as lwsso, qcsession, jsession etc..
-     *
      * @throws IOException Exception during request.
      */
     private void prepareHttpRequest(
@@ -590,10 +537,8 @@ public final class RestConnector {
 
     /**
      * @param con that already connected to it's url with an http request, and that should contain a response for us to
-     *            retrieve
-     *
+     * retrieve
      * @return a response from the server to the previously submitted http request
-     *
      * @throws IOException Exception during http request.
      */
     private Response retrieveHtmlResponse(final HttpURLConnection con) throws IOException {

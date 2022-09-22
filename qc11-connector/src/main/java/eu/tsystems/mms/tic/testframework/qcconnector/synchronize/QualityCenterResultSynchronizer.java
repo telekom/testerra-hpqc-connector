@@ -3,13 +3,14 @@ package eu.tsystems.mms.tic.testframework.qcconnector.synchronize;
 import com.google.common.eventbus.Subscribe;
 import eu.tsystems.mms.tic.testframework.annotations.Fails;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.common.PropertyManagerProvider;
 import eu.tsystems.mms.tic.testframework.events.TestStatusUpdateEvent;
 import eu.tsystems.mms.tic.testframework.exceptions.SystemException;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.qcconnector.constants.QCFieldValues;
 import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.MissingQcTestSetAnnotationException;
 import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.TesterraQcResultSyncException;
-import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
+import eu.tsystems.mms.tic.testframework.qcrest.constants.QcConnProperties;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.Attachment;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.report.Status;
@@ -32,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author mgn
  */
-public class QualityCenterResultSynchronizer implements TestStatusUpdateEvent.Listener, Loggable {
+public class QualityCenterResultSynchronizer implements TestStatusUpdateEvent.Listener, Loggable, PropertyManagerProvider {
 
     private boolean isSyncActive = false;
 
@@ -183,8 +184,8 @@ public class QualityCenterResultSynchronizer implements TestStatusUpdateEvent.Li
         log().info("Initializing " + this.getClass().getSimpleName() + " over QCRestService");
         try {
 
-            PropertyManager.loadProperties("qcconnection.properties");
-            this.isSyncActive = PropertyManager.getBooleanProperty(QCProperties.SYNC_ACTIVE, false);
+            PROPERTY_MANAGER.loadProperties("qcconnection.properties");
+            this.isSyncActive = PROPERTY_MANAGER.getBooleanProperty(QcConnProperties.SYNC_ACTIVE);
 
             if (!this.isSyncActive) {
                 log().info("QC Synchronization turned off.");
