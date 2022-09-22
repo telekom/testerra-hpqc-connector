@@ -22,6 +22,7 @@
 package eu.tsystems.mms.tic.testframework.qcconnector.constants;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.common.PropertyManagerProvider;
 import eu.tsystems.mms.tic.testframework.qcrest.constants.QcConnProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ import java.util.Map;
  *
  * @author sepr
  */
-public final class QCFieldValues {
+public final class QCFieldValues implements PropertyManagerProvider {
 
     /**
      * Logger instance
@@ -94,8 +95,8 @@ public final class QCFieldValues {
      */
     private static Map<String, String> getFieldMappingFromFile() {
         final Map<String, String> outMap = new HashMap<String, String>();
-
-//        PropertyManager.loadProperties("qcconnection.properties");
+        
+        PROPERTY_MANAGER.loadProperties("qcconnection.properties");
         final String mappingsString = QcConnProperties.QC_FIELD_MAPPING.asString();
         if (mappingsString == null || mappingsString.isEmpty()) {
             return outMap;
