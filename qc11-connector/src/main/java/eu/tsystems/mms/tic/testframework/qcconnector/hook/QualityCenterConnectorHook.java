@@ -21,19 +21,17 @@
  */
 package eu.tsystems.mms.tic.testframework.qcconnector.hook;
 
-import com.google.common.eventbus.EventBus;
+import com.google.inject.AbstractModule;
+import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
 import eu.tsystems.mms.tic.testframework.qcconnector.synchronize.QualityCenterResultSynchronizer;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
-import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 
-public class QualityCenterConnectorHook implements ModuleHook {
+public class QualityCenterConnectorHook extends AbstractModule implements ModuleHook {
 
     @Override
     public void init() {
-
-        EventBus eventBus = TesterraListener.getEventBus();
-        eventBus.register(new QualityCenterResultSynchronizer());
+        Testerra.getEventBus().register(new QualityCenterResultSynchronizer());
     }
 
     @Override
