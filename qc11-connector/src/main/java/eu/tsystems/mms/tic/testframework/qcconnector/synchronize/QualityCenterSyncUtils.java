@@ -21,7 +21,6 @@
  */
 package eu.tsystems.mms.tic.testframework.qcconnector.synchronize;
 
-import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCPathUtil;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.QCTestname;
 import eu.tsystems.mms.tic.testframework.qcconnector.annotation.TMInfoContainer;
@@ -32,7 +31,7 @@ import eu.tsystems.mms.tic.testframework.qcconnector.exceptions.TesterraQcResult
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.UtilClient;
-import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
+import eu.tsystems.mms.tic.testframework.qcrest.constants.QcConnProperties;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.Attachment;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSet;
@@ -411,7 +410,7 @@ public final class QualityCenterSyncUtils {
      */
     private static boolean pMatchesExecutionFilter(final TestSetTest testSetTest) {
 
-        final String filterProperty = PropertyManager.getProperty(QCProperties.EXECUTION_FILTER, null);
+        final String filterProperty = QcConnProperties.EXECUTION_FILTER.asString();
         if (StringUtils.isEmpty(filterProperty)) {
             return true;
         }
@@ -493,8 +492,8 @@ public final class QualityCenterSyncUtils {
             return attachments;
         }
 
-        final boolean isUploadScreenshots = PropertyManager.getBooleanProperty(QCProperties.UPLOAD_SCREENSHOTS, false);
-        final boolean isUploadVideos = PropertyManager.getBooleanProperty(QCProperties.UPLOAD_VIDEOS, false);
+        final boolean isUploadScreenshots = QcConnProperties.UPLOAD_SCREENSHOTS.asBool();
+        final boolean isUploadVideos = QcConnProperties.UPLOAD_VIDEOS.asBool();
 
         if (isUploadScreenshots) {
             methodContext.readTestSteps().forEach(testStep -> {

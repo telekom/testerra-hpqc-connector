@@ -22,11 +22,13 @@
 package eu.tsystems.mms.tic.testframework.qcconnector.constants;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
-import java.util.HashMap;
-import java.util.Map;
+import eu.tsystems.mms.tic.testframework.common.PropertyManagerProvider;
+import eu.tsystems.mms.tic.testframework.qcrest.constants.QcConnProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Holds values for QC entity fields, that are read when the entity is synchronized. Only applies to TestRun at the
@@ -34,7 +36,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author sepr
  */
-public final class QCFieldValues {
+public final class QCFieldValues implements PropertyManagerProvider {
 
     /**
      * Logger instance
@@ -53,7 +55,6 @@ public final class QCFieldValues {
      * ThreadLocal Map of field names and values, that can be set per test.
      */
     private static ThreadLocal<Map<String, String>> threadProperties = new ThreadLocal<Map<String, String>>();
-
 
     /**
      * Hide constructor
@@ -94,9 +95,9 @@ public final class QCFieldValues {
      */
     private static Map<String, String> getFieldMappingFromFile() {
         final Map<String, String> outMap = new HashMap<String, String>();
-
-        PropertyManager.loadProperties("qcconnection.properties");
-        final String mappingsString = PropertyManager.getProperty(QCProperties.QC_FIELD_MAPPING);
+        
+        PROPERTY_MANAGER.loadProperties("qcconnection.properties");
+        final String mappingsString = QcConnProperties.QC_FIELD_MAPPING.asString();
         if (mappingsString == null || mappingsString.isEmpty()) {
             return outMap;
         }
@@ -106,7 +107,7 @@ public final class QCFieldValues {
             if (labelName.length == 2) {
                 outMap.put(labelName[0].trim(), labelName[1].trim());
             } else {
-                LOGGER.warn("Wrong format in Property " + QCProperties.QC_FIELD_MAPPING + ": " + mapping);
+                LOGGER.warn("Wrong format in Property {}:{}", QcConnProperties.QC_FIELD_MAPPING.asString(), mapping);
             }
         }
         return outMap;

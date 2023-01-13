@@ -21,11 +21,10 @@
  */
 package eu.tsystems.mms.tic.testframework.qcrest.test.client;
 
-import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.QcRestClient;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.RestConnector;
 import eu.tsystems.mms.tic.testframework.qcrest.clients.UtilClient;
-import eu.tsystems.mms.tic.testframework.qcrest.constants.QCProperties;
+import eu.tsystems.mms.tic.testframework.qcrest.constants.QcConnProperties;
 import eu.tsystems.mms.tic.testframework.qcrest.utils.FileByteConverter;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.Attachment;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestPlanTest;
@@ -33,6 +32,12 @@ import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestRun;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSet;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetFolder;
 import eu.tsystems.mms.tic.testframework.qcrest.wrapper.TestSetTest;
+import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,13 +51,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
-import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 /**
  * Test class for testing QC Test lab methods.
@@ -499,7 +497,7 @@ public class RunClientTest extends AbstractTest {
             final TestSetTest testInstance = new TestSetTest();
             testInstance.setCycleId(parent.getId());
             testInstance.setTestId(test.getId());
-            if ("11".equals(PropertyManager.getProperty(QCProperties.VERSION, "12"))) {
+            if ("11".equals(QcConnProperties.VERSION.asString())) {
                 testInstance.setOrder(0);
             }
 

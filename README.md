@@ -33,6 +33,9 @@ See more details about the MicroFocus ALM REST API here: https://admhelp.microfo
 |----------------|------------------|
 | `1.0`          | ` 1.0.0 .. 1.11` |
 | `1.1`          | `>= 1.12`        |
+| `2.0`          | `>= 2.0`         |
+
+You need at least *JDK11* or later.
 
 ### Usage
 
@@ -41,7 +44,7 @@ Include the following dependency in your project.
 Gradle:
 
 ```groovy
-implementation 'io.testerra:qc11-connector:1.2'
+implementation 'io.testerra:qc11-connector:2.0'
 ```
 
 Maven:
@@ -50,7 +53,7 @@ Maven:
 <dependency>
   <groupId>io.testerra</groupId>
   <artifactId>qc11-connector</artifactId>
-  <version>1.2</version>
+  <version>2.0</version>
 </dependency>
 ```
 
